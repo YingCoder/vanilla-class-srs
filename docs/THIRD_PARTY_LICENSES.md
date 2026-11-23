@@ -19,7 +19,7 @@ GPL-3.0 项目（TypeWords、Qwerty Learner）只借鉴交互与产品思路，*
 | root | `@prisma/client` | ^5.22.0 | 5.22.0 | Apache-2.0 |
 | root | `prisma`（开发） | ^5.22.0 | 5.22.0 | Apache-2.0 |
 | root | `concurrently`（开发） | ^8.2.2 | 8.2.2 | MIT |
-| server | `bcrypt` | ^5.1.1 | 5.1.1 | MIT |
+| server | `bcrypt` | ^6.0.0 | 6.0.0 | MIT |
 | server | `cookie-parser` | ^1.4.7 | 1.4.7 | MIT |
 | server | `cors` | ^2.8.5 | 2.8.6 | MIT |
 | server | `csv-parse` | ^5.5.6 | 5.6.0 | MIT |
@@ -62,19 +62,19 @@ GPL-3.0 项目（TypeWords、Qwerty Learner）只借鉴交互与产品思路，*
 
 ## 4. 安全与升级提示
 
-- 在 Docker 构建（官方 npm registry）中，完整 `npm ci` 报告 **21 个漏洞（1 low / 5 moderate / 12 high / 3 critical）**；生产依赖审计（`npm audit --omit=dev`）报告 **15 个：2 critical、7 high、6 moderate**，主要来源：
-  - `proxy-addr`（critical，IPv4-mapped IPv6 信任网段导致 IP 伪造；影响依赖 `X-Forwarded-For` 的限流与审计）；
-  - `tar`（critical，解压 / 解析 DoS 与路径穿越；由 `@mapbox/node-pre-gyp` → `bcrypt` 引入）；
-  - `nodemailer`（high，地址解析递归 / 二次复杂度 DoS，以及禁用文件访问绕过）；
-  - `bcrypt`、`body-parser`、`qs`、`zod`、`path-to-regexp`（high / moderate）；
-  - `csv-parse`（moderate，原型替换；升级到 7.x 为破坏性变更）；
-  - `react-router` / `react-router-dom` / `@remix-run/router`（moderate，开放重定向）。
-- 处理顺序建议：先升级 `express` / `proxy-addr` / `body-parser` / `qs` 与 `nodemailer`（不改变业务 API），再评估 `bcrypt` 6 与 `zod` 4 的兼容性；`csv-parse` 7 与导入改造一起做。升级后必须重新跑单元测试、权限集成测试与构建，并更新本清单。
+- 生产依赖审计（官方 registry，2026-11-23 升级后）报告 **6 个：0 critical、2 high、4 moderate**：
+  - `nodemailer`（high，<=10.1.3；当前 6.10.1，修复需 v10 破坏性升级）；
+  - `zod`（high，<4.6.6；当前 3.25.76，修复需 v4 破坏性升级）；
+  - `csv-parse`（moderate，<7.0.2；当前 5.6.0，修复需 v7 破坏性升级）；
+  - `react-router` / `react-router-dom`（moderate；6.30.6 仍在公告影响范围，修复需 v7）；
+  - `qs`（moderate；`body-parser` 下已到 6.16.2，`express` 仍解析到 6.14.3）。
+- 已消除：`tar` / `@mapbox/node-pre-gyp` / `brace-expansion` 链路随 `bcrypt` 5→6（去掉 node-pre-gyp）移除；`proxy-addr`、`body-parser`、`path-to-regexp`、`ip-address` 通过根 `overrides` 升级。
+- 处理顺序建议：先评估 `nodemailer` 10、`zod` 4、`react-router-dom` 7 的业务兼容性；`csv-parse` 7 与导入改造一起做。升级后必须重新跑单元测试、权限集成测试与 Docker 构建，并更新本清单。
 - 当前宿主 npm 镜像不支持 `npm audit` 端点；本地审计命令：
   ```powershell
   docker run --rm -v "${PWD}:/app" -w /app node:22-alpine npm audit --omit=dev
   ```
-- 已弃用：`multer@1.4.5`（官方提示 1.x 存在漏洞，建议升级 2.x）、`tar@6.2.1`、`glob@7.2.3`、`rimraf@3.0.2`、`npmlog@5.0.1`、`gauge@3.0.2`、`are-we-there-yet@2.0.0`、`inflight@1.0.6`。升级前需回归上传、导入与 Prisma 工具链。
+- 已弃用：`multer@1.4.5`（官方提示 1.x 存在漏洞，建议升级 2.x）、`glob@7.2.3`、`rimraf@3.0.2`、`npmlog@5.0.1`、`gauge@3.0.2`、`are-we-there-yet@2.0.0`、`inflight@1.0.6`。升级前需回归上传、导入与 Prisma 工具链。
 - 升级依赖必须同步更新 `package-lock.json` 与本清单，并在 `CHANGELOG.md` 记录。
 
 ## 5. 字体、图片与音频素材（未完成授权确认）

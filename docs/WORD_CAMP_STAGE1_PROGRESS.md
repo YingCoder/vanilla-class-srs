@@ -121,7 +121,7 @@
 
 ### 验证证据
 
-- 全量测试 `327 passed | 12 skipped`；13 个迁移（含会话版本）在干净库应用通过。
+- 全量测试 `328 passed | 12 skipped`；13 个迁移（含会话版本）在干净库应用通过。
 - Docker 端到端：学生登录后由管理员重置密码，旧 access token 与旧 refresh token 请求均返回 401。
 - 前端构建通过；中文复习页与成长页已随镜像部署。
 
@@ -169,7 +169,23 @@
 - 学生 deck 导出改用 `toCsv`：UTF-8 BOM + CRLF，中文在 Windows Excel 直接可读。
 - 单测覆盖公式触发字符、引号+公式组合、BOM/CRLF。
 
-## 9. 未完成（阶段 1 剩余）
+## 9. 学生名单 GBK 与依赖安全（2026-11-23）
+
+### 学生名单 GBK
+
+- `decodeCsvBuffer` 抽到 `server/src/lib/csv.ts`，卡片导入与学生名单导入共用。
+- `parseEnrollCsv` 先解码再 `csv-parse`，UTF-8/BOM、UTF-16、GBK 均可；GBK 中文姓名单测通过。
+- 中文 Windows Excel 导出的名单不再需要手动转码。
+
+### 生产依赖审计
+
+- `bcrypt` 5.1.1 → 6.0.0，移除 `@mapbox/node-pre-gyp` / `tar` / `glob` / `rimraf` 旧链，消除 1 critical + 相关 high。
+- 根 `package.json` 新增 `overrides`：`body-parser` 1.20.9、`proxy-addr` 2.0.8、`path-to-regexp` 0.1.13、`ip-address` 10.7.6。
+- `react-router-dom` 6.30.3 → 6.30.6。
+- 生产审计：**15 → 6 个（0 critical、2 high、4 moderate）**；`nodemailer` / `zod` / `react-router` / `csv-parse` 的修复需破坏性大版本，列入后续计划。
+- 升级后 328 个服务端测试、三包构建与 Docker 登录路径均需回归。
+
+## 10. 未完成（阶段 1 剩余）
 
 - 全站中文界面：目前登录页、新增学生表单、学生“我的成长”已中文，教师/管理员其余页面仍为英文。
 - 权限收紧：学科组长跨班只读与规格 §12 的冲突仍待产品决策；尚未实现资源级权限测试矩阵。

@@ -17,9 +17,11 @@
 - FSRS-5 校正：默认权重、遗忘曲线、`1 +` 稳定度项、linear damping 难度、short-term 状态与精确到期时间对齐 `ts-fsrs@4.7.0`；新增 9 条基准向量测试。
 - 教师/管理员班级“今日”页：按 Asia/Shanghai 自然日列出今日已学习、未学习名单（`pending-today` API）。
 - CSV 导出公式注入防护与 UTF-8 BOM/CRLF。
+- 学生名单 CSV 支持 GBK/BOM/UTF-16；与卡片导入共用解码器。
+- 依赖安全：`bcrypt` 6、根 `overrides`（body-parser/proxy-addr/path-to-regexp/ip-address）、router patch；生产漏洞 15 → 6（0 critical）。
 
 ### 验证
-- 服务端单元测试 327 通过 / 12 跳过、三包构建通过；干净数据库完整应用 14 个迁移。
+- 服务端单元测试 328 通过 / 12 跳过、三包构建通过；干净数据库完整应用 14 个迁移。
 - 会话撤销已端到端验证：重置密码后旧 access/refresh token 均返回 401。
 - 断点续学已端到端验证：连续两次开始学习返回同一会话与相同题目顺序。
 - Docker 端到端：只传用户名创建学生 → 该学生用用户名登录成功，`email=null`，首次登录强制改密。

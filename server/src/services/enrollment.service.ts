@@ -22,6 +22,7 @@ import { z } from 'zod'
 import crypto from 'crypto'
 import { hashPassword, generateTempPassword, normalizeUsername, isValidUsername, suggestUsername } from './auth.service'
 import { logAuditEvent } from '../lib/auditLog'
+import { decodeCsvBuffer } from '../lib/csv'
 
 const EmailSchema = z.string().email()
 
@@ -47,7 +48,10 @@ export type ParseEnrollCsvResult =
 export function parseEnrollCsv(buffer: Buffer, confirmedHeaderless: boolean): ParseEnrollCsvResult {
   let raw: string[][]
   try {
-    raw = parse(buffer, { skip_empty_lines: true, trim: true, bom: true }) as string[][]
+    // Excel on Chinese Windows commonly saves GBK; decode before csv-parse so
+    // the byte-level `bom` option is no longer responsible for encodings.
+    const { text } = decodeCsvBuffer(buffer)
+    raw = parse(text, { skip_empty_lines: true, trim: true }) as string[][]
   } catch {
     return { status: 'parse_error' }
   }

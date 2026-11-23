@@ -8,6 +8,7 @@
  */
 
 import { parse } from 'csv-parse/sync'
+import { decodeCsvBuffer } from '../lib/csv'
 
 export interface CardRowInput {
   word: string
@@ -51,23 +52,7 @@ const HEADER_ALIASES: Record<string, string> = {
 }
 
 /** Decode an uploaded CSV: UTF-8/BOM first, then GBK for Excel-exported files. */
-export function decodeCsvBuffer(buffer: Buffer): { text: string; encoding: string } {
-  if (buffer.length >= 3 && buffer[0] === 0xef && buffer[1] === 0xbb && buffer[2] === 0xbf) {
-    return { text: new TextDecoder('utf-8').decode(buffer.subarray(3)), encoding: 'utf-8-bom' }
-  }
-  if (buffer.length >= 2 && buffer[0] === 0xff && buffer[1] === 0xfe) {
-    return { text: new TextDecoder('utf-16le').decode(buffer.subarray(2)), encoding: 'utf-16le' }
-  }
-  if (buffer.length >= 2 && buffer[0] === 0xfe && buffer[1] === 0xff) {
-    return { text: new TextDecoder('utf-16be').decode(buffer.subarray(2)), encoding: 'utf-16be' }
-  }
-
-  try {
-    return { text: new TextDecoder('utf-8', { fatal: true }).decode(buffer), encoding: 'utf-8' }
-  } catch {
-    return { text: new TextDecoder('gbk').decode(buffer), encoding: 'gbk' }
-  }
-}
+export { decodeCsvBuffer } from '../lib/csv'
 
 /**
  * Parse a card CSV and map spec/legacy headers onto the internal column names.

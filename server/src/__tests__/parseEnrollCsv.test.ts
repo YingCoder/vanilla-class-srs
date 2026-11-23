@@ -14,6 +14,19 @@ describe('parseEnrollCsv', () => {
     }
   })
 
+  it('decodes GBK Chinese names from Excel on Chinese Windows', () => {
+    const buf = Buffer.concat([
+      Buffer.from('name,username\n', 'ascii'),
+      Buffer.from([0xd6, 0xd0]), // 中 in GBK
+      Buffer.from(',zhangsan\n', 'ascii'),
+    ])
+    const result = parseEnrollCsv(buf, false)
+    expect(result.status).toBe('parsed')
+    if (result.status === 'parsed') {
+      expect(result.rows).toEqual([{ name: '中', username: 'zhangsan' }])
+    }
+  })
+
   it('asks for confirmation on a headerless file, without parsing rows yet', () => {
     const buf = Buffer.from('Doug Test,dt@qbd.org\nAnne Test,at@qbd.org\n')
     const result = parseEnrollCsv(buf, false)
