@@ -71,6 +71,7 @@ export default function ChoicePage() {
       .then((data) => {
         if (cancelled) return
         setQuestion(data)
+        startedAtRef.current = Date.now()
       })
       .catch((err) => {
         if (cancelled) return
