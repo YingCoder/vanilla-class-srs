@@ -27,7 +27,7 @@ GPL-3.0 项目（TypeWords、Qwerty Learner）只借鉴交互与产品思路，*
 | server | `express` | ^4.21.1 | 4.22.1 | MIT |
 | server | `express-rate-limit` | ^8.6.2 | 8.6.2 | MIT |
 | server | `jsonwebtoken` | ^9.0.2 | 9.0.3 | MIT |
-| server | `multer` | ^1.4.5-lts.1 | 1.4.5-lts.2 | MIT（已弃用 1.x，见 §4） |
+| server | `multer` | ^2.5.0 | 2.5.0 | MIT |
 | server | `nodemailer` | ^6.9.16 | 6.10.1 | MIT-0 |
 | server | `zod` | ^3.23.8 | 3.25.76 | MIT |
 | server | `typescript`（开发） | ^5.6.3 | 5.9.3 | Apache-2.0 |
@@ -74,7 +74,7 @@ GPL-3.0 项目（TypeWords、Qwerty Learner）只借鉴交互与产品思路，*
   ```powershell
   docker run --rm -v "${PWD}:/app" -w /app node:22-alpine npm audit --omit=dev
   ```
-- 已弃用：`multer@1.4.5`（官方提示 1.x 存在漏洞，建议升级 2.x）、`glob@7.2.3`、`rimraf@3.0.2`、`npmlog@5.0.1`、`gauge@3.0.2`、`are-we-there-yet@2.0.0`、`inflight@1.0.6`。升级前需回归上传、导入与 Prisma 工具链。
+- 已弃用：`glob@7.2.3`、`rimraf@3.0.2`、`npmlog@5.0.1`、`gauge@3.0.2`、`are-we-there-yet@2.0.0`、`inflight@1.0.6`（仅剩 Prisma 工具链）；上传路径的 `multer` 已升级到 2.5.0 并回归成功。
 - 升级依赖必须同步更新 `package-lock.json` 与本清单，并在 `CHANGELOG.md` 记录。
 
 ## 5. 字体、图片与音频素材（未完成授权确认）

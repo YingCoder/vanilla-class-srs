@@ -182,6 +182,7 @@
 - `bcrypt` 5.1.1 → 6.0.0，移除 `@mapbox/node-pre-gyp` / `tar` / `glob` / `rimraf` 旧链，消除 1 critical + 相关 high。
 - 根 `package.json` 新增 `overrides`：`body-parser` 1.20.9、`proxy-addr` 2.0.8、`path-to-regexp` 0.1.13、`ip-address` 10.7.6。
 - `react-router-dom` 6.30.3 → 6.30.6。
+- `multer` 1.4.5-lts → 2.5.0（1.x 官方已弃用），Docker 内 GBK 词表上传回归 `{"created":1}`。
 - 生产审计：**15 → 6 个（0 critical、2 high、4 moderate）**；`nodemailer` / `zod` / `react-router` / `csv-parse` 的修复需破坏性大版本，列入后续计划。
 - 升级后 328 个服务端测试、三包构建与 Docker 登录路径均需回归。
 
