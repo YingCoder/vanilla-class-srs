@@ -12,6 +12,7 @@ import { schedule } from '@vanilla-srs/shared/fsrs'
 import type { FSRSParams } from '@vanilla-srs/shared/fsrs'
 import { DEFAULT_MIN_CARDS_PER_SESSION, getWeeklyGoal, WeeklyGoal } from './homework.service'
 import { computeStreakAndBestDay } from './streak.service'
+import { settleSessionRewards, type RewardSettlement } from './reward.service'
 
 // Caps how many due/review cards appear in a single session — a UX/session-length decision,
 // not an FSRS scheduling parameter, so it lives here rather than in the configurable
@@ -538,6 +539,7 @@ export async function finishSession(
       newPersonalBestDay: boolean
       todayCardsTotal: number
       currentStreak: number
+      rewards: RewardSettlement
     }
   | { error: string; status: number }
 > {
@@ -580,6 +582,10 @@ export async function finishSession(
   }
   const newPersonalBestDay = isNewPersonalBestDay(cardsPerDay, todayKey)
 
+  // Settle after the session is closed. Settlement is idempotent by ledger
+  // uniqueness, so a retried finish cannot duplicate XP or coins.
+  const rewards = await settleSessionRewards(prisma, sessionId, endedAtForToday)
+
   return {
     ok: true,
     cardsReviewed: updated?.cardsReviewed ?? 0,
@@ -591,5 +597,6 @@ export async function finishSession(
     // must be the day's total, not this single session's cardsReviewed.
     todayCardsTotal: cardsPerDay[todayKey] ?? 0,
     currentStreak,
+    rewards,
   }
 }

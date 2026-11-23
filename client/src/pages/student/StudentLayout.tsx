@@ -4,10 +4,11 @@ import { useEnrollment } from '../../utils/enrollment'
 import AppShell from '../../components/AppShell'
 
 const navItems = [
-  { to: '/student/review', label: 'Study' },
-  { to: '/student/deck', label: 'My Deck' },
-  { to: '/student/cardsets', label: 'Class CardSets' },
-  { to: '/student/stats', label: 'Stats' },
+  { to: '/student/review', label: '学习' },
+  { to: '/student/deck', label: '我的词库' },
+  { to: '/student/cardsets', label: '班级词集' },
+  { to: '/student/stats', label: '统计' },
+  { to: '/student/rewards', label: '我的成长' },
 ]
 
 export default function StudentLayout() {

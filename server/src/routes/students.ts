@@ -7,6 +7,7 @@ import { requireAuth, requireStudent, requirePasswordChanged } from '../middlewa
 import { validate } from '../middleware/validate'
 import { startSession, startRestudy, gradeCard, finishSession } from '../services/review.service'
 import { labelsForClass } from '../services/departmentLabels.service'
+import { getRewardSummary } from '../services/reward.service'
 import studentStatsRouter from './stats.student'
 
 const router = asyncRouter()
@@ -504,6 +505,12 @@ router.post('/review/finish', validate(FinishSchema), async (req: Request, res: 
   const result = await finishSession(prisma, student.id, req.body.sessionId, new Date(), req.body.tz || 'UTC')
   if ('error' in result) { res.status(result.status).json({ error: result.error }); return }
   res.json(result)
+})
+
+// GET /api/students/rewards — XP, coin balance, level and recent ledger
+router.get('/rewards', async (req: Request, res: Response) => {
+  const summary = await getRewardSummary(prisma, req.user!.sub)
+  res.json(summary)
 })
 
 export default router

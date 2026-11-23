@@ -119,6 +119,7 @@ function ReviewSessionPage() {
     newPersonalBestDay: boolean
     todayCardsTotal: number
     currentStreak: number
+    rewards?: { xp: number; coins: number }
   } | null>(null)
   const [headline, setHeadline] = useState('')
   const [confirmFinish, setConfirmFinish] = useState(false)
@@ -340,6 +341,7 @@ function ReviewSessionPage() {
         newPersonalBestDay: boolean
         todayCardsTotal: number
         currentStreak: number
+        rewards?: { xp: number; coins: number }
       }>('/students/review/finish', { sessionId, tz })
       setSessionResult(result)
       setHeadline(pickRandom(ENCOURAGEMENT[accuracyTier(result.accuracyRate)]))
@@ -684,6 +686,14 @@ function ReviewSessionPage() {
                   🔥 {sessionResult.currentStreak}-day streak!
                 </p>
               )}
+            </div>
+          )}
+          {sessionResult?.rewards && (sessionResult.rewards.xp > 0 || sessionResult.rewards.coins > 0) && (
+            <div style={{ marginTop: 16, position: 'relative', zIndex: 2, textAlign: 'center' }}>
+              <p style={{ fontSize: 'var(--text-base)', fontWeight: 700, color: 'var(--color-accent)' }}>
+                +{sessionResult.rewards.xp} XP
+                {sessionResult.rewards.coins > 0 && <> · +{sessionResult.rewards.coins} 金币</>}
+              </p>
             </div>
           )}
           {sessionResult?.weeklyGoal && (
