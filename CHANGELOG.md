@@ -11,9 +11,12 @@
 - 迁移 `20261123000000_user_username_optional_email` 回填既有账号用户名。
 - 奖励账本 `RewardEvent`（唯一事件键 + 每日上限）与等级计算；复习结束自动结算 XP，新增 `GET /students/rewards` 和学生“我的成长”页。
 - 词表导入支持 GBK/BOM、`meaning_zh` 等表头别名与 `variants` 变体拼写；新增 `Card.variants` 迁移。
+- 会话撤销：`User.sessionVersion` + JWT `sv`，改密/重置后旧 access/refresh token 立即失效。
+- 学生复习界面中文化；完成页显示本次 XP/金币。
 
 ### 验证
-- 服务端单元测试、三包构建通过；干净数据库完整应用 12 个迁移。
+- 服务端单元测试、三包构建通过；干净数据库完整应用 13 个迁移。
+- 会话撤销已端到端验证：重置密码后旧 access/refresh token 均返回 401。
 - Docker 端到端：只传用户名创建学生 → 该学生用用户名登录成功，`email=null`，首次登录强制改密。
 - 奖励服务测试覆盖首次奖励、重复事件、每日上限与唯一键竞态。
 

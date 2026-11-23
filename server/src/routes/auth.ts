@@ -88,7 +88,7 @@ router.post('/login', authRateLimit, async (req: Request, res: Response) => {
     ip: req.ip,
   })
 
-  setAuthCookies(res, user.id, user.role)
+  setAuthCookies(res, user.id, user.role, user.sessionVersion)
 
   res.json({
     user: {
@@ -122,9 +122,12 @@ router.post('/refresh', async (req: Request, res: Response) => {
   try {
     const payload = verifyRefreshToken(token)
 
-    // Confirm user still exists and hasn't been deleted
+    // Confirm user still exists and the refresh token belongs to the current
+    // session generation. A password change/reset bumps sessionVersion, so a
+    // leaked or stolen refresh token cannot outlive the password it was
+    // issued for.
     const user = await prisma.user.findUnique({ where: { id: payload.sub } })
-    if (!user) {
+    if (!user || payload.sv !== user.sessionVersion) {
       res.status(401).json({ error: 'Unauthorized' })
       return
     }
@@ -136,7 +139,7 @@ router.post('/refresh', async (req: Request, res: Response) => {
     // app when they're actually still active every day.
     await prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } })
 
-    setAuthCookies(res, user.id, user.role)
+    setAuthCookies(res, user.id, user.role, user.sessionVersion)
     res.json({
       user: {
         sub: user.id,
@@ -180,13 +183,16 @@ router.post('/change-password', requireAuth, async (req: Request, res: Response)
   }
 
   const newHash = await hashPassword(parsed.data.newPassword)
-  await prisma.user.update({
+  const updated = await prisma.user.update({
     where: { id: user.id },
-    data: { passwordHash: newHash, mustChangePassword: false },
+    data: { passwordHash: newHash, mustChangePassword: false, sessionVersion: { increment: 1 } },
   })
 
   logAuditEvent('password_change_success', { userId: user.id, email: user.email })
 
+  // Keep the current device signed in; every other device's refresh token is
+  // now stale because it carries the previous session generation.
+  setAuthCookies(res, updated.id, updated.role, updated.sessionVersion)
   res.json({ ok: true })
 })
 
@@ -274,7 +280,7 @@ router.post('/reset-password', async (req: Request, res: Response) => {
     }),
     prisma.user.update({
       where: { id: matched.userId },
-      data: { passwordHash: newHash, mustChangePassword: false },
+      data: { passwordHash: newHash, mustChangePassword: false, sessionVersion: { increment: 1 } },
     }),
   ])
 

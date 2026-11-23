@@ -47,6 +47,7 @@ export function suggestUsername(name: string, email?: string | null): string {
 export interface JwtPayload {
   sub: string   // userId
   role: Role
+  sv: number    // session generation; compared against User.sessionVersion
 }
 
 export function signAccessToken(payload: JwtPayload): string {
@@ -69,8 +70,8 @@ export function verifyRefreshToken(token: string): JwtPayload {
 
 const IS_PROD = process.env.NODE_ENV === 'production'
 
-export function setAuthCookies(res: Response, userId: string, role: Role): void {
-  const payload: JwtPayload = { sub: userId, role }
+export function setAuthCookies(res: Response, userId: string, role: Role, sessionVersion: number): void {
+  const payload: JwtPayload = { sub: userId, role, sv: sessionVersion }
   const accessToken = signAccessToken(payload)
   const refreshToken = signRefreshToken(payload)
 

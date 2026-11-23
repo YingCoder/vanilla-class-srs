@@ -307,7 +307,7 @@ router.post('/classes/:id/students/:studentId/reset-password', async (req: Reque
   const passwordHash = await hashPassword(tempPassword)
   await prisma.user.update({
     where: { id: enrollment.student.user.id },
-    data: { passwordHash, mustChangePassword: true },
+    data: { passwordHash, mustChangePassword: true, sessionVersion: { increment: 1 } },
   })
   res.json({
     tempPassword,

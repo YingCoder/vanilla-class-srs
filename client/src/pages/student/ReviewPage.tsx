@@ -48,10 +48,10 @@ interface StatsSummary {
 type Phase = 'idle' | 'loading' | 'reviewing' | 'done'
 
 const GRADE_LABELS: Record<number, string> = {
-  1: "I don't know it.",
-  2: 'I almost forgot it.',
-  3: 'I know it.',
-  4: "It's so easy.",
+  1: '不记得',
+  2: '差点忘了',
+  3: '记得',
+  4: '很简单',
 }
 const GRADE_COLORS: Record<number, string> = {
   1: 'var(--color-danger)',
@@ -72,9 +72,9 @@ const SWIPE_DIRECTION: Record<number, { sx: 1 | -1; sy: 1 | -1; intense: boolean
 const CONFETTI_COLORS = ['#E8698A', '#6BAF92', '#5B9BD5', '#D4900A', '#C45C3A']
 
 const ENCOURAGEMENT: Record<'great' | 'good' | 'rough', string[]> = {
-  great: ['Nailed it! 🎯', 'Outstanding work! 🌟', "You're on fire! 🔥", 'Flawless round! 💎', 'Incredible focus! 🧠✨'],
-  good: ['Solid work. 👍', 'Nice progress! 📈', "You're getting there. 🚀", 'Good effort! 💪', 'Steady improvement! 🌱'],
-  rough: ["Keep going — you'll get there. 🌤️", 'Practice makes progress. 📚', 'Every review counts. ✅', "Don't give up — you've got this. 💛", "Tomorrow's a new chance. 🌅"],
+  great: ['太棒了！🎯', '表现出色！🌟', '状态火热！🔥', '完美一轮！💎', '专注力惊人！🧠✨'],
+  good: ['稳步前进。👍', '有进步！📈', '越来越接近了。🚀', '继续加油！💪', '一点点在变好！🌱'],
+  rough: ['别灰心，你可以的。🌤️', '练习就是进步。📚', '每一次复习都算数。✅', '坚持下去，你能行。💛', '明天又是新的一天。🌅'],
 }
 
 function accuracyTier(accuracyRate: number | null): 'great' | 'good' | 'rough' {
@@ -400,17 +400,17 @@ function ReviewSessionPage() {
 
   const focusSelector = summary && (
     <div className="form-group" style={{ marginBottom: 16 }}>
-      <label className="form-label" htmlFor="study-focus">Study Focus</label>
+      <label className="form-label" htmlFor="study-focus">学习范围</label>
       <select id="study-focus" className="form-select" value={selectedFocus} onChange={(e) => setSelectedFocus(e.target.value)}>
-        <option value="">All CardSets</option>
+        <option value="">全部词集</option>
         {summary.personalCardSet && (
           <option value={summary.personalCardSet.id}>
-            Cards I added ({summary.personalCardSet.cardCount})
+            我添加的词（{summary.personalCardSet.cardCount}）
           </option>
         )}
         {summary.weeklyGoal?.cardSetFocus?.mode === 'assigned' && (
           <option value="__homework__">
-            Homework: {summary.weeklyGoal.cardSetFocus.cardSetNames.join(', ')}
+            作业：{summary.weeklyGoal.cardSetFocus.cardSetNames.join('、')}
           </option>
         )}
         {summary.deckCardSets.map((cs) => (
@@ -423,17 +423,16 @@ function ReviewSessionPage() {
   return (
     <div style={{ maxWidth: 600, margin: '0 auto' }}>
       {showGradeInfo && (
-        <Modal title="How grading works" onClose={() => setShowGradeInfo(false)}>
+        <Modal title="评分说明" onClose={() => setShowGradeInfo(false)}>
           <p style={{ marginBottom: 12 }}>
-            As you review your own vocabulary, your answer here is feedback to the app — it decides when
-            you'll see this word again. Answering honestly (even when you don't know a word) helps you
-            learn faster, since the app can focus your time on the words you actually need to practice.
+            复习时你的选择会告诉系统你对这个词的熟悉程度，系统据此决定下次什么时候再让你看到它。
+            如实选择（即使不认识）反而学得更快，因为系统能把时间集中在你真正需要练的词上。
           </p>
           <ul style={{ paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 8 }}>
-            <li><strong>I don't know it.</strong> — You'll see this word again very soon, often later in this same session.</li>
-            <li><strong>I almost forgot it.</strong> — You'll see it again sooner than usual, since it's still shaky.</li>
-            <li><strong>I know it.</strong> — You'll see it again after a normal, gradually increasing gap.</li>
-            <li><strong>It's so easy.</strong> — You'll see it again after an even longer gap, since you've clearly got it.</li>
+            <li><strong>不记得</strong> —— 很快会再次出现，通常就在本轮里。</li>
+            <li><strong>差点忘了</strong> —— 会比平常更早出现，因为还不稳固。</li>
+            <li><strong>记得</strong> —— 按正常间隔出现，间隔会逐渐拉长。</li>
+            <li><strong>很简单</strong> —— 间隔会更长，因为你已经掌握了。</li>
           </ul>
         </Modal>
       )}
@@ -442,12 +441,12 @@ function ReviewSessionPage() {
       {phase === 'idle' && (
         <div style={{ textAlign: 'center', padding: '48px 16px' }}>
           <img src="/Vanilla-deck.png" alt="" style={{ width: 96, height: 96, objectFit: 'contain', marginBottom: 16 }} />
-          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, marginBottom: 12 }}>Study Session</h1>
+          <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, marginBottom: 12 }}>今日学习</h1>
           <p style={{ color: 'var(--color-text-muted)', marginBottom: 32, fontSize: 'var(--text-base)' }}>
-            Class: <strong>{active.className}</strong>
+            班级：<strong>{active.className}</strong>
           </p>
           {error && <div className="alert alert-danger" style={{ marginBottom: 16 }}>{error}</div>}
-          <button className="btn btn-primary btn-lg" onClick={() => startSession()}>Start Reviewing</button>
+          <button className="btn btn-primary btn-lg" onClick={() => startSession()}>开始复习</button>
 
           <div style={{ maxWidth: 320, margin: '24px auto 0', textAlign: 'left' }}>
             {focusSelector}
@@ -457,18 +456,17 @@ function ReviewSessionPage() {
                 <p style={{ fontSize: 'var(--text-base)', textAlign: 'center' }}>
                   <strong>
                     {summary.weeklyGoal.sessionsCompleted >= summary.weeklyGoal.sessionsRequired ? '🎉 ' : ''}
-                    {summary.weeklyGoal.sessionsCompleted} of {summary.weeklyGoal.sessionsRequired} session
-                    {summary.weeklyGoal.sessionsRequired !== 1 ? 's' : ''} done this week
+                    本周已完成 {summary.weeklyGoal.sessionsCompleted} / {summary.weeklyGoal.sessionsRequired} 次作业
                   </strong>
-                  {' — at least '}{summary.weeklyGoal.minCardsPerSession} reviews each.
+                  {'，每次至少 '}{summary.weeklyGoal.minCardsPerSession} 张卡。
                 </p>
                 <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', textAlign: 'center', marginTop: 8 }}>
-                  Each homework session includes at least {Math.max(10, summary.weeklyGoal.minCardsPerSession)} reviews.
-                  {' '}If fewer cards are ready, we’ll add upcoming reviews within your study focus.
-                  {' '}If there aren’t enough different cards, some will repeat.
+                  每次作业至少 {Math.max(10, summary.weeklyGoal.minCardsPerSession)} 次复习。
+                  {' '}如果到期的卡不够，会在学习范围内补充即将到期的词；
+                  {' '}如果不同的卡不够，会有词重复出现。
                 </p>
                 <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', textAlign: 'center', marginTop: 8 }}>
-                  Complete your homework sessions on different days, at least 12 hours apart.
+                  作业请分不同天完成，间隔至少 12 小时。
                 </p>
               </>
             )}
@@ -481,22 +479,21 @@ function ReviewSessionPage() {
 
       {/* Nothing to study right now — offer the right next step instead of a dead end */}
       {phase === 'idle' && emptyReason && (
-        <Modal title={emptyReason === 'capped' ? "You're all caught up!" : 'No cards yet'} onClose={() => setEmptyReason(null)}>
+        <Modal title={emptyReason === 'capped' ? '今天的任务已完成' : '还没有单词'} onClose={() => setEmptyReason(null)}>
           {emptyReason === 'capped' ? (
             <p style={{ marginBottom: 16 }}>
-              You're all caught up on reviews, and you've reached today's new-word limit. Want to study
-              more anyway?
+              到期的复习都完成了，今天的新词也已达到上限。还想多学几个吗？
             </p>
           ) : (
             <p style={{ marginBottom: 16 }}>
-              There are no cards in this study focus. Choose another focus or add cards to this one.
+              当前学习范围里没有单词。换个范围，或先添加一些单词。
             </p>
           )}
           <div className="modal-footer">
-            <button className="btn btn-secondary" onClick={() => setEmptyReason(null)}>{emptyReason === 'capped' ? 'Maybe Later' : 'Close'}</button>
+            <button className="btn btn-secondary" onClick={() => setEmptyReason(null)}>{emptyReason === 'capped' ? '稍后再说' : '关闭'}</button>
             {emptyReason === 'capped' ? (
               <button className="btn btn-primary" onClick={() => startSession({ bypassNewCardCap: true })}>
-                Study More New Words
+                再学几个新词
               </button>
             ) : null}
           </div>
@@ -511,12 +508,12 @@ function ReviewSessionPage() {
             <span>{cardIndex + 1} / {session!.cards.length}</span>
             {finishPending ? null : confirmFinish ? (
               <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-                <span style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text)' }}>End session?</span>
-                <button className="btn btn-danger btn-sm" disabled={grading} onClick={async () => { await finishSession(session!.sessionId); setConfirmFinish(false) }}>End</button>
-                <button className="btn btn-secondary btn-sm" disabled={grading} onClick={() => setConfirmFinish(false)}>Cancel</button>
+                <span style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text)' }}>结束本轮？</span>
+                <button className="btn btn-danger btn-sm" disabled={grading} onClick={async () => { await finishSession(session!.sessionId); setConfirmFinish(false) }}>结束</button>
+                <button className="btn btn-secondary btn-sm" disabled={grading} onClick={() => setConfirmFinish(false)}>取消</button>
               </div>
             ) : (
-              <button className="btn btn-secondary btn-sm" onClick={handleFinishEarly}>Finish Early</button>
+              <button className="btn btn-secondary btn-sm" onClick={handleFinishEarly}>提前结束</button>
             )}
           </div>
           <div className="progress-bar" style={{ marginBottom: 24 }}>
@@ -539,14 +536,14 @@ function ReviewSessionPage() {
                 }}
               >
                 <p style={{ fontSize: 'var(--text-base)' }}>
-                  You finished all your cards, but we couldn't save your results — check your connection and try again.
+                  所有单词都复习完了，但结果没有保存成功——请检查网络后重试。
                 </p>
                 <button
                   className="btn btn-primary"
                   disabled={finishing}
                   onClick={() => finishSession(finishPending.sessionId, finishPending.reviewed)}
                 >
-                  {finishing ? 'Retrying…' : 'Try Again'}
+                  {finishing ? '正在重试…' : '重试'}
                 </button>
               </div>
             </div>
@@ -660,7 +657,7 @@ function ReviewSessionPage() {
                 >
                   {sessionResult.cardsReviewed}
                 </span>
-                <div className="review-big-stat-label">Cards Reviewed</div>
+                <div className="review-big-stat-label">本轮复习</div>
               </div>
               <div>
                 <span
@@ -670,7 +667,7 @@ function ReviewSessionPage() {
                 >
                   {sessionResult.accuracyRate !== null ? `${Math.round(sessionResult.accuracyRate * 100)}%` : '—'}
                 </span>
-                <div className="review-big-stat-label">Accuracy</div>
+                <div className="review-big-stat-label">首答正确率</div>
               </div>
             </div>
           )}
@@ -678,12 +675,12 @@ function ReviewSessionPage() {
             <div style={{ marginTop: 8, position: 'relative', zIndex: 2, textAlign: 'center' }}>
               {sessionResult.newPersonalBestDay && (
                 <p style={{ fontSize: 'var(--text-base)', fontWeight: 700 }}>
-                  🏆 New personal best — {sessionResult.todayCardsTotal} cards in one day!
+                  🏆 新纪录 —— 今天已完成 {sessionResult.todayCardsTotal} 张卡！
                 </p>
               )}
               {sessionResult.currentStreak >= 2 && (
                 <p style={{ fontSize: 'var(--text-base)', fontWeight: 700 }}>
-                  🔥 {sessionResult.currentStreak}-day streak!
+                  🔥 连续学习 {sessionResult.currentStreak} 天！
                 </p>
               )}
             </div>
@@ -700,12 +697,12 @@ function ReviewSessionPage() {
             <div style={{ marginTop: 8, position: 'relative', zIndex: 2 }}>
               <p style={{ fontSize: 'var(--text-base)', textAlign: 'center' }}>
                 {sessionResult.weeklyGoal.sessionsCompleted >= sessionResult.weeklyGoal.sessionsRequired
-                  ? <>🎉 Homework done for this week — {sessionResult.weeklyGoal.sessionsCompleted}/{sessionResult.weeklyGoal.sessionsRequired} sessions.</>
-                  : <>{sessionResult.weeklyGoal.sessionsCompleted} of {sessionResult.weeklyGoal.sessionsRequired} sessions done this week.</>}
+                  ? <>🎉 本周作业已完成 —— {sessionResult.weeklyGoal.sessionsCompleted}/{sessionResult.weeklyGoal.sessionsRequired} 次。</>
+                  : <>本周已完成 {sessionResult.weeklyGoal.sessionsCompleted} / {sessionResult.weeklyGoal.sessionsRequired} 次作业。</>}
               </p>
               {sessionResult.weeklyGoal.justFinishedSessionCounted === false && (
                 <p style={{ fontSize: 'var(--text-sm)', color: 'var(--color-text-muted)', textAlign: 'center', marginTop: 4 }}>
-                  (You need to space your reviews out more for them to count for the assignment. Best to wait about 24 hours.)
+                  （复习间隔太近，这次不计入作业。最好间隔约 24 小时。）
                 </p>
               )}
             </div>
@@ -716,11 +713,11 @@ function ReviewSessionPage() {
           <div style={{ display: 'flex', gap: 12, justifyContent: 'center', flexWrap: 'wrap', marginTop: 16, position: 'relative', zIndex: 2 }}>
             {weakCards.length > 0 && (
               <button className="btn btn-primary" onClick={keepStudying}>
-                Keep Studying ({weakCards.length} weak {weakCards.length === 1 ? 'card' : 'cards'})
+                继续复习薄弱词（{weakCards.length}）
               </button>
             )}
-            <button className="btn btn-secondary" onClick={() => startSession()}>Keep Reviewing</button>
-            <button className="btn btn-secondary" onClick={() => navigate('/student/stats')}>View Stats</button>
+            <button className="btn btn-secondary" onClick={() => startSession()}>继续复习</button>
+            <button className="btn btn-secondary" onClick={() => navigate('/student/stats')}>查看统计</button>
           </div>
         </div>
       )}

@@ -13,7 +13,7 @@ const prisma = vi.hoisted(() => ({
 vi.mock('../lib/prisma', () => ({ default: prisma }))
 vi.mock('../middleware/auth', () => ({
   requireAuth: (req: Request, _res: Response, next: NextFunction) => {
-    req.user = { sub: 'user1', role: 'TEACHER' }; next()
+    req.user = { sub: 'user1', role: 'TEACHER', sv: 0 }; next()
   },
   requireTeacher: (_req: Request, _res: Response, next: NextFunction) => next(),
   requireAdmin: (_req: Request, _res: Response, next: NextFunction) => next(),

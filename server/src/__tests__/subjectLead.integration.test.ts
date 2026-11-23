@@ -222,7 +222,7 @@ describe.runIf(!!dbUrl)('SL workflows with PostgreSQL and authenticated routes',
     const address = server.address()
     base = `http://127.0.0.1:${typeof address === 'object' && address ? address.port : 0}`
     const cookie = (sub: string, role: 'ADMIN' | 'TEACHER' | 'STUDENT') =>
-      `access_token=${signAccessToken({ sub, role })}`
+      `access_token=${signAccessToken({ sub, role, sv: 0 })}`
     leadCookie = cookie(ids.leadUser, 'TEACHER')
     adminCookie = cookie(ids.admin, 'ADMIN')
     ownerCookie = cookie(ids.ownerUser, 'TEACHER')

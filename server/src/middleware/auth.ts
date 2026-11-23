@@ -16,19 +16,35 @@ declare global {
  * requireAuth — verifies the access_token cookie and attaches user to req.
  * Returns 401 if the token is missing or invalid.
  */
-export function requireAuth(req: Request, res: Response, next: NextFunction): void {
+export async function requireAuth(req: Request, res: Response, next: NextFunction): Promise<void> {
   const token = req.cookies?.access_token as string | undefined
   if (!token) {
     res.status(401).json({ error: 'Unauthorized' })
     return
   }
 
+  let payload: JwtPayload
   try {
-    req.user = verifyAccessToken(token)
-    next()
+    payload = verifyAccessToken(token)
   } catch {
     res.status(401).json({ error: 'Unauthorized' })
+    return
   }
+
+  // Enforce the session generation on every request, not just at refresh time:
+  // a password reset must immediately invalidate existing access tokens too.
+  // This is one indexed lookup; correctness beats saving it here.
+  const user = await prisma.user.findUnique({
+    where: { id: payload.sub },
+    select: { sessionVersion: true },
+  })
+  if (!user || payload.sv !== user.sessionVersion) {
+    res.status(401).json({ error: 'Unauthorized' })
+    return
+  }
+
+  req.user = payload
+  next()
 }
 
 /**

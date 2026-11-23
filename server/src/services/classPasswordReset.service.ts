@@ -31,7 +31,7 @@ export async function resetAllClassPasswords(
       const passwordHash = await hashPassword(tempPassword)
       await prisma.user.update({
         where: { id: e.student.user.id },
-        data: { passwordHash, mustChangePassword: true },
+        data: { passwordHash, mustChangePassword: true, sessionVersion: { increment: 1 } },
       })
       return {
         studentName: e.student.user.name,

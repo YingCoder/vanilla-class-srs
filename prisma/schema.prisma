@@ -64,6 +64,10 @@ model User {
   // rather than just "last time they typed a password." Null = never logged in.
   lastLoginAt        DateTime?
 
+  // Monotonic session generation. Bumped on password change/reset so every
+  // refresh token issued before the change stops working immediately.
+  sessionVersion     Int       @default(0)
+
   teacherProfile Teacher?
   studentProfile Student?
 
