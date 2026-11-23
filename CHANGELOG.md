@@ -5,6 +5,7 @@
 ## [Unreleased]
 
 ### 新增
+- 每日任务与关卡服务端闭环：`DailyStudyTask`/`DailyTaskWord`/`LevelSession`/`LevelQuestion`/`LevelAnswer` 五表与迁移 `20261123050000_daily_study_tasks`；按上海学习日取建任务并冻结词快照；L1/L2/L3/L5/Boss/复习关卡服务端固定出题、答案不下发；每题 3 次尝试与揭晓、拼写两级提示、选择题排除提示；`(sessionId, submissionId)` 幂等答题；70%/80% 通关与首答 90%/100% 星级；通关时每词一次性 FSRS 调度；`word_learned`/`review_ok`/`boss_clear`/`daily_done` 奖励幂等结算。
 - 用户名登录：`User.username`（唯一、可空），`User.email` 改为可空；登录接受用户名或邮箱。
 - 无邮箱学生：教师/管理员可只填用户名创建账号，CSV 模板为 `name,username,email`。
 - 学生名单/账号卡展示登录名；一次性临时密码打印条包含登录名。

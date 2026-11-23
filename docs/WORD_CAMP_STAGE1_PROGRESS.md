@@ -222,12 +222,25 @@
 - 单测覆盖：包含正确项、去重、确定性、极小 deck 补齐；Docker 实测选项 `颜色 | 味道 | 形状 | 大小`，选择“颜色”返回 `correct:true` 并正常调度。
 - 至此 MVP 要求的“认词 + 拼写”两种独立客观题型均有服务端判分；尚未做选择题提示排除、键盘 1–4 快捷选择与重复提交幂等。
 
-## 13. 未完成（阶段 1 剩余）
+## 13. 每日任务与关卡服务端闭环（2026-11-23）
 
+- 新增 `DailyStudyTask` / `DailyTaskWord` / `LevelSession` / `LevelQuestion` / `LevelAnswer`（迁移 `20261123050000_daily_study_tasks`），任务与题目在创建时冻结快照，词卡后续编辑不影响当日任务。
+- `GET /api/students/task/today?enrollmentId=` 按 Asia/Shanghai 学习日取建任务：新词按词集优先级 + 入队时间，复习词按到期时间；`(enrollmentId, studyDate)` 唯一约束保证并发下只建一次。
+- 关卡 L1/L2/L3/L5/BOSS/REVIEW：`POST /levels/start` 服务端固定题目与选项（FNV-1a 种子），`correctAnswer`/`acceptedAnswers` 不下发；L1 为纯预览词表，L4 显式返回 409（听音等价降级留待后续）。
+- 答题 `POST /levels/:id/answer`：每题最多 3 次尝试，第 3 次失败揭晓答案；拼写判分复用变体 + 1 字符“很接近”；`(sessionId, submissionId)` 唯一约束幂等，重复提交返回 `replayed:true` 原结果。
+- 提示 `POST /levels/:id/hint`：拼写两级揭示（首字母 → 半词），选择题确定性排除一个错误项；提示计入 `hintLevel`，首答带提示不再计入 first-try。
+- 结算 `POST /levels/:id/complete`：基础关 70%、Boss 80% 通关，首答 90%/100% 对应 2/3 星；通关时 L5（缺省时 L3）与 REVIEW 每词只调度一次 FSRS（`DailyTaskWord.scheduledAt` 条件更新兜底），评分由 `rateAnswerAttempt` 映射（首对 Good / 提示或重试后对 Hard / 揭晓 Again）。
+- 奖励：L2/L3 首次独立答对记 `word_learned`、复习首次独立答对记 `review_ok`、Boss 通关 `boss_clear`、任务全清 `daily_done:{studyDate}`，统一走 `settleRewardsForUser` 幂等入账；重复调用 `complete` 不重复发奖。
+- 验证：`npm run test -w server` 375 passed / 12 skipped（新增 34 项）；shared/server/client 三包构建通过。
+- 未做：学生端任务/关卡 UI、教师任务完成看板、L4 真实音频、错词重练、教师自定义任务配置。
+
+## 14. 未完成（阶段 1 剩余）
+
+- 每日任务/关卡的**学生 UI** 与教师“今日任务完成/未完成”看板（服务端闭环已完成，见 §13）；星级展示、错词重练（`weakWords` 已由 complete 接口返回）。
+- L4 听音题三层降级（预生成音频 → 浏览器 TTS → 等价 L2/L3），当前接口显式 409。
 - 全站中文界面：目前登录页、新增学生表单、学生“我的成长”已中文，教师/管理员其余页面仍为英文。
 - 权限收紧：学科组长跨班只读与规格 §12 的冲突仍待产品决策；尚未实现完整资源级权限测试矩阵。
 - 单词表导入的剩余字段：音标与音频生成/降级尚未实现。
-- 每日任务定义、关卡（L1–L5/Boss）、星级与错词重练尚未实现；奖励账本与等级、今日学习名单已完成。
 - 学生移动端首页/单手操作规范尚未系统化验收；断点续学已有后端与复习页，但未做真机切后台验收。
 - 依赖大版本升级：`nodemailer` 10、`zod` 4、`react-router-dom` 7、`csv-parse` 7；当前生产审计仍有 6 个（0 critical）。
 - `subjectLead.integration.test.ts` 默认因缺少 `SL_TEST_DATABASE_URL` 跳过 12 项；已在干净 `sl_fresh` 跑通 12/12，但还没有 CI 自动执行。
