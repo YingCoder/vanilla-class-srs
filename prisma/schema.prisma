@@ -192,6 +192,7 @@ model Enrollment {
   // rosters and stats everywhere; review history and the deck are left intact
   // (reversible, unlike a hard delete).
   archivedAt      DateTime?
+  dailyTasks      DailyStudyTask[]
 
   @@unique([studentId, classId])
 }
@@ -429,4 +430,145 @@ model RewardEvent {
 
   @@unique([userId, eventKey, rewardType])
   @@index([userId, studyDate])
+}
+
+// ─────────────────────────────────────────────
+// Daily study tasks & levels (Word Camp §4.1)
+// ─────────────────────────────────────────────
+
+enum DailyTaskStatus {
+  ACTIVE
+  COMPLETED
+  EXPIRED
+}
+
+enum DailyTaskWordKind {
+  NEW
+  REVIEW
+}
+
+enum StudyLevel {
+  L1
+  L2
+  L3
+  L5
+  BOSS
+  REVIEW
+}
+
+enum LevelSessionState {
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum LevelQuestionType {
+  L2
+  L3
+  L5
+}
+
+model DailyStudyTask {
+  id            String          @id @default(uuid())
+  enrollmentId  String
+  enrollment    Enrollment      @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
+  studyDate     String          // Asia/Shanghai YYYY-MM-DD
+  status        DailyTaskStatus @default(ACTIVE)
+  version       Int             @default(1)
+  newWordTarget Int
+  reviewTarget  Int
+  config        Json
+  createdAt     DateTime        @default(now())
+  completedAt   DateTime?
+  words         DailyTaskWord[]
+  sessions      LevelSession[]
+
+  @@unique([enrollmentId, studyDate])
+  @@index([enrollmentId, status])
+}
+
+model DailyTaskWord {
+  id                 String            @id @default(uuid())
+  taskId             String
+  task               DailyStudyTask    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  cardInstanceId     String
+  cardId             String
+  kind               DailyTaskWordKind
+  sortOrder          Int
+  word               String
+  pos                String?
+  definitionL2       String?
+  definitionL1       String?
+  variants           String[]          @default([])
+  exampleSentence    String?
+  scheduledAt        DateTime?
+  scheduledRating    Int?
+  scheduledSessionId String?
+  questions          LevelQuestion[]
+
+  @@unique([taskId, cardInstanceId])
+  @@index([taskId, kind, sortOrder])
+}
+
+model LevelSession {
+  id                String            @id @default(uuid())
+  taskId            String
+  task              DailyStudyTask    @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  level             StudyLevel
+  attemptNo         Int               @default(1)
+  state             LevelSessionState @default(IN_PROGRESS)
+  sessionVersion    Int               @default(0)
+  questionCount     Int               @default(0)
+  firstTryCorrect   Int               @default(0)
+  eventuallyCorrect Int               @default(0)
+  stars             Int               @default(0)
+  cleared           Boolean?
+  startedAt         DateTime          @default(now())
+  endedAt           DateTime?
+  questions         LevelQuestion[]
+  answers           LevelAnswer[]
+
+  @@unique([taskId, level, attemptNo])
+  @@index([taskId, level])
+}
+
+model LevelQuestion {
+  id                String            @id @default(uuid())
+  sessionId         String
+  session           LevelSession      @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  taskWordId        String
+  taskWord          DailyTaskWord     @relation(fields: [taskWordId], references: [id], onDelete: Cascade)
+  questionType      LevelQuestionType
+  prompt            String
+  pos               String?
+  options           Json?
+  correctAnswer     String // server-only, never serialized before reveal
+  acceptedAnswers   String[]          @default([])
+  sortOrder         Int
+  attemptsUsed      Int               @default(0)
+  hintLevel         Int               @default(0)
+  firstTryCorrect   Boolean           @default(false)
+  eventuallyCorrect Boolean           @default(false)
+  answerRevealed    Boolean           @default(false)
+  answeredAt        DateTime?
+  answers           LevelAnswer[]
+
+  @@index([sessionId, sortOrder])
+}
+
+model LevelAnswer {
+  id           String        @id @default(uuid())
+  sessionId    String
+  session      LevelSession  @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  questionId   String
+  question     LevelQuestion @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  submissionId String
+  answer       String
+  correct      Boolean
+  attemptNo    Int
+  hintLevel    Int
+  responseMs   Int?
+  submittedAt  DateTime      @default(now())
+
+  @@unique([sessionId, submissionId])
+  @@index([sessionId, questionId])
 }
