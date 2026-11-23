@@ -22,6 +22,15 @@ A free, open-source, self-hostable spaced repetition system for classroom vocabu
 
 ---
 
+## Development handoff
+
+If you are continuing this project (especially with another model/engineer), read
+[`docs/WORD_CAMP_HANDOFF.md`](docs/WORD_CAMP_HANDOFF.md) first: it lists the
+current branch, verified capabilities, test baselines, known traps, and the
+prioritized next milestones.
+
+---
+
 ## Quick Start
 
 ### Prerequisites
