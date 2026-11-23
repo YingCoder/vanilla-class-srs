@@ -67,6 +67,11 @@ docker compose up -d --build
 The `migrate` service re-runs automatically on every start and applies new migrations
 before the API comes up.
 
+> **Upgrading from 0.1.x:** the username/login and session-revocation migrations add
+> `User.sessionVersion`; tokens issued before the upgrade do not carry it, so every
+> signed-in user is asked to log in once after the deploy. Take a database backup
+> before the first start, then confirm `GET /api/health` and one login.
+
 ---
 
 ## Environment Variables
