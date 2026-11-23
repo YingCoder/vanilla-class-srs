@@ -36,9 +36,9 @@ docker compose -p wordcamp ps
 
 教师/管理员已能建班、建词集、导入词表、分配任务、重置密码、查看今日学习名单；学生已能用用户名登录、改密、断点续学、做认词四选一和服务端判分的拼写题、获得一次性奖励与复习计划。
 
-**每日任务/关卡服务端闭环已完成**（任务快照、L1/L2/L3/L5/Boss/复习、幂等答题、重试提示、星级、一次性 FSRS 调度、每日奖励，迁移 `20261123050000_daily_study_tasks`），但**还没有学生 UI 与教师看板**。
+**每日任务/关卡学生闭环已完成**：`/student/task` 今日任务主页 + `/student/levels/:id` 关卡页（L1 预览/L2/L3 选择/L5 拼写/Boss/复习，提示/重试/揭晓/星级/弱词/奖励，L4 显示“等价练习”跳转认词）；服务端闭环见 `docs/WORD_CAMP_STAGE1_PROGRESS.md` §13。
 
-**尚未完成**：任务/关卡学生端界面与教师“今日任务完成”看板、听音题（L4 接口显式 409）、错词重练、完整学情报表、真机/微信验收。
+**尚未完成**：教师/管理员“今日任务完成”看板、听音题（L4 接口显式 409，UI 走等价练习）、错词重练入口、教师自定义任务配置、完整学情报表、真机/微信验收。
 
 当前应用运行在：
 
@@ -184,13 +184,15 @@ docker run --rm --network wordcamp_default `
 | 学生今日进度 | `todayProgress.service.ts`、`ReviewPage.tsx` | 单测 + Docker 返回今日新词/复习/到期/XP |
 | 认词四选一 | `choice.service.ts`、`ChoicePage.tsx` | 选项唯一/确定性单测；Docker 选项 `颜色\|味道\|形状\|大小` |
 | 拼写题 | `spelling.service.ts`、`SpellingPage.tsx` | 变体/大小写/空格/1 字符差单测；Docker `colour` 命中 variant，+5 XP |
+| 每日任务/关卡服务端 | `dailyTask.service.ts`、`levelSession.service.ts`、`levelAttempt.service.ts`、`studentTask.ts` | 375 项单测；幂等/调度/奖励 Docker 端到端 |
+| 每日任务/关卡学生 UI | `client/src/pages/student/TaskPage.tsx`、`LevelSessionPage.tsx` | 浏览器真实流程：REVIEW 9/9 通关、+35 XP、9 词调度、任务完成横幅 |
 
 ### 5.1 当前测试基线
 
 | 项目 | 结果 |
 | --- | --- |
-| `npm run test -w server` | **375 passed / 12 skipped**（37 个文件通过，1 个集成套件默认跳过） |
-| 干净库权限集成 | 单独跑 `sl_fresh`：**12 passed**（合计 387 项） |
+| `npm run test -w server` | **377 passed / 12 skipped**（38 个文件通过，1 个集成套件默认跳过） |
+| 干净库权限集成 | 单独跑 `sl_fresh`：**12 passed**（合计 389 项） |
 | 三包构建 | shared / server / client 通过（最近一次） |
 | 迁移 | 干净库 `task_fresh` 应用 15 个通过 |
 | 生产依赖审计 | **6 个：0 critical / 2 high / 4 moderate** |
@@ -268,14 +270,13 @@ git diff --check
 
 ## 8. 当前未完成与优先级
 
-### P0：每日任务/关卡的**学生 UI 与教师看板**（服务端闭环已完成）
+### P0：教师/管理员“今日任务完成”看板
 
-服务端闭环已交付（见 §5 与 `docs/WORD_CAMP_STAGE1_PROGRESS.md` §13）：任务快照、L1/L2/L3/L5/Boss/复习关卡、幂等答题、重试/提示、星级、一次性 FSRS 调度、`daily_done` 奖励。剩余缺口：
+学生端闭环已交付（`/student/task` + `/student/levels/:id`，见 §5 与 `docs/WORD_CAMP_STAGE1_PROGRESS.md` §13/§14）。剩余缺口：
 
-1. **学生端任务页**：`GET /api/students/task/today` 驱动的主页；六个关卡入口（L4 显示“等价练习”）；关卡内作答/重试/提示/揭晓/星级结算页；`weakWords` 弱词展示。
-2. **教师/管理员看板**：把“今日未学习”升级为“今日任务完成/未完成”（区分按时/逾期），教师端与管理端同步（parity）。
-3. 错词重练入口（complete 接口已返回 `weakWords`）。
-4. 教师自定义任务配置（每日新词数、关卡组合），当前写死 `DEFAULT_DAILY_TASK_CONFIG`。
+1. **教师/管理员看板**：把“今日未学习”升级为“今日任务完成/未完成”（区分按时/逾期），教师端与管理端同步（parity）。
+2. 错词重练入口（complete 接口已返回 `weakWords`）。
+3. 教师自定义任务配置（每日新词数、关卡组合），当前写死 `DEFAULT_DAILY_TASK_CONFIG`。
 
 ### P1：质量与合规
 
@@ -335,6 +336,8 @@ git diff --check
 | 文件 | 作用 |
 | --- | --- |
 | `client/src/pages/student/ReviewPage.tsx` | 复习主流程、自评、断点续学、今日进度 |
+| `client/src/pages/student/TaskPage.tsx` | 今日任务主页（六个关卡入口、星级/状态、完成横幅） |
+| `client/src/pages/student/LevelSessionPage.tsx` | 关卡作答页（L1 预览/L2/L3 选择/L5 拼写、提示/重试/揭晓/结算） |
 | `client/src/pages/student/SpellingPage.tsx` | 拼写练习 |
 | `client/src/pages/student/ChoicePage.tsx` | 认词四选一 |
 | `client/src/pages/student/RewardsPage.tsx` | 成长/等级/流水 |
@@ -357,7 +360,7 @@ git diff --check
 接手后先确认：
 
 - [ ] `git status` 干净，分支 `develop/word-camp-v0.1`。
-- [ ] `npm run test -w server` 为 `341 passed / 12 skipped`（或更新后的等价基线）。
+- [ ] `npm run test -w server` 为 `377 passed / 12 skipped`（或更新后的等价基线）。
 - [ ] 三包构建通过。
 - [ ] `docker compose -p wordcamp ps` 三服务正常；`/api/health` 为 ok。
 - [ ] 能说清“今日名单/今日进度”不是每日任务完成。

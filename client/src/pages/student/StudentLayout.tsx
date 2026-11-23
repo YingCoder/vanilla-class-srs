@@ -4,6 +4,7 @@ import { useEnrollment } from '../../utils/enrollment'
 import AppShell from '../../components/AppShell'
 
 const navItems = [
+  { to: '/student/task', label: '今日任务' },
   { to: '/student/review', label: '学习' },
   { to: '/student/deck', label: '我的词库' },
   { to: '/student/cardsets', label: '班级词集' },

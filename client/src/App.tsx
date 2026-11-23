@@ -46,6 +46,8 @@ import ChoicePage from './pages/student/ChoicePage'
 import StudentStatsPage from './pages/student/StatsPage'
 import RewardsPage from './pages/student/RewardsPage'
 import ClassCardSetsPage from './pages/student/ClassCardSetsPage'
+import TaskPage from './pages/student/TaskPage'
+import LevelSessionPage from './pages/student/LevelSessionPage'
 
 function RequireAuth({ children, role }: { children: JSX.Element; role?: string }) {
   const { user, loading } = useAuth()
@@ -123,6 +125,8 @@ export default function App() {
             {/* Student */}
             <Route path="/student" element={<RequireAuth role="STUDENT"><StudentLayout /></RequireAuth>}>
               <Route index element={<EnrollmentPickerPage />} />
+              <Route path="task" element={<TaskPage />} />
+              <Route path="levels/:id" element={<LevelSessionPage />} />
               <Route path="deck" element={<StudentDeckPage />} />
               <Route path="review" element={<ReviewPage />} />
               <Route path="spelling" element={<SpellingPage />} />

@@ -183,12 +183,25 @@ export async function startLevel(
   if (!task || task.enrollment.studentId !== studentId) {
     return { error: 'Task not found', status: 404 }
   }
-  if (task.status !== 'ACTIVE') return { error: 'Task is not active', status: 409 }
+
+  const latest = task.sessions.find((session) => session.level === level) ?? null
+
+  // Read-only path: a completed task still lets the student look back at a
+  // cleared level (the completion summary links here).
+  if (task.status !== 'ACTIVE') {
+    if (latest?.state === 'COMPLETED' && latest.cleared) {
+      const loaded = await prisma.levelSession.findUnique({
+        where: { id: latest.id },
+        include: sessionInclude,
+      })
+      return viewOf(loaded, true)
+    }
+    return { error: 'Task is not active', status: 409 }
+  }
 
   const words = task.words.filter((word) => word.kind === (level === 'REVIEW' ? 'REVIEW' : 'NEW'))
   if (words.length === 0) return { error: 'No words for this level', status: 409 }
 
-  const latest = task.sessions.find((session) => session.level === level) ?? null
   if (latest?.state === 'IN_PROGRESS') {
     const loaded = await prisma.levelSession.findUnique({
       where: { id: latest.id },

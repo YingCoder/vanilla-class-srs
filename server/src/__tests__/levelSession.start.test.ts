@@ -147,4 +147,47 @@ describe('startLevel', () => {
     const view = await startLevel(prisma, 'student-1', 'task-1', 'L5')
     expect(view).toEqual({ error: 'Task not found', status: 404 })
   })
+
+  it('serves a cleared level read-only on a completed task', async () => {
+    const prisma = makePrisma()
+    const task = await prisma.dailyStudyTask.findUnique()
+    const clearedSession = {
+      id: 'done-session',
+      taskId: 'task-1',
+      level: 'L2',
+      attemptNo: 1,
+      state: 'COMPLETED',
+      sessionVersion: 5,
+      questionCount: 4,
+      stars: 2,
+      cleared: true,
+      endedAt: new Date('2026-11-23T03:00:00Z'),
+      questions: [],
+      task,
+    }
+    prisma.dailyStudyTask.findUnique.mockResolvedValue({
+      ...task,
+      status: 'COMPLETED',
+      sessions: [clearedSession],
+    })
+    prisma.levelSession.findUnique = vi.fn().mockResolvedValue(clearedSession)
+
+    const view = await startLevel(prisma, 'student-1', 'task-1', 'L2')
+    if ('error' in view) throw new Error(view.error)
+    expect(view.alreadyCleared).toBe(true)
+    expect(view.stars).toBe(2)
+    expect(prisma.levelSession.create).not.toHaveBeenCalled()
+  })
+
+  it('rejects a never-started level on a completed task', async () => {
+    const prisma = makePrisma()
+    const task = await prisma.dailyStudyTask.findUnique()
+    prisma.dailyStudyTask.findUnique.mockResolvedValue({
+      ...task,
+      status: 'COMPLETED',
+      sessions: [],
+    })
+    const view = await startLevel(prisma, 'student-1', 'task-1', 'L2')
+    expect(view).toMatchObject({ status: 409 })
+  })
 })

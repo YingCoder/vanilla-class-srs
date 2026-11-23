@@ -28,7 +28,7 @@ export default function EnrollmentPickerPage() {
       className: enr.class.name,
       subjectGradeName: enr.class.subjectGrade.name,
     })
-    navigate('/student/review')
+    navigate('/student/task')
   }
 
   useEffect(() => {
