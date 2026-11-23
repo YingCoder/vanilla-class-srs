@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useRef, CSSProperties } from 'react'
-import { useNavigate, useLocation } from 'react-router-dom'
+import { useNavigate, useLocation, Link } from 'react-router-dom'
 import { api, ApiError } from '../../utils/api'
 import { useEnrollment } from '../../utils/enrollment'
 import { useApi } from '../../hooks/useApi'
@@ -487,6 +487,9 @@ function ReviewSessionPage() {
           )}
           {error && <div className="alert alert-danger" style={{ marginBottom: 16 }}>{error}</div>}
           <button className="btn btn-primary btn-lg" onClick={() => startSession()}>开始复习</button>
+          <div style={{ marginTop: 12 }}>
+            <Link className="btn btn-secondary" to="/student/spelling">拼写练习</Link>
+          </div>
 
           <div style={{ maxWidth: 320, margin: '24px auto 0', textAlign: 'left' }}>
             {focusSelector}

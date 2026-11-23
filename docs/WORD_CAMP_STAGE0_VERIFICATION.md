@@ -25,7 +25,7 @@
 | 中文与导入 | **部分修复（卡片导入已通过）** | 阶段 1 已补卡片 CSV 的 UTF-8/BOM/UTF-16/GBK 探测、`meaning_zh` 表头别名与 `Card.variants`，并有单元测试与 Docker 端到端（GBK 中文正确入库）。仍未处理：学生名单 CSV 的 GBK 探测；教师/管理员页面仍有英文；音标/音频字段未实现。 |
 | 手机可用性 | **未验证（外部阻塞）** | 无目标真机、无微信内置浏览器环境；已有 700px 以下抽屉导航与响应式基线，但未做真机验收。 |
 | 登录改造可行性 | **已实施（待权限回归）** | 已新增 `username`、可选 `email`、无邮箱学生创建、用户名登录与 `sessionVersion` 会话撤销；Docker 端到端验证用户名登录与重置后旧 token 401。API 级权限矩阵仍未建立。 |
-| 代码质量 | **部分通过** | `npm run test -w server`：331 通过、12 跳过；三包构建通过；学生端产物 gzip 约 115 kB，低于 §7.9 的 200 kB 预算。生产依赖审计（官方 registry，2026-11-23）降为 **6 个：0 critical、2 high、4 moderate**（`nodemailer`、`zod` 需破坏性大版本；`csv-parse`、`react-router`、`qs` 为 moderate），见 `docs/THIRD_PARTY_LICENSES.md` §4。无 CI、无客户端自动化测试、无完整 API 权限矩阵。 |
+| 代码质量 | **部分通过** | `npm run test -w server`：337 通过、12 跳过；三包构建通过；学生端产物 gzip 约 115 kB，低于 §7.9 的 200 kB 预算。生产依赖审计（官方 registry，2026-11-23）降为 **6 个：0 critical、2 high、4 moderate**（`nodemailer`、`zod` 需破坏性大版本；`csv-parse`、`react-router`、`qs` 为 moderate），见 `docs/THIRD_PARTY_LICENSES.md` §4。无 CI、无客户端自动化测试、无完整 API 权限矩阵。 |
 
 ## 3. 结构性差异与改造点（静态审计）
 
@@ -82,4 +82,3 @@ npx prisma migrate deploy --schema=prisma/schema.prisma
 $env:SL_TEST_DATABASE_URL = $env:DATABASE_URL
 npx vitest run src/__tests__/subjectLead.integration.test.ts --root server
 ```
-

@@ -21,9 +21,10 @@
 - 依赖安全：`bcrypt` 6、`multer` 2.5、根 `overrides`（body-parser/proxy-addr/path-to-regexp/ip-address）、router patch；生产漏洞 15 → 6（0 critical）。
 - 权限集成回归：干净 `sl_fresh` 库应用 14 个迁移，学科组长权限套件 12/12 通过。
 - 学生“今日进度”：`GET /students/today` 与复习页空闲状态进度卡（新词/复习/到期/今日 XP）。
+- 服务端拼写题：`POST /students/review/answer` 负责变体/大小写/空格判分与 FSRS 调度，新增 `/student/spelling` 练习页。
 
 ### 验证
-- 服务端单元测试 331 通过 / 12 跳过、三包构建通过；干净数据库完整应用 14 个迁移。
+- 服务端单元测试 337 通过 / 12 跳过、三包构建通过；干净数据库完整应用 14 个迁移。
 - 会话撤销已端到端验证：重置密码后旧 access/refresh token 均返回 401。
 - 断点续学已端到端验证：连续两次开始学习返回同一会话与相同题目顺序。
 - Docker 端到端：只传用户名创建学生 → 该学生用用户名登录成功，`email=null`，首次登录强制改密。

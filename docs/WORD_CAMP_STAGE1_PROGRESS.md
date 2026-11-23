@@ -121,7 +121,7 @@
 
 ### 验证证据
 
-- 全量测试 `331 passed | 12 skipped`；13 个迁移（含会话版本）在干净库应用通过。
+- 全量测试 `337 passed | 12 skipped`；13 个迁移（含会话版本）在干净库应用通过。
 - Docker 端到端：学生登录后由管理员重置密码，旧 access token 与旧 refresh token 请求均返回 401。
 - 前端构建通过；中文复习页与成长页已随镜像部署。
 
@@ -200,7 +200,17 @@
 - 该接口只报告“可测学习活动”，不返回 `completed`，避免在 L1–L5/Boss 未实现时把复习活动冒充每日任务完成。
 - 单测覆盖上海日界、目标回退、非本人 enrollment；Docker 实测返回 `todayNewCards:1, todayReviews:1, reviewsDue:1, xpToday:10`。
 
-## 11. 未完成（阶段 1 剩余）
+## 11. 服务端拼写题（2026-11-23）
+
+- 新增 `POST /api/students/review/answer`：客户端只提交学生输入的字符串，服务端负责比对答案与 FSRS 评分，不再让客户端直接决定 grade。
+- 判分：去首尾空格、忽略大小写、合并连续空格；接受 `Card.word` 与教师配置的 `variants`（如 color / colour）。
+- 与任一正确词形相差 1 个字符时返回 `verdict: "close"`（“很接近了”），但仍按答错调度；完全匹配为 `correct`，其余 `wrong`。
+- 调度映射：正确 → grade 3（Good），错误/接近 → grade 1（Again）；回答进入 `ReviewEvent`，因此奖励与统计沿用既有链路。
+- 新增学生页面 `/student/spelling`：显示中文释义，隐藏英文，逐词输入；复习页空闲状态提供“拼写练习”入口。输入框关闭自动大写/纠错/拼写检查，符合移动端规范。
+- 单测覆盖规范化、变体、Levenshtein 1 字符与空答案；Docker 端到端用 `colour` 命中 variant：`correct:true`、`expected:"color"`、grade 结果 `state:REVIEW`，结束结算 +5 XP。
+- 限制：尚无选择题、听音题、提示分级、重试 2 次、Boss 与星星；拼写只作为首个独立客观题型。
+
+## 12. 未完成（阶段 1 剩余）
 
 - 全站中文界面：目前登录页、新增学生表单、学生“我的成长”已中文，教师/管理员其余页面仍为英文。
 - 权限收紧：学科组长跨班只读与规格 §12 的冲突仍待产品决策；尚未实现完整资源级权限测试矩阵。
