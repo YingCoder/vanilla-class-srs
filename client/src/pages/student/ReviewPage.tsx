@@ -6,6 +6,19 @@ import { useApi } from '../../hooks/useApi'
 import { Modal } from '../../components/Modal'
 import StudyCardFront from '../../components/StudyCardFront'
 
+interface TodayProgress {
+  studyDate: string
+  dueNow: number
+  newAvailable: number
+  reviewsDue: number
+  todayNewCards: number
+  todayReviews: number
+  todayDistinctCards: number
+  targets: { newCards: number; reviews: number }
+  xpToday: number
+  coinsToday: number
+}
+
 interface SessionCard {
   instanceId: string
   cardId: string
@@ -159,6 +172,12 @@ function ReviewSessionPage() {
     () => active
       ? api.get<StatsSummary>(`/students/stats/summary?enrollmentId=${active.enrollmentId}`)
       : Promise.resolve({ weeklyGoal: null, deckCardSets: [], personalCardSet: null }),
+    [active?.enrollmentId],
+  )
+  const { data: today, reload: reloadToday } = useApi<TodayProgress | null>(
+    () => active
+      ? api.get<TodayProgress>(`/students/today?enrollmentId=${active.enrollmentId}`)
+      : Promise.resolve(null),
     [active?.enrollmentId],
   )
 
@@ -344,6 +363,7 @@ function ReviewSessionPage() {
         rewards?: { xp: number; coins: number }
       }>('/students/review/finish', { sessionId, tz })
       setSessionResult(result)
+      void reloadToday()
       setHeadline(pickRandom(ENCOURAGEMENT[accuracyTier(result.accuracyRate)]))
       setPhase('done')
       setFinishPending(null)
@@ -442,9 +462,29 @@ function ReviewSessionPage() {
         <div style={{ textAlign: 'center', padding: '48px 16px' }}>
           <img src="/Vanilla-deck.png" alt="" style={{ width: 96, height: 96, objectFit: 'contain', marginBottom: 16 }} />
           <h1 style={{ fontSize: 'var(--text-2xl)', fontWeight: 700, marginBottom: 12 }}>今日学习</h1>
-          <p style={{ color: 'var(--color-text-muted)', marginBottom: 32, fontSize: 'var(--text-base)' }}>
+          <p style={{ color: 'var(--color-text-muted)', marginBottom: 20, fontSize: 'var(--text-base)' }}>
             班级：<strong>{active.className}</strong>
           </p>
+          {today && (
+            <div style={{
+              maxWidth: 360,
+              margin: '0 auto 24px',
+              padding: '12px 16px',
+              borderRadius: 12,
+              background: 'var(--color-surface)',
+              border: '1px solid var(--color-border)',
+              fontSize: 'var(--text-sm)',
+            }}>
+              <div style={{ fontWeight: 700, marginBottom: 4 }}>
+                今日新词 {today.todayNewCards}/{today.targets.newCards}
+                {' · '}复习 {today.todayReviews}/{today.targets.reviews}
+              </div>
+              <div style={{ color: 'var(--color-text-muted)' }}>
+                当前待复习 {today.reviewsDue} 张，新词待学 {today.newAvailable} 张
+                {today.xpToday > 0 && <> · 今日 +{today.xpToday} XP</>}
+              </div>
+            </div>
+          )}
           {error && <div className="alert alert-danger" style={{ marginBottom: 16 }}>{error}</div>}
           <button className="btn btn-primary btn-lg" onClick={() => startSession()}>开始复习</button>
 

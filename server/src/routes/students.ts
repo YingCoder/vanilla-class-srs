@@ -10,6 +10,7 @@ import { labelsForClass } from '../services/departmentLabels.service'
 import { getRewardSummary } from '../services/reward.service'
 import studentStatsRouter from './stats.student'
 import { toCsv } from '../lib/csv'
+import { getTodayProgress } from '../services/todayProgress.service'
 
 const router = asyncRouter()
 router.use(requireAuth, requireStudent, requirePasswordChanged)
@@ -424,6 +425,19 @@ router.get('/deck/export', async (req: Request, res: Response) => {
   res.setHeader('Content-Type', 'text/csv; charset=utf-8')
   res.setHeader('Content-Disposition', 'attachment; filename="deck-export.csv"')
   res.send(csv)
+})
+
+// GET /api/students/today?enrollmentId=... — measurable daily progress
+router.get('/today', async (req: Request, res: Response) => {
+  const student = await getStudent(req.user!.sub)
+  if (!student) { res.status(403).json({ error: 'No student profile found' }); return }
+
+  const enrollmentId = req.query.enrollmentId as string | undefined
+  if (!enrollmentId) { res.status(400).json({ error: 'enrollmentId query param required' }); return }
+
+  const progress = await getTodayProgress(prisma, student.id, enrollmentId)
+  if (!progress) { res.status(404).json({ error: 'Enrollment not found' }); return }
+  res.json(progress)
 })
 
 // ─────────────────────────────────────────────
