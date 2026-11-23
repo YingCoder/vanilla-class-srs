@@ -19,6 +19,7 @@
 - CSV 导出公式注入防护与 UTF-8 BOM/CRLF。
 - 学生名单 CSV 支持 GBK/BOM/UTF-16；与卡片导入共用解码器。
 - 依赖安全：`bcrypt` 6、`multer` 2.5、根 `overrides`（body-parser/proxy-addr/path-to-regexp/ip-address）、router patch；生产漏洞 15 → 6（0 critical）。
+- 权限集成回归：干净 `sl_fresh` 库应用 14 个迁移，学科组长权限套件 12/12 通过。
 
 ### 验证
 - 服务端单元测试 328 通过 / 12 跳过、三包构建通过；干净数据库完整应用 14 个迁移。

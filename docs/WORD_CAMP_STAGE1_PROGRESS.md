@@ -186,6 +186,12 @@
 - 生产审计：**15 → 6 个（0 critical、2 high、4 moderate）**；`nodemailer` / `zod` / `react-router` / `csv-parse` 的修复需破坏性大版本，列入后续计划。
 - 升级后 328 个服务端测试、三包构建与 Docker 登录路径均需回归。
 
+### 权限集成回归（2026-11-23）
+
+- 在一次性干净库 `sl_fresh` 上完整应用 14 个迁移，运行 `subjectLead.integration.test.ts`：**12 passed / 12**。
+- 覆盖学科组长跨班读取、授权/拒绝、班级创建与成员关系等工作流；默认套件仍因缺少 `SL_TEST_DATABASE_URL` 跳过，需按 `docs/WORD_CAMP_VERSIONING.md` 使用 127.0.0.1 的独立库执行。
+- 该结果消除了“权限测试从未跑过”的状态，但不等于全部资源级权限矩阵；管理员/教师/学生越权矩阵仍待补。
+
 ## 10. 未完成（阶段 1 剩余）
 
 - 全站中文界面：目前登录页、新增学生表单、学生“我的成长”已中文，教师/管理员其余页面仍为英文。
@@ -194,4 +200,4 @@
 - 每日任务定义、关卡（L1–L5/Boss）、星级与错词重练尚未实现；奖励账本与等级、今日学习名单已完成。
 - 学生移动端首页/单手操作规范尚未系统化验收；断点续学已有后端与复习页，但未做真机切后台验收。
 - 依赖大版本升级：`nodemailer` 10、`zod` 4、`react-router-dom` 7、`csv-parse` 7；当前生产审计仍有 6 个（0 critical）。
-- `subjectLead.integration.test.ts` 默认因缺少 `SL_TEST_DATABASE_URL` 跳过 12 项，权限集成需要在独立库跑通。
+- `subjectLead.integration.test.ts` 默认因缺少 `SL_TEST_DATABASE_URL` 跳过 12 项；已在干净 `sl_fresh` 跑通 12/12，但还没有 CI 自动执行。
