@@ -387,6 +387,9 @@ model ReviewSession {
   endedAt       DateTime? // null = session abandoned or in progress
   cardsReviewed Int       @default(0)
   accuracyRate  Float?    // calculated on session end (correct grades / total grades)
+  // Ordered card-instance ids for this session. Lets a refreshed/backgrounded
+  // client resume the exact remaining queue instead of starting a new session.
+  queue         Json?
   events        ReviewEvent[]
 }
 

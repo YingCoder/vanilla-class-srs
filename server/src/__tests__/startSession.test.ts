@@ -35,10 +35,10 @@ function makePrisma(cards: ReturnType<typeof card>[], minimum = 10, introducedTo
         && c.state === where.state
         && (!where.card || where.card.cardSetId.in.includes(c.card.cardSetId))) ?? null),
       findMany: vi.fn(async ({ where, orderBy, take }) => {
-        let matches = cards.filter((c) => c.deckId === where.deckId
-          && (typeof where.state === 'string' ? c.state === where.state : where.state.in.includes(c.state))
+        let matches = cards.filter((c) => (!where.deckId || c.deckId === where.deckId)
+          && (typeof where.state === 'string' ? c.state === where.state : !where.state || where.state.in.includes(c.state))
           && (!where.due || c.due <= where.due.lte)
-          && (!where.id || !where.id.notIn.includes(c.id))
+          && (!where.id || (where.id.notIn ? !where.id.notIn.includes(c.id) : where.id.in.includes(c.id)))
           && (!where.card || where.card.cardSetId.in.includes(c.card.cardSetId)))
         if (orderBy) matches = matches.sort((a, b) => a.due.getTime() - b.due.getTime() || a.id.localeCompare(b.id))
         return take === undefined ? matches : matches.slice(0, take)
@@ -52,6 +52,24 @@ async function queue(prisma: ReturnType<typeof makePrisma>, cardSetIds?: string[
   if ('error' in result) throw new Error(result.error)
   return result
 }
+
+describe('startSession resume', () => {
+  it('returns the same session with only unreviewed cards from its queue', async () => {
+    const prisma = makePrisma([card('a'), card('b'), card('c')])
+    prisma.reviewSession.findFirst.mockResolvedValue({
+      id: 'open-session',
+      deckId: 'deck',
+      queue: ['a', 'b', 'c'],
+      events: [{ cardInstanceId: 'a' }],
+    })
+
+    const result = await queue(prisma)
+    expect(result.sessionId).toBe('open-session')
+    expect(result.resumed).toBe(true)
+    expect(result.cards.map((c) => c.instanceId)).toEqual(['b', 'c'])
+    expect(prisma.reviewSession.create).not.toHaveBeenCalled()
+  })
+})
 
 describe('startSession minimum queue', () => {
   it('fills six due cards with the four soonest upcoming cards', async () => {

@@ -43,6 +43,9 @@ export interface StartSessionResult {
   sessionId: string
   cards: SessionCard[]
   deckId: string
+  /** True when an in-progress session was returned instead of creating a new one. */
+  resumed?: boolean
+  totalCards?: number
   /**
    * Set when `cards` is empty, so the client can offer the right next step instead of a
    * dead-end "nothing to do" screen:
@@ -149,6 +152,53 @@ async function newCardsReviewedToday(prisma: PrismaClient, deckId: string): Prom
 
 // ── start ────────────────────────────────────────────────────────────────────
 
+function toSessionCard(inst: any): SessionCard {
+  return {
+    instanceId: inst.id,
+    cardId: inst.cardId,
+    word: inst.card.word,
+    pos: inst.card.pos,
+    definitionL2: inst.card.definitionL2,
+    definitionL1: inst.definitionL1 ?? inst.card.definitionL1,
+    exampleSentence: inst.exampleSentence ?? inst.card.exampleSentence,
+    state: inst.state,
+    due: inst.due,
+    stability: inst.stability,
+    difficulty: inst.difficulty,
+    lapses: inst.lapses,
+    reps: inst.reps,
+  }
+}
+
+async function resumeOpenSession(
+  prisma: PrismaClient,
+  session: { id: string; deckId: string; queue: unknown; events: { cardInstanceId: string }[] },
+  queue: string[],
+): Promise<StartSessionResult | null> {
+  const reviewed = new Set(session.events.map((event) => event.cardInstanceId))
+  const remainingIds = queue.filter((id) => !reviewed.has(id))
+  if (remainingIds.length === 0) return null
+
+  const instances = await prisma.cardInstance.findMany({
+    where: { id: { in: [...new Set(remainingIds)] } },
+    include: { card: true },
+  })
+  const byId = new Map(instances.map((instance) => [instance.id, instance]))
+  const cards = remainingIds
+    .map((id) => byId.get(id))
+    .filter((instance): instance is NonNullable<typeof instance> => Boolean(instance))
+    .map(toSessionCard)
+
+  if (cards.length === 0) return null
+  return {
+    sessionId: session.id,
+    cards,
+    deckId: session.deckId,
+    resumed: true,
+    totalCards: queue.length,
+  }
+}
+
 export async function startSession(
   prisma: PrismaClient,
   studentId: string,
@@ -170,11 +220,18 @@ export async function startSession(
   const deck = enrollment.deck
   const params = deck.fsrsParams as unknown as FSRSParams
 
-  // Close any open (abandoned) session — spec §24 decision 3
+  // Close any open (abandoned) session, or resume it when it has a persisted
+  // queue and still has unreviewed cards. Resuming is what makes a phone reload
+  // (or returning from a backgrounded WeChat tab) continue the same questions.
   const openSession = await prisma.reviewSession.findFirst({
     where: { deckId: deck.id, endedAt: null },
+    include: { events: { select: { cardInstanceId: true } } },
+    orderBy: { startedAt: 'desc' },
   })
   if (openSession) {
+    const queue = Array.isArray(openSession.queue) ? (openSession.queue as string[]) : null
+    const resumed = queue ? await resumeOpenSession(prisma, openSession, queue) : null
+    if (resumed) return resumed
     await closeSession(prisma, openSession.id, now)
   }
 
@@ -302,24 +359,11 @@ export async function startSession(
     data: {
       deckId: deck.id,
       startedAt: now,
+      queue: allInstances.map((inst) => inst.id),
     },
   })
 
-  const cards: SessionCard[] = allInstances.map((inst) => ({
-    instanceId: inst.id,
-    cardId: inst.cardId,
-    word: inst.card.word,
-    pos: inst.card.pos,
-    definitionL2: inst.card.definitionL2,
-    definitionL1: inst.definitionL1 ?? inst.card.definitionL1,
-    exampleSentence: inst.exampleSentence ?? inst.card.exampleSentence,
-    state: inst.state,
-    due: inst.due,
-    stability: inst.stability,
-    difficulty: inst.difficulty,
-    lapses: inst.lapses,
-    reps: inst.reps,
-  }))
+  const cards: SessionCard[] = allInstances.map(toSessionCard)
 
   return { sessionId: session.id, cards, deckId: deck.id }
 }
