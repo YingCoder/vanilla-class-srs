@@ -11,6 +11,6 @@
     "declaration": true,
     "declarationMap": true
   },
-  "include": ["types/**/*", "fsrs/**/*"],
+  "include": ["types/**/*", "fsrs/**/*", "word-camp.ts"],
   "exclude": ["node_modules", "dist"]
 }

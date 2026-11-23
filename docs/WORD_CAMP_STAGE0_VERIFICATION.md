@@ -1,0 +1,84 @@
+# 阶段 0 技术验证记录
+
+> 对应开发规格：`word-camp-development-v1.1.md` §2.2、§15
+> 上游基准：Vanilla Class SRS `4fcbf6d4eb6aaacbfc23144a948f1c4dd9e6f065`
+> 执行日期：2026-11-23（Asia/Shanghai）
+> 结论：**有条件 Go**——可以基于上游分支继续，但上游不能按“开箱即用”对待；下列阻断项必须先修复或绕开，再进入阶段 1。
+
+## 1. 环境
+
+| 项目 | 实测值 | 说明 |
+| --- | --- | --- |
+| Node.js | v22.23.3 | 满足上游 README 的 Node 20+ |
+| npm | 11.10.1 | 使用仓库内 `package-lock.json` 执行 `npm ci`，安装 329 个包 |
+| Docker | 29.4.3 | 守护进程可启动；`postgres:16` 镜像可拉取 |
+| PostgreSQL | 16（一次性本地容器，仅验证） | 9 个既有迁移全部成功应用 |
+| 运行平台 | Windows 11 / PowerShell | 仓库路径含中文，Docker Compose 需显式 `-p wordcamp` |
+
+## 2. §2.2 验证项结果
+
+| 验证项 | 结果 | 证据与说明 |
+| --- | --- | --- |
+| 启动与部署 | **未通过（阻断）** | 依赖安装、三包构建、9 个迁移应用成功；`docker build -f server/Dockerfile` **实测构建成功**（此前静态审计怀疑 workspace 清单缺失会导致失败，未复现）。但静态审计确认：`README.md` 的 `docker compose up` 使用 `.env.example` 的 `localhost` 数据库地址，与 Compose 内 `db` 服务不一致；镜像启动不执行 `prisma migrate deploy`；`README.md` / `docs/DEPLOYMENT.md` 给出的 `src/scripts/seed-admin.ts` 不在运行镜像内（`server/Dockerfile:46` 只复制 `dist`），且 `tsx` / `prisma` CLI 被 `--omit=dev` 裁掉；客户端镜像尚未实测。完整 `docker compose up` 仍不能一次启动。 |
+| 权限隔离 | **部分通过** | 路由均有 JWT + 角色 + 对象级校验，静态审计未发现直接越权绕过：`server/src/middleware/auth.ts:19-32,38-51`、`routes/students.ts:13,61-68,181-187,240-246`、`services/review.service.ts:163,426,551`。对一次性 PostgreSQL 库运行 `subjectLead.integration.test.ts`：12/12 通过。但该套件默认跳过（`SL_TEST_DATABASE_URL`），且仓库无 API 级权限矩阵、无 CI。另有权限模型冲突：上游学科组长（SL）可只读查看同事班级学生数据（`classAccess.service.ts:16-18`、`routes/teachers.ts:320`），与规格 §12“教师仅查看授课班级”不一致，需明确取舍。 |
+| FSRS 正确性 | **未通过（阻断）** | 23 个既有用例通过，但只验证单调 / 边界，未与参考实现比对。静态审计确认：`shared/fsrs/fsrs.ts:88-92` 复习稳定度公式缺公开 FSRS-5 的 `1 +` 项；遗忘曲线使用 `0.9^(t/S)` 近似（`fsrs.ts:45-49`），而非参考实现的幂曲线（`FSRS5_DEFAULT_DECAY=0.5`）；到期日归一到**服务器本地**零点（`fsrs.ts:205-212`），依赖进程时区，且 `.env.example:24` 为 `Asia/Shanghai` 而 `docs/DEPLOYMENT.md:99` 写作 UTC。不可直接复用为“正确调度”。 |
+| 中文与导入 | **未通过（阻断）** | 三处 CSV 解析均启用 BOM（`cardsets.ts:239-242`、`admin.ts:1211-1215`、`enrollment.service.ts:49`），错误行带数据行序号（`card.service.ts:25-42`、`enrollment.service.ts:95-111`）。但全仓无 GBK / 编码探测（grep `iconv|chardet|GBK|detectEncoding` 零命中），GBK 中文会静默变乱码；`Card` 无 `variants` 字段，规格 §6.1 的变体列无法导入。 |
+| 手机可用性 | **未验证（外部阻塞）** | 无目标真机、无微信内置浏览器环境；响应式改造尚未开始。 |
+| 登录改造可行性 | **可实施，但属中等规模专项** | `User.email` 非空唯一（`prisma/schema.prisma:48-61`），登录 / 忘记 / 重置全走邮箱（`routes/auth.ts:42-45,55,174-215`），建号按邮箱 find-or-create（`services/enrollment.service.ts:25,150-167`），CSV 校验邮箱必填（`enrollment.service.ts:104-108`），前端至少 6 个页面与模板绑定邮箱。改造含 1 次 schema 迁移（`username`、可选 `email`、`user_sessions`/撤销）+ auth 路由与限流键 + 导入 / 批量建号 + 登录 / 建号 UI，应计入阶段 1，而非字段级小改。 |
+| 代码质量 | **部分通过** | `npm run test -w server`：208 通过、12 跳过；三包构建通过；学生端产物 gzip 111.00 kB，低于 §7.9 的 200 kB 预算。使用官方 registry 的生产依赖审计报告 **15 个漏洞：2 critical、7 high、6 moderate**（`proxy-addr` IP 伪造、`tar` 解压 DoS、`nodemailer` 多项、`body-parser`、`qs`、`zod` 等），见 `docs/THIRD_PARTY_LICENSES.md` §4。当前宿主 npm 镜像不支持 audit 端点，本地审计命令需改走官方 registry。无 CI、无客户端测试、无 API 级权限测试。 |
+
+## 3. 结构性差异与改造点（静态审计）
+
+| 规格要求 | 上游现状 | 处理建议 |
+| --- | --- | --- |
+| 用户名登录、学生无邮箱、公共电脑 | 邮箱唯一必填；无 `user_sessions`；refresh token 30 天无状态，logout 只清 cookie（`auth.service.ts:9-11,52-58`、`routes/auth.ts:87-91`） | 新增 `username`、可选 `email`、会话表 / 撤销；登录限流改为账号维度严格（现为 IP+email，换 IP 可绕过单账号锁定，`routes/auth.ts:26-38`） |
+| 服务端判分与一次性调度 | 客户端直接提交 1–4 评分（`routes/students.ts:470-492`）；每次 grade 都调度一次（`review.service.ts:442-470`）；无 `submissionId` / `sessionVersion` | 在外层新增“服务端判分 → FSRS 评分映射 → 每词每会话一次调度”；不改上游 grade 语义，避免破坏现有复习 |
+| 断点续学 | `review/start` 先关闭未结束会话再新建（`review.service.ts:173-178`）；7 天 Expired 无实现 | 新增 Word Camp 学习会话或扩展 `ReviewSession`；开始学习返回进行中会话（幂等） |
+| 每日任务 / 关卡 / 星级 | 只有卡组复习与自评 | 已新增纯规则层 `shared/word-camp.ts`（见下节）；数据库与会话模型待阶段 1 |
+| 奖励 / 等级 / 每日上限 | 无模型 | 新增 `reward_ledger`（唯一 `user_id+event_key+reward_type`）、`daily_stats`、`user_settings` |
+| 词条版本 | `Card` 直接修改，历史复习引用同一 Card | 新增快照或“发布后不可改 + 复制新版本”；MVP 前禁止静默改已学词条 |
+| 音频 / 图片 | 无字段、无素材 | 发布流程增加音频、图片字段与来源授权记录；无素材时仍可完成学习 |
+| 报告问题 | 无 | 新增 `feedback_reports` 与 `POST /feedback` |
+| CSP / CSRF / 统一错误码 / requestId | 全仓无 helmet、CSP、CSRF、`X-Client-Version`、`requestId`；错误仅 `{error}`（`server/src/index.ts:46-50`） | 阶段 3–4 补齐，先加 `requestId` 与统一错误格式 |
+| CSV 导出安全 | 学生 deck 导出未防公式注入、无 BOM（`routes/students.ts:406-427`） | 加 `= + - @` 前缀转义与 BOM |
+
+## 4. 阶段 0 结论
+
+**有条件 Go。** 上游技术栈与规格一致，权限模型整体可靠，构建与基础测试可用；但其 FSRS 实现、部署链路、导入编码、会话幂等均达不到规格要求，不能当作“已完成能力”直接复用。本项目应基于固定提交改造，并自带回归测试与迁移。
+
+进入阶段 1 前必须完成：
+
+1. 锁定上游提交（已打标签 `baseline-4fcbf6d`），建立本项目分支与发布记录（见 `docs/WORD_CAMP_VERSIONING.md`）。
+2. 修复 Dockerfile workspace 清单与 Compose 启动链路（迁移 + 管理员种子），在干净环境完整启动一次并记录结果。
+3. 用 fsrs-rs / ts-fsrs 的固定向量替换或校正 `shared/fsrs`，补时区边界用例；在替换前**不宣称间隔复习正确**。
+4. 词表导入补 UTF-8 / BOM / GBK 探测与错误预览，补 `variants` 字段。
+5. “用户名登录 + 可选邮箱 + 会话撤销”作为独立可回滚特性，接 API 级权限回归测试。
+6. 依赖审计改走官方 registry 或等价离线工具，记录高危漏洞与升级计划。
+
+外部阻塞（需用户 / 学校提供，代码无法单方面完成）：
+
+- 目标真机与微信内置浏览器、校园网络环境；
+- 域名、备案、HTTPS 与学校数据合规告知流程；
+- 首批教材词表与音频 / 图片授权来源；
+- 试点班级设备调查结果。
+
+## 5. 已落地的规则层
+
+阶段 0 同时加入 `shared/word-camp.ts` 与 `server/src/__tests__/wordCampRules.test.ts`（80 个用例），实现规格 §4.1 / §5 中可脱离数据库验证的纯规则：拼写规范化与变体 / 一字符接近提示、FSRS 评分映射（首次独立答对 Good、提示或重试 Hard、答错或揭示答案 Again）、上海学习日期、掌握状态、关卡星级、10 级阈值、奖励事件键与每日上限结算。该模块不接 API，不声称完成学习闭环；它通过 `@vanilla-srs/shared/word-camp` 子路径只暴露给服务端，避免把判分逻辑打进学生端。
+
+## 6. 复现命令
+
+```powershell
+# 基线安装、测试与构建
+npm ci
+npm run test -w server
+npm run build -w shared
+npm run build -w server
+npm run build -w client
+
+# 权限集成用例（需要一次性 PostgreSQL 库，库名必须为 sl_fresh）
+$env:DATABASE_URL = 'postgresql://<user>:<DB_PASSWORD>@127.0.0.1:<port>/sl_fresh'
+npx prisma migrate deploy --schema=prisma/schema.prisma
+$env:SL_TEST_DATABASE_URL = $env:DATABASE_URL
+npx vitest run src/__tests__/subjectLead.integration.test.ts --root server
+```
