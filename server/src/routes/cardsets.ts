@@ -10,13 +10,12 @@
 import { Request, Response } from 'express'
 import { z } from 'zod'
 import multer from 'multer'
-import { parse } from 'csv-parse/sync'
 import { CardSetStatus } from '@prisma/client'
 import { asyncRouter } from '../lib/asyncRouter'
 import prisma from '../lib/prisma'
 import { requireAuth, requireTeacher } from '../middleware/auth'
 import { validate } from '../middleware/validate'
-import { validateCardRows, normaliseCardRow, cardDedupeKey, partitionDuplicateRows } from '../services/card.service'
+import { validateCardRows, normaliseCardRow, cardDedupeKey, partitionDuplicateRows, parseCardCsvBuffer } from '../services/card.service'
 import { syncNewCardsToAssignedDecks } from '../services/assignment.service'
 import { labelsForCardSet } from '../services/departmentLabels.service'
 import { classCardSetWhere, teacherReadableCardSetWhere } from '../services/cardSetAccess.service'
@@ -162,6 +161,7 @@ const CreateCardSchema = z.object({
   definitionL2: z.string().optional(),
   definitionL1: z.string().optional(),
   exampleSentence: z.string().optional(),
+  variants: z.array(z.string()).optional(),
 }).refine(
   (d) => !!d.definitionL2?.trim() || !!d.definitionL1?.trim(),
   { message: 'At least one definition (L1 or L2) is required.' },
@@ -173,6 +173,7 @@ const PatchCardSchema = z.object({
   definitionL2: z.string().optional(),
   definitionL1: z.string().optional(),
   exampleSentence: z.string().optional(),
+  variants: z.array(z.string()).optional(),
 })
 
 // GET /api/teachers/cardsets/:id/cards
@@ -214,6 +215,7 @@ router.post('/:id/cards', validate(CreateCardSchema), async (req: Request, res: 
       definitionL2: req.body.definitionL2 ?? null,
       definitionL1: req.body.definitionL1 ?? null,
       exampleSentence: req.body.exampleSentence ?? null,
+      variants: req.body.variants ?? [],
     },
   })
   await syncNewCardsToAssignedDecks(prisma, cs.id, [card.id])
@@ -233,17 +235,13 @@ router.post(
 
     if (!req.file) { res.status(400).json({ error: 'No file uploaded' }); return }
 
-    let rows: Record<string, string>[]
+    let parsed: { rows: Record<string, string>[]; encoding: string }
     try {
-      rows = parse(req.file.buffer, {
-        columns: true,
-        skip_empty_lines: true,
-        trim: true,
-        bom: true,
-      }) as Record<string, string>[]
+      parsed = parseCardCsvBuffer(req.file.buffer)
     } catch {
       res.status(400).json({ error: 'Invalid CSV format' }); return
     }
+    const rows = parsed.rows
 
     if (rows.length === 0) {
       res.status(400).json({ error: 'CSV contains no data rows' }); return
@@ -303,6 +301,7 @@ router.patch('/:csId/cards/:cardId', validate(PatchCardSchema), async (req: Requ
       definitionL2: req.body.definitionL2 !== undefined ? (req.body.definitionL2 || null) : card.definitionL2,
       definitionL1: req.body.definitionL1 !== undefined ? (req.body.definitionL1 || null) : card.definitionL1,
       exampleSentence: req.body.exampleSentence !== undefined ? (req.body.exampleSentence || null) : card.exampleSentence,
+      variants: req.body.variants !== undefined ? req.body.variants : card.variants,
     },
   })
   res.json(updated)

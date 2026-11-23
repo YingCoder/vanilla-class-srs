@@ -240,6 +240,8 @@ model Card {
   definitionL2    String? // target language definition (e.g. English)
   definitionL1    String? // native language definition (e.g. Chinese)
   exampleSentence String? // teacher-provided example sentence
+  // Additional accepted spellings for grading (e.g. colour / color), spec §6.1.
+  variants        String[] @default([])
 
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt

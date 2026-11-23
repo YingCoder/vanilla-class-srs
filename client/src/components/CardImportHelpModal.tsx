@@ -1,14 +1,12 @@
 import { useState } from 'react'
 import { Modal } from './Modal'
 
-const SAMPLE_CSV = `word,pos,definition_l2,definition_l1,example_sentence
-ameliorate,verb,to make something bad or unsatisfactory better,,"The new policy will ameliorate living conditions."
-ephemeral,adj,lasting for only a short time,,"Fame can be ephemeral."
-ubiquitous,adj,seeming to appear everywhere at the same time,,"Smartphones are now ubiquitous."
-pragmatic,adj,dealing with things sensibly and realistically,,
+const SAMPLE_CSV = `word,meaning_zh,unit,phonetic,pos,example_en,example_zh,category,difficulty,variants
+engine,发动机,Unit 01,,n.,The engine is running.,发动机正在运转。,汽修,1,
+color,颜色,Unit 03,,n.,My favorite color is blue.,我最喜欢的颜色是蓝色。,公共,1,colour
 `
 
-const LLM_PROMPT = `I need to generate a CSV file (template file attached) for a word list. The word list is below, but I need you to add each word to its own row in the CSV, then for each word add in part of speech (pos), English definition (definition_l2), and a clear example sentence (example_sentence). You can leave the "definition_l1" field blank.
+const LLM_PROMPT = `I need to generate a CSV file (template file attached) for a word list. The word list is below. Add each word to its own row in the CSV with: meaning_zh (clear Chinese meaning), pos (part of speech), example_en (an English example sentence), example_zh (its Chinese translation), and variants (other accepted spellings separated by |, or blank). Keep the unit/category/difficulty columns as provided or blank.
 
 My word list:
 
@@ -51,6 +49,10 @@ export function CardImportHelpModal({ onClose }: Props) {
           Deepseek all work fine) to fill out all the fields in your CSV for your word list. You
           can use the prompt below. After you get your CSV you can still edit it as needed, then
           upload the CSV file here to import your words.
+        </p>
+        <p style={{ fontSize: 13, lineHeight: 1.6, marginBottom: 16, color: 'var(--color-text-muted)' }}>
+          支持 UTF-8 与 Excel 默认导出的 GBK（含 BOM）编码；表头可用 <code>meaning_zh</code>，
+          也兼容旧的 <code>definition_l1</code>。<code>variants</code> 用 <code>|</code> 分隔可接受的其他拼写。
         </p>
 
         <div style={{ marginBottom: 20 }}>

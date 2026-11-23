@@ -13,6 +13,7 @@ interface Card {
   definitionL2: string | null
   definitionL1: string | null
   exampleSentence: string | null
+  variants: string[]
 }
 interface CardSet {
   id: string
@@ -25,8 +26,12 @@ interface CardSet {
   definitionL1Label: string
 }
 
-type CardFormData = { word: string; pos: string; definitionL2: string; definitionL1: string; exampleSentence: string }
-const emptyForm: CardFormData = { word: '', pos: '', definitionL2: '', definitionL1: '', exampleSentence: '' }
+type CardFormData = { word: string; pos: string; definitionL2: string; definitionL1: string; exampleSentence: string; variants: string }
+
+function splitVariants(value: string): string[] {
+  return [...new Set(value.split('|').map((part) => part.trim()).filter(Boolean))]
+}
+const emptyForm: CardFormData = { word: '', pos: '', definitionL2: '', definitionL1: '', exampleSentence: '', variants: '' }
 
 interface CsvRowError { row: number; word?: string; error: string }
 
@@ -38,7 +43,9 @@ function validateCsvRows(rows: Record<string, string>[]): CsvRowError[] {
       errors.push({ row: i + 1, error: 'word is required' })
       continue
     }
-    if (!r.definition_l2?.trim() && !r.definition_l1?.trim()) {
+    const l1 = r.definition_l1 ?? r.meaning_zh ?? r.meaning
+    const l2 = r.definition_l2 ?? r.definition_en
+    if (!l2?.trim() && !l1?.trim()) {
       errors.push({ row: i + 1, word: r.word, error: 'at least one definition (definition_l2 or definition_l1) is required' })
     }
   }
@@ -92,7 +99,7 @@ export default function TeacherCardSetDetailPage() {
   const openCreate = () => { setForm(emptyForm); setFormError(null); setCreating(true) }
   const openEdit = (c: Card) => {
     setEditing(c)
-    setForm({ word: c.word, pos: c.pos ?? '', definitionL2: c.definitionL2 ?? '', definitionL1: c.definitionL1 ?? '', exampleSentence: c.exampleSentence ?? '' })
+    setForm({ word: c.word, pos: c.pos ?? '', definitionL2: c.definitionL2 ?? '', definitionL1: c.definitionL1 ?? '', exampleSentence: c.exampleSentence ?? '', variants: (c.variants ?? []).join('|') })
     setFormError(null)
   }
   const closeModal = () => { setEditing(null); setCreating(false) }
@@ -116,6 +123,7 @@ export default function TeacherCardSetDetailPage() {
         definitionL2: form.definitionL2 || undefined,
         definitionL1: form.definitionL1 || undefined,
         exampleSentence: form.exampleSentence || undefined,
+        variants: splitVariants(form.variants),
       }
       if (editing) {
         await api.patch(`/teachers/cardsets/${id}/cards/${editing.id}`, payload)
@@ -220,6 +228,16 @@ export default function TeacherCardSetDetailPage() {
             <div className="form-group">
               <label className="form-label">Example Sentence</label>
               <textarea className="form-textarea" value={form.exampleSentence} onChange={(e) => setForm({ ...form, exampleSentence: e.target.value })} rows={2} />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Alternative spellings</label>
+              <input
+                className="form-input"
+                value={form.variants}
+                onChange={(e) => setForm({ ...form, variants: e.target.value })}
+                placeholder="colour|color"
+              />
+              <div style={{ fontSize: 12, color: 'var(--color-text-muted)', marginTop: 4 }}>用 | 分隔，可接受的其他拼写，例如 colour|color。</div>
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-secondary" onClick={closeModal}>Cancel</button>

@@ -74,7 +74,7 @@
 ### 验证证据
 
 - `reward.service.test.ts`：首次奖励、重复事件不重复写入、每日上限截断、P2002 竞态容错。
-- `npm run test -w server`：`302 passed | 12 skipped`（奖励测试加入后）。
+- `npm run test -w server`：`308 passed | 12 skipped`（卡片导入与奖励测试加入后）。
 - 干净数据库完整应用 11 个迁移。
 - 前端构建通过；新增页面已接入 `/student/rewards`。
 
@@ -84,11 +84,31 @@
 - Boss 首通、每日任务完成、连续 7 天奖励的事件来源（关卡/每日任务表）尚未实现，规则与事件键已在共享层就绪。
 - 教师端奖励配置与流水查看尚未开始。
 
-## 3. 未完成（阶段 1 剩余）
+## 3. 词表导入：GBK / BOM、表头兼容与变体（2026-11-23）
 
-- 全站中文界面：目前登录页与新增学生表单已中文，教师/管理员其余页面仍为英文。
+### 解析
+
+- 服务端统一用 `parseCardCsvBuffer`：
+  - UTF-8（含 BOM）优先；UTF-16 LE/BE BOM 支持；
+  - 非法 UTF-8 自动回退 GBK（Excel 中文版默认导出），不再要求教师手动转码；
+  - 表头别名：`meaning_zh` / `meaning` → `definition_l1`，`definition_en` → `definition_l2`，`example_en` → `example_sentence`，`variants` 支持 `variant` / `alt_spellings`。
+- `Card.variants String[]` 新增：
+  - CSV `variants` 列按 `|` 拆分、去空格、去重、排除词条本身；
+  - 单卡新增/编辑 API 同步支持 `variants`。
+- 教师端与管理员端共用同一解析与校验服务；导入仍保持“全部校验通过才写入”。
+
+### 验证证据
+
+- `card.service.test.ts`：UTF-8 BOM + 别名、GBK 字节解码、畸形 CSV、变体清洗、必填校验。
+- Docker 端到端：管理员上传 GBK 编码 CSV（`word,meaning_zh,example_en,variants`）→ `created:1`；读取词集得到 `definitionL1:"颜色"`、`variants:["colour"]`。
+- 前端导入帮助与模板改为规格表头，并提示 GBK 支持。
+
+## 4. 未完成（阶段 1 剩余）
+
+- 全站中文界面：目前登录页、新增学生表单、学生“我的成长”已中文，教师/管理员其余页面仍为英文。
 - 权限收紧：学科组长跨班只读与规格 §12 的冲突仍待产品决策；尚未实现资源级权限测试矩阵。
-- 单词表导入：GBK/BOM 检测、`variants`/词性/例句字段、音标与音频占位尚未实现。
-- 每日任务、奖励账本、等级/星级、学生移动端首页尚未开始。
+- 单词表导入的剩余字段：音标、词性/例句已能导入，音标与音频生成/降级尚未实现。
+- 每日任务定义、关卡（L1–L5/Boss）、星级与错词重练尚未实现；奖励账本与等级已完成。
+- 学生移动端首页/单手操作规范、断点续学 UI 尚未系统化验收。
 - FSRS 金标向量与时区边界仍未补测。
 - 依赖安全升级（生产 15 个漏洞）未处理。
