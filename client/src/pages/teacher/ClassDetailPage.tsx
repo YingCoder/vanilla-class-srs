@@ -9,6 +9,7 @@ import { STUDENT_IMPORT_TEMPLATE_CSV, STUDENT_IMPORT_TEMPLATE_FILENAME } from '.
 import { downloadPasswordSheet, printPasswordSlips } from '../../utils/passwordSheet'
 import { formatLastLogin } from '../../utils/formatDate'
 import ClassStatsPanel from './ClassStatsPanel'
+import ClassTodayPanel from '../../components/ClassTodayPanel'
 
 interface Class {
   id: string; name: string; canManage: boolean; teacherName: string
@@ -31,7 +32,15 @@ interface HomeworkReq {
   cardSets: { id: string; name: string }[]
 }
 
-type Tab = 'students' | 'assignments' | 'homework' | 'stats'
+type Tab = 'today' | 'students' | 'assignments' | 'homework' | 'stats'
+
+const TAB_LABELS: Record<Tab, string> = {
+  today: '今日',
+  students: '学生',
+  assignments: '词集任务',
+  homework: '作业要求',
+  stats: '统计',
+}
 
 interface AssignConfirm {
   cardSetId: string
@@ -332,12 +341,14 @@ export default function TeacherClassDetailPage() {
       </div>
 
       <div className="tabs">
-        {(['students', 'assignments', 'homework', 'stats'] as Tab[]).map((t) => (
+        {(['today', 'students', 'assignments', 'homework', 'stats'] as Tab[]).map((t) => (
           <button key={t} className={`tab${tab === t ? ' active' : ''}`} onClick={() => setTab(t)}>
-            {t.charAt(0).toUpperCase() + t.slice(1)}
+            {TAB_LABELS[t]}
           </button>
         ))}
       </div>
+
+      {tab === 'today' && id && <ClassTodayPanel classId={id} audience="teacher" />}
 
       {/* Students tab */}
       {tab === 'students' && (

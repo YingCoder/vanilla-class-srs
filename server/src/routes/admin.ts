@@ -21,6 +21,7 @@ import { getClassStudentAdditions } from './stats.studentAdditions'
 import { createClassAssignment, streamCardInstanceCreation, streamCardInstanceCreationForClasses, rollbackOrphanedAssignment, syncNewCardsToAssignedDecks, removeAssignment, resumeClassAssignment, BatchAssignClassTarget } from '../services/assignment.service'
 import { validateCardRows, normaliseCardRow, cardDedupeKey, partitionDuplicateRows, parseCardCsvBuffer } from '../services/card.service'
 import { labelsForCardSet, labelsForClass } from '../services/departmentLabels.service'
+import { getTodayRoster } from '../services/todayRoster.service'
 import { getStudentAdditions } from '../services/studentAdditions.service'
 import { logAuditEvent } from '../lib/auditLog'
 import {
@@ -902,6 +903,13 @@ router.get('/classes/:id/students', async (req: Request, res: Response) => {
     },
   })
   res.json(enrollments)
+})
+
+// GET /api/admin/classes/:id/pending-today — mirror of the teacher route
+router.get('/classes/:id/pending-today', async (req: Request, res: Response) => {
+  const cls = await prisma.class.findUnique({ where: { id: p(req, 'id') } })
+  if (!cls || cls.archivedAt) { res.status(404).json({ error: 'Class not found' }); return }
+  res.json(await getTodayRoster(prisma, cls.id))
 })
 
 // DELETE /api/admin/classes/:id/students/:studentId  — unenroll (soft delete)

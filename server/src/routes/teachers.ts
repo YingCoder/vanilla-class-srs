@@ -16,6 +16,7 @@ import { classCardSetWhere } from '../services/cardSetAccess.service'
 import { createClassAssignment, streamCardInstanceCreation, rollbackOrphanedAssignment, removeAssignment, resumeClassAssignment } from '../services/assignment.service'
 import { DEFAULT_MIN_CARDS_PER_SESSION, DEFAULT_PERIOD_DAYS, DEFAULT_ALERT_THRESHOLD_DAYS } from '../services/homework.service'
 import { labelsForClass } from '../services/departmentLabels.service'
+import { getTodayRoster } from '../services/todayRoster.service'
 import teacherStatsRouter from './stats.teacher'
 import teacherStudentStatsRouter from './stats.teacher-student'
 import teacherStudentAdditionsRouter from './stats.studentAdditions'
@@ -353,6 +354,16 @@ router.get('/classes/:id/students', async (req: Request, res: Response) => {
     },
   })
   res.json(enrollments)
+})
+
+// GET /api/teachers/classes/:id/pending-today — today's studied / not-studied roster
+router.get('/classes/:id/pending-today', async (req: Request, res: Response) => {
+  const cls = await prisma.class.findUnique({ where: { id: p(req, 'id') } })
+  if (!cls || !(await classAccess(prisma, req.user!.sub, req.user!.role, cls.id))) {
+    res.status(404).json({ error: 'Class not found' })
+    return
+  }
+  res.json(await getTodayRoster(prisma, cls.id))
 })
 
 // DELETE /api/teachers/classes/:id/students/:studentId  — unenroll (soft delete)
