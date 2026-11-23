@@ -22,9 +22,9 @@
 | 启动与部署 | **通过（0.1.1 修复）** | 在干净卷上启动 Compose：db 健康 → `migrate` 应用 9 个迁移 → server 健康 → client 返回 200；`GET /api/health` 为 `ok`；`seed` 创建管理员后 `POST /api/auth/login` 返回 200 且 `mustChangePassword: true`。server / migrator / seeder / client 四个镜像分别构建成功。注意：本机 Docker Desktop 29.4.3 的 `docker compose up --build` 触发 bake gRPC 报错，改用逐镜像 `docker build` + `up --no-build` 验证；CI / Linux 仍需复测。 |
 | 权限隔离 | **部分通过** | 路由均有 JWT + 角色 + 对象级校验，静态审计未发现直接越权绕过：`server/src/middleware/auth.ts:19-32,38-51`、`routes/students.ts:13,61-68,181-187,240-246`、`services/review.service.ts:163,426,551`。对一次性 PostgreSQL 库运行 `subjectLead.integration.test.ts`：12/12 通过。但该套件默认跳过（`SL_TEST_DATABASE_URL`），且仓库无 API 级权限矩阵、无 CI。另有权限模型冲突：上游学科组长（SL）可只读查看同事班级学生数据（`classAccess.service.ts:16-18`、`routes/teachers.ts:320`），与规格 §12“教师仅查看授课班级”不一致，需明确取舍。 |
 | FSRS 正确性 | **未通过（阻断）** | 23 个既有用例通过，但只验证单调 / 边界，未与参考实现比对。静态审计确认：`shared/fsrs/fsrs.ts:88-92` 复习稳定度公式缺公开 FSRS-5 的 `1 +` 项；遗忘曲线使用 `0.9^(t/S)` 近似（`fsrs.ts:45-49`），而非参考实现的幂曲线（`FSRS5_DEFAULT_DECAY=0.5`）；到期日归一到**服务器本地**零点（`fsrs.ts:205-212`），依赖进程时区，且 `.env.example:24` 为 `Asia/Shanghai` 而 `docs/DEPLOYMENT.md:99` 写作 UTC。不可直接复用为“正确调度”。 |
-| 中文与导入 | **未通过（阻断）** | 三处 CSV 解析均启用 BOM（`cardsets.ts:239-242`、`admin.ts:1211-1215`、`enrollment.service.ts:49`），错误行带数据行序号（`card.service.ts:25-42`、`enrollment.service.ts:95-111`）。但全仓无 GBK / 编码探测（grep `iconv|chardet|GBK|detectEncoding` 零命中），GBK 中文会静默变乱码；`Card` 无 `variants` 字段，规格 §6.1 的变体列无法导入。 |
-| 手机可用性 | **未验证（外部阻塞）** | 无目标真机、无微信内置浏览器环境；响应式改造尚未开始。 |
-| 登录改造可行性 | **可实施，但属中等规模专项** | `User.email` 非空唯一（`prisma/schema.prisma:48-61`），登录 / 忘记 / 重置全走邮箱（`routes/auth.ts:42-45,55,174-215`），建号按邮箱 find-or-create（`services/enrollment.service.ts:25,150-167`），CSV 校验邮箱必填（`enrollment.service.ts:104-108`），前端至少 6 个页面与模板绑定邮箱。改造含 1 次 schema 迁移（`username`、可选 `email`、`user_sessions`/撤销）+ auth 路由与限流键 + 导入 / 批量建号 + 登录 / 建号 UI，应计入阶段 1，而非字段级小改。 |
+| 中文与导入 | **部分修复（卡片导入已通过）** | 阶段 1 已补卡片 CSV 的 UTF-8/BOM/UTF-16/GBK 探测、`meaning_zh` 表头别名与 `Card.variants`，并有单元测试与 Docker 端到端（GBK 中文正确入库）。仍未处理：学生名单 CSV 的 GBK 探测；教师/管理员页面仍有英文；音标/音频字段未实现。 |
+| 手机可用性 | **未验证（外部阻塞）** | 无目标真机、无微信内置浏览器环境；已有 700px 以下抽屉导航与响应式基线，但未做真机验收。 |
+| 登录改造可行性 | **已实施（待权限回归）** | 已新增 `username`、可选 `email`、无邮箱学生创建、用户名登录与 `sessionVersion` 会话撤销；Docker 端到端验证用户名登录与重置后旧 token 401。API 级权限矩阵仍未建立。 |
 | 代码质量 | **部分通过** | `npm run test -w server`：208 通过、12 跳过；三包构建通过；学生端产物 gzip 111.00 kB，低于 §7.9 的 200 kB 预算。使用官方 registry 的生产依赖审计报告 **15 个漏洞：2 critical、7 high、6 moderate**（`proxy-addr` IP 伪造、`tar` 解压 DoS、`nodemailer` 多项、`body-parser`、`qs`、`zod` 等），见 `docs/THIRD_PARTY_LICENSES.md` §4。当前宿主 npm 镜像不支持 audit 端点，本地审计命令需改走官方 registry。无 CI、无客户端测试、无 API 级权限测试。 |
 
 ## 3. 结构性差异与改造点（静态审计）
@@ -51,8 +51,8 @@
 1. 锁定上游提交（已打标签 `baseline-4fcbf6d`），建立本项目分支与发布记录（见 `docs/WORD_CAMP_VERSIONING.md`）。
 2. 修复 Dockerfile workspace 清单与 Compose 启动链路（迁移 + 管理员种子）——**已在 0.1.1 完成**：`migrate` / `seed` 一次性服务、自动迁移、健康检查与随机临时密码。
 3. 用 fsrs-rs / ts-fsrs 的固定向量替换或校正 `shared/fsrs`，补时区边界用例；在替换前**不宣称间隔复习正确**。
-4. 词表导入补 UTF-8 / BOM / GBK 探测与错误预览，补 `variants` 字段。
-5. “用户名登录 + 可选邮箱 + 会话撤销”作为独立可回滚特性，接 API 级权限回归测试。
+4. 词表导入补 UTF-8 / BOM / GBK 探测与错误预览，补 `variants` 字段——**卡片 CSV 已完成**（`card.service.ts`）；学生名单 CSV 的 GBK 探测待补。
+5. “用户名登录 + 可选邮箱 + 会话撤销”作为独立可回滚特性——**已实现并端到端验证**；API 级权限回归测试仍待补。
 6. 依赖审计改走官方 registry 或等价离线工具，记录高危漏洞与升级计划。
 
 外部阻塞（需用户 / 学校提供，代码无法单方面完成）：
