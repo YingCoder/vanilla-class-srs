@@ -21,7 +21,7 @@
 | --- | --- | --- |
 | 启动与部署 | **通过（0.1.1 修复）** | 在干净卷上启动 Compose：db 健康 → `migrate` 应用 9 个迁移 → server 健康 → client 返回 200；`GET /api/health` 为 `ok`；`seed` 创建管理员后 `POST /api/auth/login` 返回 200 且 `mustChangePassword: true`。server / migrator / seeder / client 四个镜像分别构建成功。注意：本机 Docker Desktop 29.4.3 的 `docker compose up --build` 触发 bake gRPC 报错，改用逐镜像 `docker build` + `up --no-build` 验证；CI / Linux 仍需复测。 |
 | 权限隔离 | **部分通过** | 路由均有 JWT + 角色 + 对象级校验，静态审计未发现直接越权绕过：`server/src/middleware/auth.ts:19-32,38-51`、`routes/students.ts:13,61-68,181-187,240-246`、`services/review.service.ts:163,426,551`。对一次性 PostgreSQL 库运行 `subjectLead.integration.test.ts`：12/12 通过。但该套件默认跳过（`SL_TEST_DATABASE_URL`），且仓库无 API 级权限矩阵、无 CI。另有权限模型冲突：上游学科组长（SL）可只读查看同事班级学生数据（`classAccess.service.ts:16-18`、`routes/teachers.ts:320`），与规格 §12“教师仅查看授课班级”不一致，需明确取舍。 |
-| FSRS 正确性 | **未通过（阻断）** | 23 个既有用例通过，但只验证单调 / 边界，未与参考实现比对。静态审计确认：`shared/fsrs/fsrs.ts:88-92` 复习稳定度公式缺公开 FSRS-5 的 `1 +` 项；遗忘曲线使用 `0.9^(t/S)` 近似（`fsrs.ts:45-49`），而非参考实现的幂曲线（`FSRS5_DEFAULT_DECAY=0.5`）；到期日归一到**服务器本地**零点（`fsrs.ts:205-212`），依赖进程时区，且 `.env.example:24` 为 `Asia/Shanghai` 而 `docs/DEPLOYMENT.md:99` 写作 UTC。不可直接复用为“正确调度”。 |
+| FSRS 正确性 | **已校正（基准向量通过）** | 阶段 1 按 `ts-fsrs@4.7.0`（FSRS-5.0，MIT）重写 `shared/fsrs/fsrs.ts`：默认 19 权重对齐参考实现；遗忘曲线改为 `(1 + 19/81·t/S)^-0.5`；复习稳定度补 `1 +` 项；难度加入 linear damping 与均值回归；遗忘稳定度取 `min(S, S_f)`；新卡 Again/Hard/Good 按 1/5/10 分钟留在 LEARNING，Only Easy 直接毕业。到期时间改为精确时间戳，不再归一到服务器本地零点。`fsrs.reference.test.ts` 的 9 条固定向量与参考实现逐项一致。仍缺：真实学习数据上的参数校准。 |
 | 中文与导入 | **部分修复（卡片导入已通过）** | 阶段 1 已补卡片 CSV 的 UTF-8/BOM/UTF-16/GBK 探测、`meaning_zh` 表头别名与 `Card.variants`，并有单元测试与 Docker 端到端（GBK 中文正确入库）。仍未处理：学生名单 CSV 的 GBK 探测；教师/管理员页面仍有英文；音标/音频字段未实现。 |
 | 手机可用性 | **未验证（外部阻塞）** | 无目标真机、无微信内置浏览器环境；已有 700px 以下抽屉导航与响应式基线，但未做真机验收。 |
 | 登录改造可行性 | **已实施（待权限回归）** | 已新增 `username`、可选 `email`、无邮箱学生创建、用户名登录与 `sessionVersion` 会话撤销；Docker 端到端验证用户名登录与重置后旧 token 401。API 级权限矩阵仍未建立。 |
@@ -50,7 +50,7 @@
 
 1. 锁定上游提交（已打标签 `baseline-4fcbf6d`），建立本项目分支与发布记录（见 `docs/WORD_CAMP_VERSIONING.md`）。
 2. 修复 Dockerfile workspace 清单与 Compose 启动链路（迁移 + 管理员种子）——**已在 0.1.1 完成**：`migrate` / `seed` 一次性服务、自动迁移、健康检查与随机临时密码。
-3. 用 fsrs-rs / ts-fsrs 的固定向量替换或校正 `shared/fsrs`，补时区边界用例；在替换前**不宣称间隔复习正确**。
+3. 用 fsrs-rs / ts-fsrs 的固定向量替换或校正 `shared/fsrs`，补时区边界用例——**已校正**：`fsrs.reference.test.ts` 9 条 ts-fsrs 4.7.0 向量通过，到期时间为精确时间戳，不依赖服务器时区。
 4. 词表导入补 UTF-8 / BOM / GBK 探测与错误预览，补 `variants` 字段——**卡片 CSV 已完成**（`card.service.ts`）；学生名单 CSV 的 GBK 探测待补。
 5. “用户名登录 + 可选邮箱 + 会话撤销”作为独立可回滚特性——**已实现并端到端验证**；API 级权限回归测试仍待补。
 6. 依赖审计改走官方 registry 或等价离线工具，记录高危漏洞与升级计划。

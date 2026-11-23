@@ -121,7 +121,7 @@
 
 ### 验证证据
 
-- 全量测试 `309 passed | 12 skipped`；13 个迁移（含会话版本）在干净库应用通过。
+- 全量测试 `318 passed | 12 skipped`；13 个迁移（含会话版本）在干净库应用通过。
 - Docker 端到端：学生登录后由管理员重置密码，旧 access token 与旧 refresh token 请求均返回 401。
 - 前端构建通过；中文复习页与成长页已随镜像部署。
 
@@ -140,7 +140,22 @@
 - 14 个迁移在干净库应用通过。
 - Docker 端到端：同一学生连续两次 `POST /students/review/start`，返回同一 `sessionId`，第二次 `resumed: true`，10 张卡顺序完全一致。
 
-## 6. 未完成（阶段 1 剩余）
+## 6. FSRS-5 校正与基准向量（2026-11-23）
+
+- 参考实现：`ts-fsrs@4.7.0`（自报 `using FSRS-5.0`，MIT），固定 `request_retention=0.9`、`maximum_interval=36500`、无 fuzz、启用 short-term。
+- `shared/fsrs/fsrs.ts` 已对齐：
+  - 19 个默认权重与参考实现完全一致；
+  - 遗忘曲线 `R=(1+19/81·t/S)^-0.5`；
+  - 复习稳定度 `S' = S·(1 + exp(w8)·(11-D)·S^-w9·(exp(w10·(1-R))-1)·hard·easy)`；
+  - 难度 linear damping + 均值回归 `D0(Easy)`；
+  - 遗忘稳定度 `min(S, S_f)`；
+  - 新卡 1/2/3 评分分别 1/5/10 分钟后仍在 LEARNING，Easy 直接 REVIEW；
+  - 复习 Again 进入 RELEARNING（5 分钟），reps 每次递增。
+- 到期时间改为 `now + interval` 的精确时间戳，不再 `setHours(0,0,0,0)`，消除了对服务器本地时区的依赖。
+- `server/src/__tests__/fsrs.reference.test.ts`：9 条固定向量（NEW 四档、LEARNING 毕业后、REVIEW 四档）与参考实现 stability / difficulty / state / due 逐项一致。
+- 仍缺：用真实学习日志重新拟合权重；本轮只证明“公式与参考实现一致”，不证明默认权重适合本校学生。
+
+## 7. 未完成（阶段 1 剩余）
 
 - 全站中文界面：目前登录页、新增学生表单、学生“我的成长”已中文，教师/管理员其余页面仍为英文。
 - 权限收紧：学科组长跨班只读与规格 §12 的冲突仍待产品决策；尚未实现资源级权限测试矩阵。

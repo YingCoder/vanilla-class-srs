@@ -1,12 +1,13 @@
 /**
- * FSRS v5 published default weights (19 values, w[0]..w[18]).
- * Source: https://github.com/open-spaced-repetition/fsrs5
+ * FSRS-5.0 published default weights (19 values, w[0]..w[18]).
+ * Must stay byte-for-byte identical to ts-fsrs 4.7.0 `default_w` so the golden
+ * vector suite (server/src/__tests__/fsrs.reference.test.ts) stays valid.
  */
 export const DEFAULT_W: readonly number[] = [
-  0.40255, 1.18385, 3.1262, 15.4722, 7.2102,
-  0.5316, 1.0651, 0.06069, 1.39974, 0.14268,
-  1.05171, 1.93327, 0.11540, 0.29605, 2.2700,
-  0.079, 2.9898, 0.44658, 0.9946,
+  0.40255, 1.18385, 3.173, 15.69105, 7.1949,
+  0.5345, 1.4604, 0.0046, 1.54575, 0.1192,
+  1.01925, 1.9395, 0.11, 0.29605, 2.2698,
+  0.2315, 2.9898, 0.51655, 0.6621,
 ]
 
 /** Default deck parameters */

@@ -26,37 +26,39 @@ function newCard(): FSRSCard {
 // ── NEW card ─────────────────────────────────────────────────────────────────
 
 describe('NEW card — first review', () => {
-  it('grade=Again → stays LEARNING, due in ~10 min, reps=1', () => {
+  it('grade=Again → stays LEARNING, due in ~1 min, reps=1', () => {
     const r = schedule(newCard(), 1, params, NOW)
     expect(r.state).toBe('LEARNING')
     expect(r.reps).toBe(1)
     expect(r.lapses).toBe(0)
     expect(r.stability).toBeGreaterThan(0)
     expect(r.difficulty).toBeGreaterThan(0)
-    // Due should be roughly 10 minutes ahead, not days ahead
     const minutesAhead = (r.due.getTime() - NOW.getTime()) / 60_000
-    expect(minutesAhead).toBeGreaterThanOrEqual(5)
-    expect(minutesAhead).toBeLessThanOrEqual(15)
+    expect(minutesAhead).toBeCloseTo(1, 6)
   })
 
-  it('grade=Good → moves to REVIEW, due multiple days ahead, reps=1', () => {
+  it('grade=Good → stays LEARNING for 10 minutes, reps=1', () => {
     const r = schedule(newCard(), 3, params, NOW)
-    expect(r.state).toBe('REVIEW')
+    expect(r.state).toBe('LEARNING')
     expect(r.reps).toBe(1)
-    const daysAhead = (r.due.getTime() - NOW.getTime()) / 86_400_000
-    expect(daysAhead).toBeGreaterThanOrEqual(1)
+    const minutesAhead = (r.due.getTime() - NOW.getTime()) / 60_000
+    expect(minutesAhead).toBeCloseTo(10, 6)
   })
 
-  it('grade=Easy → moves to REVIEW, longer interval than Good', () => {
+  it('grade=Easy → graduates to REVIEW with a multi-day interval', () => {
     const easy = schedule(newCard(), 4, params, NOW)
     const good = schedule(newCard(), 3, params, NOW)
     expect(easy.state).toBe('REVIEW')
-    expect(easy.due.getTime()).toBeGreaterThanOrEqual(good.due.getTime())
+    expect(easy.due.getTime()).toBeGreaterThan(good.due.getTime())
+    const daysAhead = (easy.due.getTime() - NOW.getTime()) / 86_400_000
+    expect(daysAhead).toBeGreaterThanOrEqual(1)
   })
 
-  it('grade=Hard → moves to REVIEW', () => {
+  it('grade=Hard → stays LEARNING for 5 minutes', () => {
     const r = schedule(newCard(), 2, params, NOW)
-    expect(r.state).toBe('REVIEW')
+    expect(r.state).toBe('LEARNING')
+    const minutesAhead = (r.due.getTime() - NOW.getTime()) / 60_000
+    expect(minutesAhead).toBeCloseTo(5, 6)
   })
 
   it('stability is always positive after first review', () => {
@@ -179,7 +181,7 @@ describe('REVIEW card', () => {
     const customParams = { ...params, maximumInterval: 100 }
     const r = schedule(highStabilityCard, 4, customParams, NOW)
     const daysAhead = (r.due.getTime() - NOW.getTime()) / 86_400_000
-    expect(daysAhead).toBeLessThanOrEqual(101) // +1 for rounding
+    expect(daysAhead).toBeLessThanOrEqual(100)
   })
 })
 
