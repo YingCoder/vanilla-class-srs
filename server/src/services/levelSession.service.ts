@@ -218,7 +218,7 @@ export async function startLevel(
       level,
       attemptNo,
       questionCount: questionData.length,
-      questions: questionData.length > 0 ? { create: questionData } : undefined,
+      questions: questionData.length > 0 ? { create: questionData as any } : undefined,
     },
     include: sessionInclude,
   })

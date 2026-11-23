@@ -229,3 +229,335 @@ export async function requestLevelHint(
   }
   return { questionId: question.id, hintLevel: nextLevel, hint, excludedOption }
 }
+
+// ── Level completion: stars, one-shot FSRS scheduling, daily rewards ─────────
+
+import { schedule, type FSRSParams } from '@vanilla-srs/shared/fsrs'
+import {
+  rateAnswerAttempt,
+  rewardEventKey,
+  selectSchedulingAnswer,
+  type RewardCandidate,
+  type SessionAnswerRecord,
+} from '@vanilla-srs/shared/word-camp'
+import { settleRewardsForUser, type RewardSettlement } from './reward.service'
+import { buildTaskSummary, type DailyTaskSummary } from './dailyTask.service'
+import {
+  levelOutcome,
+  shouldScheduleLevel,
+  summarizeQuestions,
+  type DailyTaskConfig,
+  type LevelKind,
+} from './levelRules'
+
+export interface LevelCompletionResult {
+  sessionId: string
+  taskId: string
+  level: LevelKind
+  attemptNo: number
+  cleared: boolean
+  stars: number
+  stats: {
+    questionCount: number
+    firstTryCorrect: number
+    eventuallyCorrect: number
+    firstTryAccuracy: number
+    finalAccuracy: number
+  }
+  scheduledWords: number
+  rewards: RewardSettlement
+  task: DailyTaskSummary
+  weakWords: { taskWordId: string; word: string }[]
+}
+
+function toSharedQuestionType(type: 'L2' | 'L3' | 'L5'): SessionAnswerRecord['questionType'] {
+  if (type === 'L5') return 'l5_spelling'
+  if (type === 'L3') return 'l3_zh_to_en'
+  return 'l2_en_to_zh'
+}
+
+function schedulingRecord(question: any): SessionAnswerRecord {
+  return {
+    questionType: toSharedQuestionType(question.questionType),
+    correct: question.eventuallyCorrect,
+    attemptNo: Math.max(1, question.attemptsUsed),
+    hintLevel: question.hintLevel,
+    answerRevealed: question.answerRevealed,
+  }
+}
+
+function rewardCandidatesForLevel(
+  level: LevelKind,
+  task: any,
+  questions: any[],
+  wordsById: Map<string, any>,
+): RewardCandidate[] {
+  const studyDate = task.studyDate as string
+  const candidates: RewardCandidate[] = []
+  const seen = new Set<string>()
+
+  for (const question of questions) {
+    if (!question.firstTryCorrect) continue
+    const word = wordsById.get(question.taskWordId)
+    if (!word) continue
+    const key = `${word.id}:${question.questionType}`
+    if (seen.has(key)) continue
+    seen.add(key)
+
+    if (word.kind === 'NEW' && (question.questionType === 'L2' || question.questionType === 'L3')) {
+      candidates.push({
+        userId: task.enrollment.student.userId,
+        rewardType: 'word_learned',
+        eventKey: rewardEventKey({
+          rewardType: 'word_learned',
+          contextId: task.enrollment.deck.id,
+          wordId: word.cardId,
+        }),
+      })
+    }
+    if (word.kind === 'REVIEW') {
+      candidates.push({
+        userId: task.enrollment.student.userId,
+        rewardType: 'review_ok',
+        eventKey: rewardEventKey({
+          rewardType: 'review_ok',
+          contextId: task.enrollment.deck.id,
+          wordId: word.cardId,
+          cycleStartDate: studyDate,
+        }),
+      })
+    }
+  }
+
+  if (level === 'BOSS') {
+    candidates.push({
+      userId: task.enrollment.student.userId,
+      rewardType: 'boss_clear',
+      eventKey: rewardEventKey({
+        rewardType: 'boss_clear',
+        assignmentId: task.id,
+        assignmentVersion: task.version,
+        bossId: 'boss',
+      }),
+    })
+  }
+  return candidates
+}
+
+async function scheduleClearedWords(
+  prisma: PrismaClient,
+  session: any,
+  config: DailyTaskConfig,
+  now: Date,
+): Promise<number> {
+  if (!shouldScheduleLevel(session.level, config)) return 0
+
+  const wordsById = new Map<string, any>(session.task.words.map((word: any) => [word.id, word]))
+  const questionsByWord = new Map<string, any[]>()
+  for (const question of session.questions) {
+    const list = questionsByWord.get(question.taskWordId) ?? []
+    list.push(question)
+    questionsByWord.set(question.taskWordId, list)
+  }
+
+  let scheduled = 0
+  for (const [taskWordId, questions] of questionsByWord) {
+    const word = wordsById.get(taskWordId)
+    if (!word || word.scheduledAt) continue
+
+    const record = selectSchedulingAnswer(questions.map(schedulingRecord))
+    if (!record) continue
+    const decision = rateAnswerAttempt(record)
+
+    const marked = await prisma.dailyTaskWord.updateMany({
+      where: { id: word.id, scheduledAt: null },
+      data: { scheduledAt: now, scheduledRating: decision.rating, scheduledSessionId: session.id },
+    })
+    if (marked.count === 0) continue
+
+    const instance = await prisma.cardInstance.findUnique({ where: { id: word.cardInstanceId } })
+    if (!instance) continue
+    const params = session.task.enrollment.deck.fsrsParams as FSRSParams
+    const next = schedule(
+      {
+        stability: instance.stability,
+        difficulty: instance.difficulty,
+        reps: instance.reps,
+        lapses: instance.lapses,
+        state: instance.state as any,
+        lastReview: instance.lastReview,
+        due: instance.due,
+      },
+      decision.rating,
+      params,
+      now,
+    )
+    await prisma.cardInstance.update({
+      where: { id: instance.id },
+      data: {
+        stability: next.stability,
+        difficulty: next.difficulty,
+        retrievability: next.retrievability,
+        reps: next.reps,
+        lapses: next.lapses,
+        state: next.state,
+        due: next.due,
+        lastReview: next.lastReview,
+      },
+    })
+    scheduled += 1
+  }
+  return scheduled
+}
+
+const completionTaskInclude = {
+  words: { orderBy: { sortOrder: 'asc' as const } },
+  sessions: {
+    orderBy: [{ level: 'asc' as const }, { attemptNo: 'desc' as const }],
+    include: { questions: { select: { answeredAt: true } } },
+  },
+}
+
+function completionResultOf(
+  session: any,
+  cleared: boolean,
+  stars: number,
+  scheduledWords: number,
+  rewards: RewardSettlement,
+  taskSummary: DailyTaskSummary,
+  wordsById: Map<string, any>,
+): LevelCompletionResult {
+  const stats = summarizeQuestions(session.questions)
+  return {
+    sessionId: session.id,
+    taskId: session.taskId,
+    level: session.level,
+    attemptNo: session.attemptNo,
+    cleared,
+    stars,
+    stats: {
+      ...stats,
+      firstTryAccuracy: stats.questionCount ? stats.firstTryCorrect / stats.questionCount : 0,
+      finalAccuracy: stats.questionCount ? stats.eventuallyCorrect / stats.questionCount : 0,
+    },
+    scheduledWords,
+    rewards,
+    task: taskSummary,
+    weakWords: session.questions
+      .filter((question: any) => !question.eventuallyCorrect)
+      .map((question: any) => {
+        const word = wordsById.get(question.taskWordId)
+        return { taskWordId: question.taskWordId, word: word?.word ?? '' }
+      }),
+  }
+}
+
+async function settleLevelRewards(
+  prisma: PrismaClient,
+  session: any,
+  taskSummary: DailyTaskSummary,
+  wordsById: Map<string, any>,
+): Promise<RewardSettlement> {
+  const candidates = rewardCandidatesForLevel(session.level, session.task, session.questions, wordsById)
+  if (taskSummary.progress.completed) {
+    candidates.push({
+      userId: session.task.enrollment.student.userId,
+      rewardType: 'daily_done',
+      eventKey: rewardEventKey({ rewardType: 'daily_done', studyDate: session.task.studyDate }),
+    })
+  }
+  return settleRewardsForUser(
+    prisma,
+    session.task.enrollment.student.userId,
+    session.task.studyDate,
+    candidates,
+  )
+}
+
+export async function completeLevel(
+  prisma: PrismaClient,
+  studentId: string,
+  sessionId: string,
+  now: Date = new Date(),
+): Promise<LevelCompletionResult | { error: string; status: number }> {
+  const session = await prisma.levelSession.findUnique({
+    where: { id: sessionId },
+    include: {
+      questions: { orderBy: { sortOrder: 'asc' } },
+      task: {
+        include: {
+          words: { orderBy: { sortOrder: 'asc' } },
+          sessions: { include: { questions: { select: { answeredAt: true } } } },
+          enrollment: { include: { student: true, deck: true } },
+        },
+      },
+    },
+  })
+  if (!session || session.task.enrollment.studentId !== studentId) {
+    return { error: 'Session not found', status: 404 }
+  }
+
+  const config = session.task.config as unknown as DailyTaskConfig
+  const wordsById = new Map<string, any>(session.task.words.map((word: any) => [word.id, word]))
+
+  if (session.state === 'COMPLETED') {
+    // Already completed: return the stored outcome and re-settle idempotently.
+    const task = await prisma.dailyStudyTask.findUnique({
+      where: { id: session.taskId },
+      include: completionTaskInclude,
+    })
+    const taskSummary = buildTaskSummary(task)
+    const rewards = await settleLevelRewards(prisma, session, taskSummary, wordsById)
+    return completionResultOf(session, session.cleared === true, session.stars, 0, rewards, taskSummary, wordsById)
+  }
+
+  if (session.questions.some((question) => question.answeredAt === null)) {
+    return { error: 'Level has unanswered questions', status: 409 }
+  }
+  const stats = summarizeQuestions(session.questions)
+  const outcome =
+    session.level === 'L1'
+      ? { cleared: true, stars: 0, firstTryAccuracy: 1, finalAccuracy: 1 }
+      : levelOutcome(session.level as any, stats)
+
+  const result = await prisma.$transaction(async (tx) => {
+    await tx.levelSession.update({
+      where: { id: session.id },
+      data: {
+        state: 'COMPLETED',
+        endedAt: now,
+        questionCount: stats.questionCount,
+        firstTryCorrect: stats.firstTryCorrect,
+        eventuallyCorrect: stats.eventuallyCorrect,
+        stars: outcome.stars,
+        cleared: outcome.cleared,
+      },
+    })
+
+    let scheduled = 0
+    if (outcome.cleared) {
+      scheduled = await scheduleClearedWords(tx as unknown as PrismaClient, session, config, now)
+    }
+
+    const refreshed = await tx.dailyStudyTask.findUnique({
+      where: { id: session.taskId },
+      include: completionTaskInclude,
+    })
+    const taskSummary = buildTaskSummary(refreshed)
+    if (taskSummary.progress.completed && refreshed!.status !== 'COMPLETED') {
+      await tx.dailyStudyTask.update({
+        where: { id: session.taskId },
+        data: { status: 'COMPLETED', completedAt: now },
+      })
+    }
+    return { scheduled }
+  })
+
+  const finalTask = await prisma.dailyStudyTask.findUnique({
+    where: { id: session.taskId },
+    include: completionTaskInclude,
+  })
+  const taskSummary = buildTaskSummary(finalTask)
+  const rewards = await settleLevelRewards(prisma, session, taskSummary, wordsById)
+  return completionResultOf(session, outcome.cleared, outcome.stars, result.scheduled, rewards, taskSummary, wordsById)
+}
