@@ -9,6 +9,7 @@ import authRouter from './routes/auth'
 import adminRouter from './routes/admin'
 import teachersRouter from './routes/teachers'
 import studentsRouter from './routes/students'
+import studentTaskRouter from './routes/studentTask'
 import cardsetsRouter from './routes/cardsets'
 
 // Express 4 does not catch rejections from async handlers, and an unhandled
@@ -35,6 +36,7 @@ app.use('/api/auth', authRouter)
 app.use('/api/admin', adminRouter)
 app.use('/api/teachers', teachersRouter)
 app.use('/api/teachers/cardsets', cardsetsRouter)
+app.use('/api/students', studentTaskRouter)
 app.use('/api/students', studentsRouter)
 
 app.get('/api/health', (_req, res) => {
