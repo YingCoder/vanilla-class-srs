@@ -69,6 +69,28 @@ $env:SL_TEST_DATABASE_URL = $env:DATABASE_URL
 npx vitest run src/__tests__/subjectLead.integration.test.ts --root server
 ```
 
+集成套件有硬性保护：数据库主机必须是 `127.0.0.1`，库名必须是 `sl_fresh`（防止误用开发库）。本机 Compose 的 `db` 不映射宿主端口时，用一个临时 TCP 代理即可：
+
+```powershell
+# 1) 临时把容器 db:5432 映射到 127.0.0.1:5433
+docker run -d --rm --name wc-dbproxy --network wordcamp_default -p 127.0.0.1:5433:5432 `
+  alpine/socat tcp-listen:5432,fork,reuseaddr tcp:db:5432
+
+# 2) 建库并在容器内跑全部迁移
+docker exec wordcamp-db-1 psql -U srs_user -d postgres -c 'DROP DATABASE IF EXISTS sl_fresh;' -c 'CREATE DATABASE sl_fresh;'
+docker run --rm --network wordcamp_default -e "DATABASE_URL=$containerUrl" wordcamp-migrate
+
+# 3) 宿主上跑测试（URL 必须是 127.0.0.1:5433/sl_fresh）
+$env:DATABASE_URL = "postgresql://srs_user:<password>@127.0.0.1:5433/sl_fresh"
+$env:SL_TEST_DATABASE_URL = $env:DATABASE_URL
+npm run test -w server -- --run src/__tests__/subjectLead.integration.test.ts
+
+# 4) 清理代理；sl_fresh 可保留或 DROP
+docker rm -f wc-dbproxy
+```
+
+2026-11-23 用上述流程得到 12/12 通过；该结果不等同于完整的资源级权限矩阵。
+
 ## 6. 提交粒度与回滚
 
 - 一个提交只做一件事；文档与代码可以同提交，但不得把“格式化全仓”与业务改动混在一起。
