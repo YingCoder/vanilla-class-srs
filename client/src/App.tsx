@@ -42,6 +42,7 @@ import EnrollmentPickerPage from './pages/student/EnrollmentPickerPage'
 import StudentDeckPage from './pages/student/DeckPage'
 import ReviewPage from './pages/student/ReviewPage'
 import SpellingPage from './pages/student/SpellingPage'
+import ChoicePage from './pages/student/ChoicePage'
 import StudentStatsPage from './pages/student/StatsPage'
 import RewardsPage from './pages/student/RewardsPage'
 import ClassCardSetsPage from './pages/student/ClassCardSetsPage'
@@ -125,6 +126,7 @@ export default function App() {
               <Route path="deck" element={<StudentDeckPage />} />
               <Route path="review" element={<ReviewPage />} />
               <Route path="spelling" element={<SpellingPage />} />
+              <Route path="choice" element={<ChoicePage />} />
               <Route path="stats" element={<StudentStatsPage />} />
               <Route path="rewards" element={<RewardsPage />} />
               <Route path="cardsets" element={<ClassCardSetsPage />} />

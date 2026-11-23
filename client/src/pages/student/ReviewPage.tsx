@@ -487,8 +487,9 @@ function ReviewSessionPage() {
           )}
           {error && <div className="alert alert-danger" style={{ marginBottom: 16 }}>{error}</div>}
           <button className="btn btn-primary btn-lg" onClick={() => startSession()}>开始复习</button>
-          <div style={{ marginTop: 12 }}>
+          <div style={{ marginTop: 12, display: 'flex', gap: 8, justifyContent: 'center' }}>
             <Link className="btn btn-secondary" to="/student/spelling">拼写练习</Link>
+            <Link className="btn btn-secondary" to="/student/choice">认词练习</Link>
           </div>
 
           <div style={{ maxWidth: 320, margin: '24px auto 0', textAlign: 'left' }}>

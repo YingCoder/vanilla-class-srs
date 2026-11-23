@@ -12,6 +12,7 @@ import studentStatsRouter from './stats.student'
 import { toCsv } from '../lib/csv'
 import { getTodayProgress } from '../services/todayProgress.service'
 import { answerSpelling } from '../services/spelling.service'
+import { answerChoice, getChoiceQuestion } from '../services/choice.service'
 
 const router = asyncRouter()
 router.use(requireAuth, requireStudent, requirePasswordChanged)
@@ -518,6 +519,47 @@ router.post('/review/answer', validate(SpellingAnswerSchema), async (req: Reques
   if (!student) { res.status(403).json({ error: 'No student profile found' }); return }
 
   const result = await answerSpelling(
+    prisma,
+    student.id,
+    req.body.sessionId,
+    req.body.instanceId,
+    req.body.answer,
+    req.body.responseTimeMs,
+  )
+  if ('error' in result) { res.status(result.status).json({ error: result.error }); return }
+  res.json(result)
+})
+
+// GET /api/students/review/choice?sessionId=&instanceId= — four-option recognition question
+router.get('/review/choice', async (req: Request, res: Response) => {
+  const student = await getStudent(req.user!.sub)
+  if (!student) { res.status(403).json({ error: 'No student profile found' }); return }
+
+  const sessionId = req.query.sessionId as string | undefined
+  const instanceId = req.query.instanceId as string | undefined
+  if (!sessionId || !instanceId) {
+    res.status(400).json({ error: 'sessionId and instanceId query params required' })
+    return
+  }
+
+  const question = await getChoiceQuestion(prisma, student.id, sessionId, instanceId)
+  if ('error' in question) { res.status(question.status).json({ error: question.error }); return }
+  res.json(question)
+})
+
+const ChoiceAnswerSchema = z.object({
+  sessionId: z.string().uuid(),
+  instanceId: z.string().uuid(),
+  answer: z.string().trim().min(1).max(200),
+  responseTimeMs: z.number().int().positive().optional(),
+})
+
+// POST /api/students/review/choice-answer — server grades the selected definition
+router.post('/review/choice-answer', validate(ChoiceAnswerSchema), async (req: Request, res: Response) => {
+  const student = await getStudent(req.user!.sub)
+  if (!student) { res.status(403).json({ error: 'No student profile found' }); return }
+
+  const result = await answerChoice(
     prisma,
     student.id,
     req.body.sessionId,
