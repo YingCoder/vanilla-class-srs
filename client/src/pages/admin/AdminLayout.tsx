@@ -3,14 +3,14 @@ import { useAuth } from '../../utils/auth'
 import AppShell from '../../components/AppShell'
 
 const navItems = [
-  { to: '/admin/study', label: 'Study', disabled: true, disabledReason: 'Coming soon — admin study view is not yet available' },
-  { to: '/admin/departments', label: 'Departments' },
-  { to: '/admin/subject-grades', label: 'Subject Grades' },
-  { to: '/admin/teachers', label: 'Teachers' },
-  { to: '/admin/classes', label: 'Classes' },
-  { to: '/admin/cardsets', label: 'CardSets' },
-  { to: '/admin/stats', label: 'Stats' },
-  { to: '/admin/leadership', label: 'Subject/Grade Reports' },
+  { to: '/admin/study', label: '学习', disabled: true, disabledReason: '即将上线' },
+  { to: '/admin/departments', label: '部门' },
+  { to: '/admin/subject-grades', label: '年级/科目' },
+  { to: '/admin/teachers', label: '教师' },
+  { to: '/admin/classes', label: '班级' },
+  { to: '/admin/cardsets', label: '词集' },
+  { to: '/admin/stats', label: '统计' },
+  { to: '/admin/leadership', label: '学科/年级报表' },
 ]
 
 export default function AdminLayout() {
@@ -19,7 +19,7 @@ export default function AdminLayout() {
 
   return (
     <AppShell
-      roleLabel="Admin"
+      roleLabel="管理员"
       userName={user?.name}
       navItems={navItems}
       onSignOut={async () => { await logout(); navigate('/login') }}

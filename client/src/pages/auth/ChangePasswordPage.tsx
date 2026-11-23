@@ -14,7 +14,7 @@ export default function ChangePasswordPage() {
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault()
-    if (password !== confirm) { setError('Passwords do not match'); return }
+    if (password !== confirm) { setError('两次输入的新密码不一致'); return }
     setError(null)
     setLoading(true)
     try {
@@ -25,7 +25,7 @@ export default function ChangePasswordPage() {
       else if (user?.role === 'TEACHER') navigate('/teacher/classes')
       else navigate('/student')
     } catch (e) {
-      setError(e instanceof ApiError ? e.message : 'Change failed')
+      setError(e instanceof ApiError ? e.message : '修改失败')
     } finally {
       setLoading(false)
     }
@@ -34,16 +34,16 @@ export default function ChangePasswordPage() {
   return (
     <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16 }}>
       <div className="card" style={{ maxWidth: 400, width: '100%' }}>
-        <h1 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>Change Password</h1>
+        <h1 style={{ fontSize: 20, fontWeight: 700, marginBottom: 4 }}>修改密码</h1>
         <p style={{ color: 'var(--color-text-muted)', marginBottom: 24, fontSize: 14 }}>
           {user?.mustChangePassword
-            ? 'You must set a new password before continuing.'
-            : 'Update your password.'}
+            ? '首次登录需要先设置新密码。'
+            : '更新你的登录密码。'}
         </p>
         {error && <div className="alert alert-danger">{error}</div>}
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label className="form-label">Current Password</label>
+            <label className="form-label">当前密码</label>
             <input
               className="form-input"
               type="password"
@@ -53,7 +53,7 @@ export default function ChangePasswordPage() {
             />
           </div>
           <div className="form-group">
-            <label className="form-label">New Password</label>
+            <label className="form-label">新密码</label>
             <input
               className="form-input"
               type="password"
@@ -64,7 +64,7 @@ export default function ChangePasswordPage() {
             />
           </div>
           <div className="form-group">
-            <label className="form-label">Confirm New Password</label>
+            <label className="form-label">确认新密码</label>
             <input
               className="form-input"
               type="password"
@@ -74,7 +74,7 @@ export default function ChangePasswordPage() {
             />
           </div>
           <button className="btn btn-primary" type="submit" disabled={loading} style={{ width: '100%' }}>
-            {loading ? 'Saving…' : 'Change password'}
+            {loading ? '保存中…' : '修改密码'}
           </button>
         </form>
       </div>
