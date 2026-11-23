@@ -26,8 +26,14 @@ RUN npx prisma generate --schema=prisma/schema.prisma
 RUN npm run build -w shared
 RUN npm run build -w server
 
+# ── Migration / seed targets ─────────────────────────────────────────────────
+# One-shot images built from the builder so the Prisma CLI and tsx exist.
+# The runtime image stays production-only and never needs those tools.
+FROM builder AS migrator
+CMD ["npx", "prisma", "migrate", "deploy", "--schema=prisma/schema.prisma"]
+
 # ── Stage 2: runtime ──────────────────────────────────────────────────────────
-FROM node:22-alpine
+FROM node:22-alpine AS runtime
 
 WORKDIR /app
 
@@ -56,3 +62,10 @@ ENV NODE_ENV=production
 EXPOSE 3000
 
 CMD ["node", "server/dist/index.js"]
+
+# ── Seed target ──────────────────────────────────────────────────────────────
+# Reuse the runtime image (it already contains the compiled seed script and the
+# production dependencies, including bcrypt's native binding). The builder stage
+# installs with --ignore-scripts, so running tsx there lacks the bcrypt binding.
+FROM runtime AS seeder
+CMD ["node", "server/dist/scripts/seed-admin.js"]

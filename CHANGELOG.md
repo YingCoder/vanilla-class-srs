@@ -10,6 +10,24 @@
 - Docker 部署链路修复（迁移、管理员种子、workspace 清单）。
 - 每日任务、关卡、奖励流水、反馈入口与移动端学生界面。
 
+## [0.1.1] - 2026-11-23
+
+### 修复
+- Docker Compose 启动链路：`migrate` 一次性服务在数据库健康后自动执行 `prisma migrate deploy`，API 等待迁移成功再启动；新增数据库与 API 健康检查。
+- Compose 内的 `DATABASE_URL` 由 `POSTGRES_USER` / `POSTGRES_PASSWORD` 自动组装并指向 `db` 服务，不再依赖 `.env` 中指向 `localhost` 的地址。
+- 管理员种子改为 `seed` 服务，可在运行镜像中执行；未提供 `ADMIN_PASSWORD` 时生成随机临时密码，不再使用“日期 + 姓氏”的可猜密码，首次登录强制改密。
+- 客户端 Nginx 增加 gzip、`index.html` 禁止强缓存、带 hash 静态资源长缓存。
+- `.env.example` 补充 `COMPOSE_PROJECT_NAME` 与 `POSTGRES_*` 变量，避免中文路径下 Compose 项目名为空。
+
+### 验证
+- 在干净卷上启动完整栈：db 健康 → 9 个迁移应用 → server 健康 → client 返回 200。
+- `GET /api/health` 返回 `{status:"ok"}`；种子创建管理员后 `POST /api/auth/login` 返回 200，`mustChangePassword: true`。
+- server / migrator / seeder / client 四个镜像分别构建成功。
+
+### 已知限制
+- 本机 `docker compose up --build` 在 Docker Desktop 29.4.3 上触发 bake gRPC 报错（`x-docker-expose-session-sharedkey` 非可打印字符），改用逐镜像 `docker build` 后 `docker compose up --no-build` 通过；该问题属本机 Docker 环境，CI / Linux 服务器仍需复测。
+- 生产依赖审计 15 个漏洞尚未升级（见 0.1.0 记录与许可证文档）。
+
 ## [0.1.0-stage0] - 2026-11-23
 
 ### 新增

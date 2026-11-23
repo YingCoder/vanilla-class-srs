@@ -19,7 +19,7 @@
 
 | 验证项 | 结果 | 证据与说明 |
 | --- | --- | --- |
-| 启动与部署 | **未通过（阻断）** | 依赖安装、三包构建、9 个迁移应用成功；`docker build -f server/Dockerfile` **实测构建成功**（此前静态审计怀疑 workspace 清单缺失会导致失败，未复现）。但静态审计确认：`README.md` 的 `docker compose up` 使用 `.env.example` 的 `localhost` 数据库地址，与 Compose 内 `db` 服务不一致；镜像启动不执行 `prisma migrate deploy`；`README.md` / `docs/DEPLOYMENT.md` 给出的 `src/scripts/seed-admin.ts` 不在运行镜像内（`server/Dockerfile:46` 只复制 `dist`），且 `tsx` / `prisma` CLI 被 `--omit=dev` 裁掉；客户端镜像尚未实测。完整 `docker compose up` 仍不能一次启动。 |
+| 启动与部署 | **通过（0.1.1 修复）** | 在干净卷上启动 Compose：db 健康 → `migrate` 应用 9 个迁移 → server 健康 → client 返回 200；`GET /api/health` 为 `ok`；`seed` 创建管理员后 `POST /api/auth/login` 返回 200 且 `mustChangePassword: true`。server / migrator / seeder / client 四个镜像分别构建成功。注意：本机 Docker Desktop 29.4.3 的 `docker compose up --build` 触发 bake gRPC 报错，改用逐镜像 `docker build` + `up --no-build` 验证；CI / Linux 仍需复测。 |
 | 权限隔离 | **部分通过** | 路由均有 JWT + 角色 + 对象级校验，静态审计未发现直接越权绕过：`server/src/middleware/auth.ts:19-32,38-51`、`routes/students.ts:13,61-68,181-187,240-246`、`services/review.service.ts:163,426,551`。对一次性 PostgreSQL 库运行 `subjectLead.integration.test.ts`：12/12 通过。但该套件默认跳过（`SL_TEST_DATABASE_URL`），且仓库无 API 级权限矩阵、无 CI。另有权限模型冲突：上游学科组长（SL）可只读查看同事班级学生数据（`classAccess.service.ts:16-18`、`routes/teachers.ts:320`），与规格 §12“教师仅查看授课班级”不一致，需明确取舍。 |
 | FSRS 正确性 | **未通过（阻断）** | 23 个既有用例通过，但只验证单调 / 边界，未与参考实现比对。静态审计确认：`shared/fsrs/fsrs.ts:88-92` 复习稳定度公式缺公开 FSRS-5 的 `1 +` 项；遗忘曲线使用 `0.9^(t/S)` 近似（`fsrs.ts:45-49`），而非参考实现的幂曲线（`FSRS5_DEFAULT_DECAY=0.5`）；到期日归一到**服务器本地**零点（`fsrs.ts:205-212`），依赖进程时区，且 `.env.example:24` 为 `Asia/Shanghai` 而 `docs/DEPLOYMENT.md:99` 写作 UTC。不可直接复用为“正确调度”。 |
 | 中文与导入 | **未通过（阻断）** | 三处 CSV 解析均启用 BOM（`cardsets.ts:239-242`、`admin.ts:1211-1215`、`enrollment.service.ts:49`），错误行带数据行序号（`card.service.ts:25-42`、`enrollment.service.ts:95-111`）。但全仓无 GBK / 编码探测（grep `iconv|chardet|GBK|detectEncoding` 零命中），GBK 中文会静默变乱码；`Card` 无 `variants` 字段，规格 §6.1 的变体列无法导入。 |
@@ -49,7 +49,7 @@
 进入阶段 1 前必须完成：
 
 1. 锁定上游提交（已打标签 `baseline-4fcbf6d`），建立本项目分支与发布记录（见 `docs/WORD_CAMP_VERSIONING.md`）。
-2. 修复 Dockerfile workspace 清单与 Compose 启动链路（迁移 + 管理员种子），在干净环境完整启动一次并记录结果。
+2. 修复 Dockerfile workspace 清单与 Compose 启动链路（迁移 + 管理员种子）——**已在 0.1.1 完成**：`migrate` / `seed` 一次性服务、自动迁移、健康检查与随机临时密码。
 3. 用 fsrs-rs / ts-fsrs 的固定向量替换或校正 `shared/fsrs`，补时区边界用例；在替换前**不宣称间隔复习正确**。
 4. 词表导入补 UTF-8 / BOM / GBK 探测与错误预览，补 `variants` 字段。
 5. “用户名登录 + 可选邮箱 + 会话撤销”作为独立可回滚特性，接 API 级权限回归测试。

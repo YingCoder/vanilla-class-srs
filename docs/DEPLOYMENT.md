@@ -36,28 +36,36 @@ All other variables have sensible defaults for local use. For production, also c
 **2. Start**
 
 ```bash
-docker compose up -d
+docker compose up -d --build
 ```
 
-**3. Run database migrations**
+This starts the database, runs the one-shot `migrate` service, then starts the API and
+serves the client. The API container waits for a successful migration and a healthy
+database, so a first start does not need manual migration commands.
 
-On first start (and after any update that includes schema changes):
+**3. Seed the first admin**
 
 ```bash
-docker compose exec server npx prisma migrate deploy --schema=/app/prisma/schema.prisma
+docker compose run --rm seed
 ```
 
-**4. Seed the first admin**
+The command prompts for an admin email and name, generates an unguessable temporary
+password and prints it once. For scripted deployment, set `ADMIN_EMAIL`, `ADMIN_NAME`
+and optionally `ADMIN_PASSWORD` in the environment. The admin must change the password
+on first login. Record the credentials — there is no other way to recover access.
+
+**4. Access the app**
+
+Open `http://your-server-ip:2080` in a browser.
+
+**5. Update an existing deployment**
 
 ```bash
-docker compose exec server npx tsx src/scripts/seed-admin.ts
+docker compose up -d --build
 ```
 
-This creates the initial admin user. Record the credentials — there is no other way to recover access.
-
-**5. Access the app**
-
-Open `http://your-server-ip` in a browser.
+The `migrate` service re-runs automatically on every start and applies new migrations
+before the API comes up.
 
 ---
 
@@ -66,21 +74,24 @@ Open `http://your-server-ip` in a browser.
 Full reference for `.env`:
 
 ```bash
-# ── Database ─────────────────────────────────────────────────────────────────
-# Docker: postgresql://srs_user:changeme@db:5432/vanilla_class_srs
-# Local:  postgresql://YOUR_MAC_USERNAME@localhost:5432/vanilla_class_srs
-DATABASE_URL=postgresql://srs_user:changeme@db:5432/vanilla_class_srs
+# Compose project name — avoids empty/invalid project names when the checkout
+# path contains non-ASCII characters.
+COMPOSE_PROJECT_NAME=vanilla-class-srs
 
-# Postgres credentials (used by the db container)
+# ── Database (used by the db container) ─────────────────────────────────────
 POSTGRES_USER=srs_user
-POSTGRES_PASSWORD=changeme
+POSTGRES_PASSWORD=replace-with-a-strong-secret
+# Inside Compose the API and migrate services build DATABASE_URL automatically
+# from POSTGRES_USER / POSTGRES_PASSWORD and the `db` hostname. Only set this
+# for a non-Compose development setup:
+# DATABASE_URL=postgresql://<user>:<DB_PASSWORD>@localhost:5432/vanilla_class_srs
 
 # ── Auth ─────────────────────────────────────────────────────────────────────
 # Generate with: openssl rand -base64 64
 JWT_SECRET=
 JWT_REFRESH_SECRET=
 
-# ── SMTP (required for password reset emails) ─────────────────────────────────
+# ── SMTP (required for password reset emails) ───────────────────────────────
 SMTP_HOST=
 SMTP_PORT=587
 SMTP_USER=
@@ -89,15 +100,19 @@ SMTP_FROM=noreply@yourschool.edu
 
 # ── App ──────────────────────────────────────────────────────────────────────
 # The URL the frontend is served from — used in password reset links
-CLIENT_URL=http://localhost:5173
+CLIENT_URL=http://localhost:2080
 
 # Express server port (inside container)
 PORT=3000
 
-# Server timezone — determines when the new-card daily quota resets
-# Use IANA timezone names: UTC, Asia/Shanghai, America/New_York, etc.
-TZ=UTC
+# Server timezone — determines when the new-card daily quota resets.
+# The word-camp study day is always Asia/Shanghai; keep this explicit.
+TZ=Asia/Shanghai
 ```
+
+> The bundled defaults (`srs_user` / a placeholder password) are for local
+> evaluation only. Production must set `POSTGRES_PASSWORD` and both JWT secrets
+> before the first start.
 
 ---
 

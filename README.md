@@ -52,20 +52,23 @@ JWT_REFRESH_SECRET=<different random string>
 ### 3. Start
 
 ```bash
-docker compose up
+docker compose up -d --build
 ```
 
-The app will be available at `http://localhost`.
+The Compose stack runs migrations in a one-shot container and only starts the API
+after the database is healthy and migrations succeeded. The app is available at
+`http://localhost:2080`.
 
 ### 4. Seed the first admin
 
-Run the seed script to create the initial admin account:
-
 ```bash
-docker compose exec server npx tsx src/scripts/seed-admin.ts
+docker compose run --rm seed
 ```
 
-Follow the prompts to set the admin email and password.
+Follow the prompts to set the admin email and name. A random temporary credential is
+generated and printed once; the admin must change it on first login. For scripted
+deployment, set `ADMIN_EMAIL` / `ADMIN_NAME` (and optionally `ADMIN_PASSWORD`) before
+running the command.
 
 ---
 

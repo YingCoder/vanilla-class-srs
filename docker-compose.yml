@@ -6,17 +6,48 @@ services:
       POSTGRES_DB: vanilla_class_srs
       POSTGRES_USER: ${POSTGRES_USER:-srs_user}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-changeme}
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-srs_user} -d vanilla_class_srs"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
     volumes:
       - pgdata:/var/lib/postgresql/data
+
+  # One-shot schema migration. The runtime server image has no Prisma CLI, so
+  # migrations run in this dedicated image before the API starts.
+  migrate:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+      target: migrator
+    restart: "no"
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-srs_user}:${POSTGRES_PASSWORD:-changeme}@db:5432/vanilla_class_srs
 
   server:
     build:
       context: .
       dockerfile: server/Dockerfile
+      target: runtime
     restart: unless-stopped
     depends_on:
-      - db
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     env_file: .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-srs_user}:${POSTGRES_PASSWORD:-changeme}@db:5432/vanilla_class_srs
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1:3000/api/health >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
     volumes:
       - ./logs:/app/logs
 
@@ -28,7 +59,26 @@ services:
     ports:
       - "2080:80"
     depends_on:
-      - server
+      server:
+        condition: service_healthy
+
+  # Interactive first-admin creation, run explicitly:
+  #   docker compose run --rm seed
+  # Set ADMIN_EMAIL / ADMIN_NAME (and optionally ADMIN_PASSWORD) to run without prompts.
+  seed:
+    build:
+      context: .
+      dockerfile: server/Dockerfile
+      target: seeder
+    profiles: ["setup"]
+    stdin_open: true
+    tty: true
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-srs_user}:${POSTGRES_PASSWORD:-changeme}@db:5432/vanilla_class_srs
 
 volumes:
   pgdata:
