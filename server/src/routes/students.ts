@@ -9,6 +9,7 @@ import { startSession, startRestudy, gradeCard, finishSession } from '../service
 import { labelsForClass } from '../services/departmentLabels.service'
 import { getRewardSummary } from '../services/reward.service'
 import studentStatsRouter from './stats.student'
+import { toCsv } from '../lib/csv'
 
 const router = asyncRouter()
 router.use(requireAuth, requireStudent, requirePasswordChanged)
@@ -403,27 +404,24 @@ router.get('/deck/export', async (req: Request, res: Response) => {
     orderBy: { createdAt: 'asc' },
   })
 
-  // Build CSV: student's exampleSentence/definitionL1 override takes priority over card's
-  const esc = (v: string | null | undefined) => {
-    if (!v) return ''
-    if (v.includes(',') || v.includes('"') || v.includes('\n')) return `"${v.replace(/"/g, '""')}"`
-    return v
-  }
-  const header = 'word,pos,definition_l2,definition_l1,example_sentence'
+  // Build CSV: student's exampleSentence/definitionL1 override takes priority over card's.
+  // escapeCsvCell also neutralises spreadsheet formula injection; toCsv adds a BOM
+  // so Chinese opens correctly in Excel on Windows.
+  const header = ['word', 'pos', 'definition_l2', 'definition_l1', 'example_sentence']
   const rows = instances.map((inst) => {
     const definitionL1 = inst.definitionL1 ?? inst.card.definitionL1 ?? null
     const example = inst.exampleSentence ?? inst.card.exampleSentence ?? null
     return [
-      esc(inst.card.word),
-      esc(inst.card.pos),
-      esc(inst.card.definitionL2),
-      esc(definitionL1),
-      esc(example),
-    ].join(',')
+      inst.card.word,
+      inst.card.pos,
+      inst.card.definitionL2,
+      definitionL1,
+      example,
+    ]
   })
 
-  const csv = [header, ...rows].join('\n')
-  res.setHeader('Content-Type', 'text/csv')
+  const csv = toCsv(header, rows)
+  res.setHeader('Content-Type', 'text/csv; charset=utf-8')
   res.setHeader('Content-Disposition', 'attachment; filename="deck-export.csv"')
   res.send(csv)
 })

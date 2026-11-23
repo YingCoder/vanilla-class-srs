@@ -40,7 +40,7 @@
 | 音频 / 图片 | 无字段、无素材 | 发布流程增加音频、图片字段与来源授权记录；无素材时仍可完成学习 |
 | 报告问题 | 无 | 新增 `feedback_reports` 与 `POST /feedback` |
 | CSP / CSRF / 统一错误码 / requestId | 全仓无 helmet、CSP、CSRF、`X-Client-Version`、`requestId`；错误仅 `{error}`（`server/src/index.ts:46-50`） | 阶段 3–4 补齐，先加 `requestId` 与统一错误格式 |
-| CSV 导出安全 | 学生 deck 导出未防公式注入、无 BOM（`routes/students.ts:406-427`） | 加 `= + - @` 前缀转义与 BOM |
+| CSV 导出安全 | **已修复** | 学生 deck 导出改用 `server/src/lib/csv.ts`：公式注入前缀转义 + UTF-8 BOM + CRLF；单测覆盖 `= + - @` 等触发字符。 |
 
 ## 4. 阶段 0 结论
 
