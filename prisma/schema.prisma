@@ -47,7 +47,11 @@ enum FSRSState {
 
 model User {
   id                 String    @id @default(uuid())
-  email              String    @unique
+  // Login identity. Students are created with a teacher-assigned username and
+  // may have no email; teachers/admins may log in with either. Both are unique
+  // when present (Postgres allows multiple NULLs).
+  username           String?   @unique
+  email              String?   @unique
   passwordHash       String
   name               String
   role               Role      @default(STUDENT)

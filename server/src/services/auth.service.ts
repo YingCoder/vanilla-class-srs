@@ -10,6 +10,38 @@ const ACCESS_TOKEN_TTL = '1h'
 const REFRESH_TOKEN_TTL = '30d'
 const RESET_TOKEN_TTL_MS = 1000 * 60 * 60 // 1 hour
 
+// ─── Login identity ──────────────────────────────────────────────────────────
+
+/**
+ * Students usually have no email address; teachers and admins may use either.
+ * Usernames are case-insensitive, stored lower-case, and limited to the
+ * characters a student can type on a phone keyboard.
+ */
+export const USERNAME_PATTERN = /^[a-z0-9_]{3,32}$/
+
+export function normalizeUsername(value: string): string {
+  return value.trim().toLowerCase()
+}
+
+export function isValidUsername(value: string): boolean {
+  return USERNAME_PATTERN.test(normalizeUsername(value))
+}
+
+/**
+ * Derive a readable username candidate from a name / email. The caller must
+ * still check uniqueness and append a suffix if needed.
+ */
+export function suggestUsername(name: string, email?: string | null): string {
+  const source = email ? email.split('@')[0] : name
+  const base = normalizeUsername(source)
+    .replace(/[^a-z0-9_]/g, '_')
+    .replace(/[_]{2,}/g, '_')
+    .replace(/^_+|_+$/g, '')
+    .slice(0, 24)
+  if (base.length >= 3) return base
+  return `user_${base || 'student'}`
+}
+
 // ─── JWT ────────────────────────────────────────────────────────────────────
 
 export interface JwtPayload {

@@ -6,7 +6,7 @@ import { ApiError } from '../../utils/api'
 export default function LoginPage() {
   const { login, user, loading: authLoading } = useAuth()
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
+  const [identifier, setIdentifier] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
@@ -29,7 +29,7 @@ export default function LoginPage() {
     setError(null)
     setLoading(true)
     try {
-      await login(email, password)
+      await login(identifier, password)
       // navigation handled by state change above
     } catch (e) {
       setError(e instanceof ApiError ? e.message : 'Login failed')
@@ -52,23 +52,26 @@ export default function LoginPage() {
             />
           </div>
           <p style={{ color: 'var(--color-text-muted)', marginBottom: 28, fontSize: 16, textAlign: 'center' }}>
-            Sign in to your account
+            登录你的账号
           </p>
           {error && <div className="alert alert-danger">{error}</div>}
           <form onSubmit={handleSubmit}>
             <div className="form-group">
-              <label className="form-label">Email</label>
+              <label className="form-label">用户名或邮箱</label>
               <input
                 className="form-input"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                type="text"
+                autoComplete="username"
+                autoCapitalize="none"
+                spellCheck={false}
+                placeholder="例如：zhang_san01"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 required
               />
             </div>
             <div className="form-group">
-              <label className="form-label">Password</label>
+              <label className="form-label">密码</label>
               <input
                 className="form-input"
                 type="password"
@@ -79,11 +82,11 @@ export default function LoginPage() {
               />
             </div>
             <button className="btn btn-primary btn-lg" type="submit" disabled={loading} style={{ width: '100%' }}>
-              {loading ? 'Signing in…' : 'Sign in'}
+              {loading ? '登录中…' : '登录'}
             </button>
           </form>
           <p style={{ marginTop: 16, fontSize: 13, textAlign: 'center', color: 'var(--color-text-muted)' }}>
-            If you've forgotten your password, you'll need to ask your teacher for a password reset.
+            忘记密码？学生请联系老师重置，教师请联系管理员。
           </p>
         </div>
         <div
@@ -100,40 +103,23 @@ export default function LoginPage() {
           }}
         >
           <h1 style={{ fontSize: 28, fontWeight: 700, marginBottom: 16 }}>
-            Welcome to Vanilla!
+            欢迎来到单词特训营
           </h1>
           <p style={{ fontSize: 16, lineHeight: 1.6, marginBottom: 16, opacity: 0.9 }}>
-            <strong>Vanilla Class SRS</strong> is designed to help students regularly
-            review the vocabulary that their teachers want them to learn.
+            按老师布置的单词表，每天完成少量复习，积少成多。
           </p>
           <h2 style={{ fontSize: 20, fontWeight: 700, marginBottom: 12 }}>
-            Key Features:
+            你可以：
           </h2>
           <ul style={{ fontSize: 16, lineHeight: 1.6, opacity: 0.9, paddingLeft: 20, marginBottom: 16 }}>
-            <li>Teachers assign vocabulary for students to review</li>
-            <li>Students can freely add their own vocabulary, and teachers can see what their own students add</li>
-            <li>Students review on their own; teachers can see the stats</li>
-            <li>Leaderboards for each class and student streak stats are generated automatically</li>
-            <li>
-              Rather than "quizzes," Vanilla provides flashcards which students use to
-              self-assess their own knowledge
-            </li>
-            <li>
-              Vanilla uses an{' '}
-              <a
-                href="https://controlaltbackspace.org/spacing-algorithm/"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={{ color: '#fff', textDecoration: 'underline' }}
-              >
-                SRS algorithm
-              </a>{' '}
-              to automatically select which vocabulary students need to review <em>now</em>
-            </li>
+            <li>完成老师布置的每日单词任务</li>
+            <li>复习自己的生词本，系统自动安排复习节奏</li>
+            <li>在手机上随时继续未完成的学习</li>
+            <li>查看连续学习天数、星级和班级排行榜</li>
           </ul>
           <p style={{ fontSize: 16, lineHeight: 1.6, opacity: 0.9 }}>
-            Students, you need to get your login credentials from your teacher. It will
-            be your school email address and a unique password.
+            学生账号由老师统一创建。登录名通常是你的姓名拼音或老师指定的编号，
+            初始密码请向老师索取，首次登录后请立即修改。
           </p>
         </div>
       </div>

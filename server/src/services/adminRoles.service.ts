@@ -6,7 +6,7 @@ import { PrismaClient, Role } from '@prisma/client'
 export const PROTECTED_ADMIN_USER_ID = '7dfe0eae-27a2-40bd-854f-344a65e4489d'
 
 export type DemoteAdminResult =
-  | { status: 'ok'; user: { id: string; name: string; email: string; role: Role } }
+  | { status: 'ok'; user: { id: string; name: string; username: string | null; email: string | null; role: Role } }
   | { status: 'protected' }
   | { status: 'not_found' }
   | { status: 'last_admin' }
@@ -38,7 +38,7 @@ export async function demoteAdmin(prisma: PrismaClient, targetUserId: string): P
   const updated = await prisma.user.update({
     where: { id: user.id },
     data: { role: user.teacherProfile ? Role.TEACHER : Role.STUDENT },
-    select: { id: true, name: true, email: true, role: true },
+    select: { id: true, name: true, username: true, email: true, role: true },
   })
   return { status: 'ok', user: updated }
 }

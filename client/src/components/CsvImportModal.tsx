@@ -18,6 +18,7 @@ interface Props {
 
 interface EnrollRowResult {
   email?: string
+  username?: string
   name?: string
   status: string
   error?: string
@@ -166,11 +167,12 @@ export function CsvImportModal({ title, endpoint, onSuccess, onClose, templateHi
             <p style={{ fontSize: 13, marginBottom: 8 }}>Enrollment results:</p>
             <div className="table-scroll">
             <table className="table" style={{ fontSize: 13 }}>
-              <thead><tr><th>Name</th><th>Email</th><th>Status</th><th>Temporary password</th></tr></thead>
+              <thead><tr><th>Name</th><th>Username</th><th>Email</th><th>Status</th><th>Temporary password</th></tr></thead>
               <tbody>
                 {result.results.map((r, i) => (
                   <tr key={i}>
                     <td>{r.name ?? '—'}</td>
+                    <td style={{ fontFamily: 'monospace' }}>{r.username ?? '—'}</td>
                     <td>{r.email ?? '—'}</td>
                     <td><span className={`badge badge-${r.status === 'enrolled' || r.status === 'already_enrolled' ? 'green' : 'red'}`}>{r.status}</span></td>
                     <td style={{ fontFamily: 'monospace', fontWeight: 600 }}>
@@ -186,14 +188,14 @@ export function CsvImportModal({ title, endpoint, onSuccess, onClose, templateHi
                 <button
                   type="button"
                   className="btn btn-secondary"
-                  onClick={() => downloadPasswordSheet(withPasswords.map((r) => ({ studentName: r.name, tempPassword: r.tempPassword })))}
+                  onClick={() => downloadPasswordSheet(withPasswords.map((r) => ({ studentName: r.name ?? '', username: r.username, email: r.email, tempPassword: r.tempPassword })))}
                 >
                   Download CSV
                 </button>
                 <button
                   type="button"
                   className="btn btn-secondary"
-                  onClick={() => printPasswordSlips(withPasswords.map((r) => ({ studentName: r.name, tempPassword: r.tempPassword })), printLabel ?? title)}
+                  onClick={() => printPasswordSlips(withPasswords.map((r) => ({ studentName: r.name ?? '', username: r.username, email: r.email, tempPassword: r.tempPassword })), printLabel ?? title)}
                 >
                   Print slips
                 </button>

@@ -51,7 +51,7 @@ docker compose run --rm seed
 
 The command prompts for an admin email and name, generates an unguessable temporary
 password and prints it once. For scripted deployment, set `ADMIN_EMAIL`, `ADMIN_NAME`
-and optionally `ADMIN_PASSWORD` in the environment. The admin must change the password
+and optionally `ADMIN_USERNAME` / `ADMIN_PASSWORD` in the environment. The admin must change the password
 on first login. Record the credentials — there is no other way to recover access.
 
 **4. Access the app**

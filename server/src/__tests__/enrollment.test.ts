@@ -7,7 +7,7 @@ describe('validateEnrollRows', () => {
   it('returns empty array for valid rows', () => {
     const errors = validateEnrollRows([
       { email: 'alice@school.edu', name: 'Alice' },
-      { email: 'bob@school.edu', name: 'Bob' },
+      { username: 'bob_01', name: 'Bob' },
     ])
     expect(errors).toHaveLength(0)
   })
@@ -19,10 +19,21 @@ describe('validateEnrollRows', () => {
     expect(errors[0].row).toBe(1)
   })
 
-  it('flags missing email', () => {
+  it('flags missing login identity (neither email nor username)', () => {
     const errors = validateEnrollRows([{ email: '', name: 'Alice' }])
     expect(errors).toHaveLength(1)
-    expect(errors[0].error).toMatch(/email/)
+    expect(errors[0].error).toMatch(/email or username/)
+  })
+
+  it('accepts a username-only row without an email', () => {
+    const errors = validateEnrollRows([{ username: 'alice_01', name: 'Alice' }])
+    expect(errors).toHaveLength(0)
+  })
+
+  it('flags an invalid username', () => {
+    const errors = validateEnrollRows([{ username: 'a', name: 'Alice' }])
+    expect(errors).toHaveLength(1)
+    expect(errors[0].error).toMatch(/username/)
   })
 
   it('flags invalid email format', () => {
@@ -60,7 +71,7 @@ describe('validateEnrollRows', () => {
 
 // Minimal Prisma mock — only models/methods used by enrollStudents
 function makePrisma({
-  existingUser = null as null | { id: string; email: string },
+  existingUser = null as null | { id: string; email: string; username?: string | null },
   existingStudent = null as null | { id: string; userId: string },
   existingEnrollment = null as null | { id: string; archivedAt?: Date | null; deck?: { id: string } | null },
   mandatoryCardIds = [] as string[],
@@ -113,6 +124,24 @@ function makePrisma({
 }
 
 describe('enrollStudents', () => {
+  it('creates a username-only student without an email', async () => {
+    const prisma = makePrisma()
+    const results = await enrollStudents(prisma as any, 'class-1', [
+      { username: 'newbie_01', name: 'New Student' },
+    ], 'actor-1')
+
+    expect(results[0].status).toBe('created')
+    expect(results[0].username).toBe('newbie_01')
+    expect(results[0].email).toBeUndefined()
+    expect(prisma._tx.user.create).toHaveBeenCalledWith({
+      data: expect.objectContaining({
+        username: 'newbie_01',
+        email: undefined,
+        name: 'New Student',
+      }),
+    })
+  })
+
   it('creates user, student, enrollment, deck for a new student', async () => {
     const prisma = makePrisma()
     const results = await enrollStudents(prisma as any, 'class-1', [
@@ -123,6 +152,7 @@ describe('enrollStudents', () => {
     expect(results[0].status).toBe('created')
     expect(results[0].tempPassword).toBeDefined()
     expect(results[0].email).toBe('new@school.edu')
+    expect(results[0].username).toMatch(/^new$/)
     expect(results[0].name).toBe('New Student')
 
     expect(prisma._tx.user.create).toHaveBeenCalledOnce()
@@ -133,7 +163,7 @@ describe('enrollStudents', () => {
 
   it('returns already_enrolled when student is already in the class', async () => {
     const prisma = makePrisma({
-      existingUser: { id: 'user-1', email: 'existing@school.edu' },
+      existingUser: { id: 'user-1', email: 'existing@school.edu', username: 'existing' },
       existingStudent: { id: 'student-1', userId: 'user-1' },
       existingEnrollment: { id: 'enrollment-1' },
     })
@@ -150,7 +180,7 @@ describe('enrollStudents', () => {
 
   it('reactivates a previously-unenrolled (archived) enrollment instead of erroring or duplicating', async () => {
     const prisma = makePrisma({
-      existingUser: { id: 'user-1', email: 'existing@school.edu' },
+      existingUser: { id: 'user-1', email: 'existing@school.edu', username: 'existing' },
       existingStudent: { id: 'student-1', userId: 'user-1' },
       existingEnrollment: { id: 'enrollment-1', archivedAt: new Date('2026-01-01'), deck: { id: 'deck-1' } },
       mandatoryCardIds: ['card-1'],
@@ -177,7 +207,7 @@ describe('enrollStudents', () => {
 
   it('enrolls existing user without creating a new User row', async () => {
     const prisma = makePrisma({
-      existingUser: { id: 'user-1', email: 'existing@school.edu' },
+      existingUser: { id: 'user-1', email: 'existing@school.edu', username: 'existing' },
       existingStudent: { id: 'student-1', userId: 'user-1' },
     })
 
@@ -194,7 +224,7 @@ describe('enrollStudents', () => {
   it('creates Student profile for a user who has no student record yet', async () => {
     // e.g. a former teacher being enrolled as a student
     const prisma = makePrisma({
-      existingUser: { id: 'user-1', email: 'teacher@school.edu' },
+      existingUser: { id: 'user-1', email: 'teacher@school.edu', username: 'teacher' },
       existingStudent: null,
     })
 

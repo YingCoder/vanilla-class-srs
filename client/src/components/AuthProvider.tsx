@@ -19,8 +19,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     refresh().finally(() => setLoading(false))
   }, [refresh])
 
-  const login = async (email: string, password: string) => {
-    const data = await api.post<{ user: AuthUser }>('/auth/login', { email, password })
+  const login = async (identifier: string, password: string) => {
+    const data = await api.post<{ user: AuthUser }>('/auth/login', { identifier, password })
     setUser(data.user)
   }
 

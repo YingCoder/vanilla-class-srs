@@ -17,7 +17,7 @@ A free, open-source, self-hostable spaced repetition system for classroom vocabu
 - Teacher stats: mastery matrix, leaderboards, accuracy heatmaps
 - Student stats: streaks, forecasts, session history
 - Students can add their own cards and customise example sentences
-- Email + password auth (no OAuth, no external identity providers)
+- Username or email login (students can be created without an email)
 - Fully self-hostable with Docker
 
 ---

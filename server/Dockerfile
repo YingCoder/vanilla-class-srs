@@ -32,6 +32,12 @@ RUN npm run build -w server
 FROM builder AS migrator
 CMD ["npx", "prisma", "migrate", "deploy", "--schema=prisma/schema.prisma"]
 
+# Seed target. The builder installs with --ignore-scripts, so the bcrypt native
+# binding is missing; rebuild it here before running the TypeScript seed script.
+FROM builder AS seeder
+RUN npm rebuild bcrypt
+CMD ["npx", "tsx", "server/src/scripts/seed-admin.ts"]
+
 # ── Stage 2: runtime ──────────────────────────────────────────────────────────
 FROM node:22-alpine AS runtime
 
@@ -62,10 +68,3 @@ ENV NODE_ENV=production
 EXPOSE 3000
 
 CMD ["node", "server/dist/index.js"]
-
-# ── Seed target ──────────────────────────────────────────────────────────────
-# Reuse the runtime image (it already contains the compiled seed script and the
-# production dependencies, including bcrypt's native binding). The builder stage
-# installs with --ignore-scripts, so running tsx there lacks the bcrypt binding.
-FROM runtime AS seeder
-CMD ["node", "server/dist/scripts/seed-admin.js"]

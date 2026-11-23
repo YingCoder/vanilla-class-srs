@@ -6,7 +6,7 @@
  *   docker compose run --rm seed
  *
  * Non-interactive (CI / scripted deployment):
- *   ADMIN_EMAIL=admin@example.com ADMIN_NAME=Admin \
+ *   ADMIN_EMAIL=admin@example.com ADMIN_NAME=Admin ADMIN_USERNAME=admin \
  *   ADMIN_PASSWORD='<temporary password>' \
  *   docker compose run --rm seed
  *
@@ -16,7 +16,7 @@
 
 import * as readline from 'readline/promises'
 import { PrismaClient, Role } from '@prisma/client'
-import { hashPassword, generateTempPassword } from '../services/auth.service'
+import { hashPassword, generateTempPassword, normalizeUsername, isValidUsername } from '../services/auth.service'
 
 const prisma = new PrismaClient()
 
@@ -64,6 +64,10 @@ async function main(): Promise<void> {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     throw new Error('ADMIN_EMAIL is not a valid email address.')
   }
+  const username = normalizeUsername(requiredEnv('ADMIN_USERNAME') ?? email.split('@')[0])
+  if (!isValidUsername(username)) {
+    throw new Error('ADMIN_USERNAME must be 3-32 characters: a-z, 0-9 or underscore.')
+  }
 
   // A supplied password is allowed for scripted deployment; otherwise generate
   // an unguessable random one (not a date/name-derived value).
@@ -78,6 +82,7 @@ async function main(): Promise<void> {
   await prisma.$transaction(async (tx) => {
     const user = await tx.user.create({
       data: {
+        username,
         email,
         name,
         passwordHash,
@@ -92,6 +97,7 @@ async function main(): Promise<void> {
 ✓ Admin created
 
   Email:    ${email}
+  Username: ${username}
   Password: ${plainPassword}
 
   The admin must change this password on first login.

@@ -808,9 +808,20 @@ router.post('/classes/:id/unarchive', async (req: Request, res: Response) => {
 // Student enrollment — admin manages any class
 // ─────────────────────────────────────────────
 
+const StudentUsernameSchema = z
+  .string()
+  .trim()
+  .min(3)
+  .max(32)
+  .regex(/^[a-zA-Z0-9_]+$/, 'username may contain only letters, digits and underscore')
+  .transform((value) => value.toLowerCase())
+
 const AddStudentSchema = z.object({
-  email: z.string().email(),
+  email: z.string().trim().email().optional(),
+  username: StudentUsernameSchema.optional(),
   name: z.string().min(1),
+}).refine((data) => !!(data.email || data.username), {
+  message: 'email or username is required',
 })
 
 // POST /api/admin/classes/:id/students  — single add
@@ -821,7 +832,12 @@ router.post('/classes/:id/students', validate(AddStudentSchema), async (req: Req
     return
   }
 
-  const results = await enrollStudents(prisma, cls.id, [{ email: req.body.email, name: req.body.name }], req.user!.sub)
+  const results = await enrollStudents(
+    prisma,
+    cls.id,
+    [{ email: req.body.email, username: req.body.username, name: req.body.name }],
+    req.user!.sub,
+  )
   const result = results[0]
 
   if (result.status === 'error') {
@@ -864,7 +880,7 @@ router.post(
       return
     }
 
-    const results = await enrollStudents(prisma, cls.id, parsed.rows as { email: string; name: string }[], req.user!.sub)
+    const results = await enrollStudents(prisma, cls.id, parsed.rows as { email?: string; username?: string; name: string }[], req.user!.sub)
     res.json({ results })
   },
 )
@@ -881,7 +897,7 @@ router.get('/classes/:id/students', async (req: Request, res: Response) => {
     orderBy: { student: { user: { name: 'asc' } } },
     include: {
       student: {
-        include: { user: { select: { id: true, name: true, email: true, lastLoginAt: true } } },
+        include: { user: { select: { id: true, name: true, username: true, email: true, lastLoginAt: true } } },
       },
       deck: { select: { id: true, _count: { select: { instances: true } } } },
     },
@@ -909,7 +925,8 @@ router.delete('/classes/:id/students/:studentId', async (req: Request, res: Resp
 
 const PatchStudentSchema = z.object({
   name: z.string().min(1).optional(),
-  email: z.string().email().optional(),
+  email: z.string().trim().email().nullable().optional(),
+  username: StudentUsernameSchema.optional(),
 })
 
 // PATCH /api/admin/classes/:id/students/:studentId  — edit name/email
@@ -930,12 +947,12 @@ router.patch(
       const updated = await prisma.user.update({
         where: { id: enrollment.student.user.id },
         data: req.body,
-        select: { id: true, name: true, email: true },
+        select: { id: true, name: true, username: true, email: true },
       })
       res.json(updated)
     } catch (err: any) {
       if (err?.code === 'P2002') {
-        res.status(409).json({ error: 'Email already in use' })
+        res.status(409).json({ error: 'Username or email already in use' })
         return
       }
       throw err
@@ -950,7 +967,7 @@ router.post('/classes/:id/students/:studentId/reset-password', async (req: Reque
 
   const enrollment = await prisma.enrollment.findFirst({
     where: { classId: cls.id, student: { id: p(req, 'studentId') }, archivedAt: null },
-    include: { student: { include: { user: { select: { id: true } } } } },
+    include: { student: { include: { user: { select: { id: true, username: true, email: true } } } } },
   })
   if (!enrollment) { res.status(404).json({ error: 'Student not found in this class' }); return }
 
@@ -960,7 +977,11 @@ router.post('/classes/:id/students/:studentId/reset-password', async (req: Reque
     where: { id: enrollment.student.user.id },
     data: { passwordHash, mustChangePassword: true },
   })
-  res.json({ tempPassword })
+  res.json({
+    tempPassword,
+    username: enrollment.student.user.username,
+    email: enrollment.student.user.email,
+  })
 })
 
 // POST /api/admin/classes/:id/reset-passwords  — reset all students in class

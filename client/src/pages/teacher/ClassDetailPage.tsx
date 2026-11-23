@@ -17,7 +17,7 @@ interface Class {
 }
 interface Enrollment {
   id: string
-  student: { id: string; user: { name: string; email: string; lastLoginAt: string | null } }
+  student: { id: string; user: { name: string; username: string | null; email: string | null; lastLoginAt: string | null } }
   deck: { id: string; _count: { instances: number } } | null
 }
 interface CardSet { id: string; name: string; status: string; _count: { cards: number } }
@@ -66,12 +66,12 @@ export default function TeacherClassDetailPage() {
   const [unenrollConfirm, setUnenrollConfirm] = useState<Enrollment | null>(null)
   const [unenrollTyped, setUnenrollTyped] = useState('')
   const [editingStudent, setEditingStudent] = useState<Enrollment | null>(null)
-  const [editStudentForm, setEditStudentForm] = useState({ name: '', email: '' })
+  const [editStudentForm, setEditStudentForm] = useState({ name: '', username: '', email: '' })
   const [resetPasswordConfirm, setResetPasswordConfirm] = useState<Enrollment | null>(null)
   const [showResetAllConfirm, setShowResetAllConfirm] = useState(false)
   const [showHw, setShowHw] = useState(false)
-  const [studentForm, setStudentForm] = useState({ email: '', name: '' })
-  const [newStudentResult, setNewStudentResult] = useState<{ status: string; tempPassword?: string } | null>(null)
+  const [studentForm, setStudentForm] = useState({ username: '', email: '', name: '' })
+  const [newStudentResult, setNewStudentResult] = useState<{ status: string; username?: string; tempPassword?: string } | null>(null)
   const [assignForm, setAssignForm] = useState({ cardSetId: '', type: 'MANDATORY', priority: 0 })
   const [hwForm, setHwForm] = useState({ sessionsRequired: 2, cardSetIds: [] as string[] })
   const [formError, setFormError] = useState<string | null>(null)
@@ -81,7 +81,9 @@ export default function TeacherClassDetailPage() {
   const [progressDone, setProgressDone] = useState(false)
   const [progressError, setProgressError] = useState(false)
   const [showProgress, setShowProgress] = useState(false)
-  const [resetResult, setResetResult] = useState<{ studentName: string; tempPassword: string }[] | null>(null)
+  const [resetResult, setResetResult] = useState<
+    { studentName: string; username?: string | null; email?: string | null; tempPassword: string }[] | null
+  >(null)
   const pendingAssignmentId = useRef<string | null>(null)
 
   const handleAddStudent = async (e: FormEvent) => {
@@ -89,8 +91,21 @@ export default function TeacherClassDetailPage() {
     setSaving(true)
     setFormError(null)
     setNewStudentResult(null)
+    if (!studentForm.username.trim() && !studentForm.email.trim()) {
+      setFormError('请输入用户名或邮箱中的至少一项')
+      setSaving(false)
+      return
+    }
     try {
-      const result = await api.post<{ status: string; tempPassword?: string }>(`/teachers/classes/${id}/students`, studentForm)
+      const payload = {
+        name: studentForm.name,
+        username: studentForm.username.trim() || undefined,
+        email: studentForm.email.trim() || undefined,
+      }
+      const result = await api.post<{ status: string; username?: string; tempPassword?: string }>(
+        `/teachers/classes/${id}/students`,
+        payload,
+      )
       setNewStudentResult(result)
       reloadEnrollments()
     } catch (e) {
@@ -110,7 +125,12 @@ export default function TeacherClassDetailPage() {
         {},
       )
       setResetPasswordConfirm(null)
-      setResetResult([{ studentName: resetPasswordConfirm.student.user.name, tempPassword: result.tempPassword }])
+      setResetResult([{
+        studentName: resetPasswordConfirm.student.user.name,
+        username: resetPasswordConfirm.student.user.username,
+        email: resetPasswordConfirm.student.user.email,
+        tempPassword: result.tempPassword,
+      }])
     } catch (e) {
       setFormError(e instanceof ApiError ? e.message : 'Failed')
     } finally {
@@ -124,7 +144,11 @@ export default function TeacherClassDetailPage() {
     setSaving(true)
     setFormError(null)
     try {
-      await api.patch(`/teachers/classes/${id}/students/${editingStudent.student.id}`, editStudentForm)
+      await api.patch(`/teachers/classes/${id}/students/${editingStudent.student.id}`, {
+        name: editStudentForm.name,
+        username: editStudentForm.username.trim() || undefined,
+        email: editStudentForm.email.trim() || null,
+      })
       setEditingStudent(null)
       reloadEnrollments()
     } catch (e) {
@@ -150,7 +174,7 @@ export default function TeacherClassDetailPage() {
     setSaving(true)
     setFormError(null)
     try {
-      const result = await api.post<{ results: { studentName: string; tempPassword: string }[]; count: number }>(`/teachers/classes/${id}/reset-passwords`, {})
+      const result = await api.post<{ results: { studentName: string; username?: string | null; email?: string | null; tempPassword: string }[]; count: number }>(`/teachers/classes/${id}/reset-passwords`, {})
       setShowResetAllConfirm(false)
       setResetResult(result.results)
     } catch (e) {
@@ -325,19 +349,35 @@ export default function TeacherClassDetailPage() {
                 {newStudentResult && (
                   <div className="alert alert-success">
                     Student {newStudentResult.status === 'already_enrolled' ? 'already enrolled.' : 'added.'}
+                    {newStudentResult.username && (
+                      <> Login: <strong style={{ fontFamily: 'monospace' }}>{newStudentResult.username}</strong></>
+                    )}
                     {newStudentResult.tempPassword && (
-                      <> Temp password: <strong style={{ fontFamily: 'monospace' }}>{newStudentResult.tempPassword}</strong></>
+                      <> · Temp password: <strong style={{ fontFamily: 'monospace' }}>{newStudentResult.tempPassword}</strong></>
                     )}
                   </div>
                 )}
                 <div className="form-group">
-                  <label className="form-label">Email</label>
-                  <input className="form-input" type="email" value={studentForm.email} onChange={(e) => setStudentForm({ ...studentForm, email: e.target.value })} required />
+                  <label className="form-label">Username</label>
+                  <input
+                    className="form-input"
+                    value={studentForm.username}
+                    onChange={(e) => setStudentForm({ ...studentForm, username: e.target.value })}
+                    placeholder="例如 zhang_san01（3-32 位字母、数字或下划线）"
+                    autoCapitalize="none"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Email（可选）</label>
+                  <input className="form-input" type="email" value={studentForm.email} onChange={(e) => setStudentForm({ ...studentForm, email: e.target.value })} />
                 </div>
                 <div className="form-group">
                   <label className="form-label">Name</label>
                   <input className="form-input" value={studentForm.name} onChange={(e) => setStudentForm({ ...studentForm, name: e.target.value })} required />
                 </div>
+                <p style={{ fontSize: 12, color: 'var(--color-text-muted)', marginTop: -4 }}>
+                  用户名或邮箱至少填写一项。仅填用户名即可创建无邮箱账号。
+                </p>
                 <div className="modal-footer">
                   <button type="button" className="btn btn-secondary" onClick={() => { setShowAddStudent(false); setNewStudentResult(null) }}>Close</button>
                   <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Adding…' : 'Add Student'}</button>
@@ -352,7 +392,7 @@ export default function TeacherClassDetailPage() {
               endpoint={`/teachers/classes/${id}/students/import`}
               onSuccess={() => { setShowImportStudents(false); reloadEnrollments() }}
               onClose={() => setShowImportStudents(false)}
-              templateHint='CSV format: name,email — one student per row. Existing users will be enrolled without duplicating their account.'
+              templateHint='CSV format: name,username,email — one student per row. Username may be used without an email; existing users will be enrolled without duplicating their account.'
               templateCsv={STUDENT_IMPORT_TEMPLATE_CSV}
               templateFilename={STUDENT_IMPORT_TEMPLATE_FILENAME}
             />
@@ -457,13 +497,21 @@ export default function TeacherClassDetailPage() {
                   />
                 </div>
                 <div className="form-group">
-                  <label className="form-label">Email</label>
+                  <label className="form-label">Username</label>
+                  <input
+                    className="form-input"
+                    value={editStudentForm.username}
+                    onChange={(e) => setEditStudentForm({ ...editStudentForm, username: e.target.value })}
+                    autoCapitalize="none"
+                  />
+                </div>
+                <div className="form-group">
+                  <label className="form-label">Email（可选）</label>
                   <input
                     className="form-input"
                     type="email"
                     value={editStudentForm.email}
                     onChange={(e) => setEditStudentForm({ ...editStudentForm, email: e.target.value })}
-                    required
                   />
                 </div>
                 <div className="form-group">
@@ -509,7 +557,7 @@ export default function TeacherClassDetailPage() {
           )}
           <div className="page-header" style={{ marginBottom: 16 }}>
             <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-              <button className="btn btn-primary btn-sm" onClick={() => { setFormError(null); setNewStudentResult(null); setStudentForm({ email: '', name: '' }); setShowAddStudent(true) }}>+ Add Student</button>
+              <button className="btn btn-primary btn-sm" onClick={() => { setFormError(null); setNewStudentResult(null); setStudentForm({ username: '', email: '', name: '' }); setShowAddStudent(true) }}>+ Add Student</button>
               <button className="btn btn-secondary btn-sm" onClick={() => setShowImportStudents(true)}>Import CSV</button>
               {enrollments && enrollments.length > 0 && (
                 <button className="btn btn-danger btn-sm" onClick={() => { setFormError(null); setShowResetAllConfirm(true) }}>Reset All Passwords</button>
@@ -522,6 +570,7 @@ export default function TeacherClassDetailPage() {
             <thead>
               <tr>
                 <th>Name</th>
+                <th>Login</th>
                 <th>Email</th>
                 <th>Cards in Deck</th>
                 <th style={{ cursor: 'pointer' }} onClick={() => setLastLoginSortAsc((v) => (v === false ? true : false))}>
@@ -531,11 +580,12 @@ export default function TeacherClassDetailPage() {
               </tr>
             </thead>
             <tbody>
-              {!sortedEnrollments?.length && <tr><td colSpan={5} className="table-empty">No students enrolled.</td></tr>}
+              {!sortedEnrollments?.length && <tr><td colSpan={6} className="table-empty">No students enrolled.</td></tr>}
               {sortedEnrollments?.map((enr) => (
                 <tr key={enr.id}>
                   <td><Link to={`/teacher/classes/${id}/students/${enr.student.id}/stats`} state={{ studentName: enr.student.user.name }}>{enr.student.user.name}</Link></td>
-                  <td>{enr.student.user.email}</td>
+                  <td style={{ fontFamily: 'monospace' }}>{enr.student.user.username ?? '—'}</td>
+                  <td>{enr.student.user.email ?? '—'}</td>
                   <td>{enr.deck?._count.instances ?? 0}</td>
                   <td style={{ fontSize: 12, color: 'var(--color-text-muted)' }}>{formatLastLogin(enr.student.user.lastLoginAt)}</td>
                   <td style={{ display: 'flex', gap: 4 }}>
@@ -546,7 +596,7 @@ export default function TeacherClassDetailPage() {
                     >View Cards</Link>
                     <button
                       className="btn btn-secondary btn-sm"
-                      onClick={() => { setEditingStudent(enr); setEditStudentForm({ name: enr.student.user.name, email: enr.student.user.email }); setFormError(null) }}
+                      onClick={() => { setEditingStudent(enr); setEditStudentForm({ name: enr.student.user.name, username: enr.student.user.username ?? '', email: enr.student.user.email ?? '' }); setFormError(null) }}
                     >
                       Edit
                     </button>

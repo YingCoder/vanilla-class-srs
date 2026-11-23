@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest'
 import { resetAllClassPasswords } from '../services/classPasswordReset.service'
 
-function makePrisma(enrollments: { student: { user: { id: string; name: string } } }[]) {
+function makePrisma(enrollments: { student: { user: { id: string; name: string; username?: string | null; email?: string | null } } }[]) {
   return {
     enrollment: {
       findMany: vi.fn().mockResolvedValue(enrollments),
@@ -23,7 +23,7 @@ describe('resetAllClassPasswords', () => {
 
     expect(prisma.enrollment.findMany).toHaveBeenCalledWith({
       where: { classId: 'class-1', archivedAt: null },
-      include: { student: { include: { user: { select: { id: true, name: true } } } } },
+      include: { student: { include: { user: { select: { id: true, name: true, username: true, email: true } } } } },
     })
     expect(results).toHaveLength(2)
     expect(results.map((r) => r.studentName)).toEqual(['Alice', 'Bob'])

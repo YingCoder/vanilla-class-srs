@@ -3,6 +3,8 @@ import { generateTempPassword, hashPassword } from './auth.service'
 
 export interface ClassPasswordResetResult {
   studentName: string
+  username: string | null
+  email: string | null
   tempPassword: string
 }
 
@@ -20,7 +22,7 @@ export async function resetAllClassPasswords(
 ): Promise<ClassPasswordResetResult[]> {
   const enrollments = await prisma.enrollment.findMany({
     where: { classId, archivedAt: null },
-    include: { student: { include: { user: { select: { id: true, name: true } } } } },
+    include: { student: { include: { user: { select: { id: true, name: true, username: true, email: true } } } } },
   })
 
   return Promise.all(
@@ -31,7 +33,12 @@ export async function resetAllClassPasswords(
         where: { id: e.student.user.id },
         data: { passwordHash, mustChangePassword: true },
       })
-      return { studentName: e.student.user.name, tempPassword }
+      return {
+        studentName: e.student.user.name,
+        username: e.student.user.username,
+        email: e.student.user.email,
+        tempPassword,
+      }
     }),
   )
 }

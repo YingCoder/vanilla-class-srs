@@ -10,7 +10,7 @@ function makePrisma({
       findUnique: vi.fn().mockResolvedValue(user),
       count: vi.fn().mockResolvedValue(adminCount),
       update: vi.fn().mockImplementation(({ where, data }: any) =>
-        Promise.resolve({ id: where.id, name: 'Some Admin', email: 'admin@example.com', role: data.role }),
+        Promise.resolve({ id: where.id, name: 'Some Admin', username: 'some_admin', email: 'admin@example.com', role: data.role }),
       ),
     },
   }
@@ -57,7 +57,7 @@ describe('demoteAdmin', () => {
     expect(prisma.user.update).toHaveBeenCalledWith({
       where: { id: 'a1' },
       data: { role: 'TEACHER' },
-      select: { id: true, name: true, email: true, role: true },
+      select: { id: true, name: true, username: true, email: true, role: true },
     })
   })
 

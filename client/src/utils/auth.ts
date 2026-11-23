@@ -2,7 +2,8 @@ import { createContext, useContext } from 'react'
 
 export interface AuthUser {
   sub: string
-  email: string
+  username: string | null
+  email: string | null
   name: string
   role: 'ADMIN' | 'TEACHER' | 'STUDENT'
   mustChangePassword: boolean
@@ -11,7 +12,7 @@ export interface AuthUser {
 export interface AuthContextValue {
   user: AuthUser | null
   loading: boolean
-  login: (email: string, password: string) => Promise<void>
+  login: (identifier: string, password: string) => Promise<void>
   logout: () => Promise<void>
   refresh: () => Promise<void>
 }

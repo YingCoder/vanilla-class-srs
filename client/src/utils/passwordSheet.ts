@@ -16,7 +16,13 @@
 
 export interface PasswordSheetRow {
   studentName: string
+  username?: string | null
+  email?: string | null
   tempPassword: string
+}
+
+function loginOf(row: PasswordSheetRow): string {
+  return row.username?.trim() || row.email?.trim() || ''
 }
 
 function csvEscape(value: string): string {
@@ -24,7 +30,12 @@ function csvEscape(value: string): string {
 }
 
 export function downloadPasswordSheet(rows: PasswordSheetRow[], nameLabel = 'Student'): void {
-  const lines = [`${nameLabel},Temporary Password`, ...rows.map((r) => `${csvEscape(r.studentName)},${r.tempPassword}`)]
+  const lines = [
+    `${nameLabel},Login,Username,Email,Temporary password`,
+    ...rows.map((r) =>
+      [csvEscape(r.studentName), csvEscape(loginOf(r)), csvEscape(r.username ?? ''), csvEscape(r.email ?? ''), csvEscape(r.tempPassword)].join(','),
+    ),
+  ]
   const blob = new Blob([lines.join('\n')], { type: 'text/csv' })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
@@ -42,8 +53,9 @@ export function printPasswordSlips(rows: PasswordSheetRow[], subtitle: string): 
     <div class="slip">
       <div class="class-name">${subtitle}</div>
       <div class="student-name">${r.studentName}</div>
+      <div class="login">登录名：${loginOf(r)}</div>
       <div class="password">${r.tempPassword}</div>
-      <div class="note">Change this password when you first log in.</div>
+      <div class="note">首次登录后请立即修改密码。</div>
     </div>
   `).join('')
 
@@ -60,6 +72,7 @@ export function printPasswordSlips(rows: PasswordSheetRow[], subtitle: string): 
           }
           .class-name { font-size: 12px; color: #666; }
           .student-name { font-size: 16px; font-weight: 600; margin-top: 2px; }
+          .login { font-size: 13px; margin-top: 2px; color: #333; }
           .password { font-family: monospace; font-size: 20px; font-weight: 700; letter-spacing: 1px; margin-top: 6px; }
           .note { font-size: 11px; color: #666; margin-top: 6px; }
         </style>

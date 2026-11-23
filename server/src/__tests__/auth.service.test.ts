@@ -1,6 +1,35 @@
 import { describe, it, expect } from 'vitest'
-import { generateTempPassword } from '../services/auth.service'
+import {
+  generateTempPassword,
+  normalizeUsername,
+  isValidUsername,
+  suggestUsername,
+} from '../services/auth.service'
 import { PASSWORD_WORDS } from '../data/passwordWords'
+
+describe('username identity', () => {
+  it('normalises case and surrounding whitespace', () => {
+    expect(normalizeUsername('  Zhang_San01 ')).toBe('zhang_san01')
+  })
+
+  it('accepts 3-32 characters of letters, digits and underscore', () => {
+    expect(isValidUsername('abc')).toBe(true)
+    expect(isValidUsername('student_2026')).toBe(true)
+    expect(isValidUsername('a')).toBe(false)
+    expect(isValidUsername('with space')).toBe(false)
+    expect(isValidUsername('a'.repeat(33))).toBe(false)
+  })
+
+  it('derives a readable candidate from an email local part', () => {
+    expect(suggestUsername('Zhang San', 'Zhang.San@school.edu')).toBe('zhang_san')
+  })
+
+  it('falls back to a safe candidate for CJK names without an email', () => {
+    const generated = suggestUsername('张三')
+    expect(generated.startsWith('user_')).toBe(true)
+    expect(isValidUsername(generated)).toBe(true)
+  })
+})
 
 describe('generateTempPassword', () => {
   it('produces three lowercase words from the word list plus a two-digit number, hyphen-joined', () => {

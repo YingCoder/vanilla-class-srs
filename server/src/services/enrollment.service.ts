@@ -19,7 +19,8 @@
 import { PrismaClient, Role, CardOrigin } from '@prisma/client'
 import { parse } from 'csv-parse/sync'
 import { z } from 'zod'
-import { hashPassword, generateTempPassword } from './auth.service'
+import crypto from 'crypto'
+import { hashPassword, generateTempPassword, normalizeUsername, isValidUsername, suggestUsername } from './auth.service'
 import { logAuditEvent } from '../lib/auditLog'
 
 const EmailSchema = z.string().email()
@@ -94,34 +95,63 @@ export function parseEnrollCsv(buffer: Buffer, confirmedHeaderless: boolean): Pa
  */
 export function validateEnrollRows(
   rows: unknown[],
-): { row: number; email?: string; error: string }[] {
-  const errors: { row: number; email?: string; error: string }[] = []
+): { row: number; email?: string; username?: string; error: string }[] {
+  const errors: { row: number; email?: string; username?: string; error: string }[] = []
   for (let i = 0; i < rows.length; i++) {
     const r = rows[i] as Record<string, string>
+    const email = r.email?.trim() ?? ''
+    const username = r.username?.trim() ?? ''
     if (!r.name || !r.name.trim()) {
-      errors.push({ row: i + 1, email: r.email, error: 'name is required' })
+      errors.push({ row: i + 1, email: r.email, username: r.username, error: 'name is required' })
     }
-    if (!r.email || !r.email.trim()) {
-      errors.push({ row: i + 1, error: 'email is required' })
-    } else if (!EmailSchema.safeParse(r.email.trim()).success) {
-      errors.push({ row: i + 1, email: r.email, error: 'invalid email format' })
+    if (!email && !username) {
+      errors.push({ row: i + 1, error: 'email or username is required' })
+    }
+    if (email && !EmailSchema.safeParse(email).success) {
+      errors.push({ row: i + 1, email, error: 'invalid email format' })
+    }
+    if (username && !isValidUsername(username)) {
+      errors.push({ row: i + 1, username, error: 'username must be 3-32 characters: a-z, 0-9 or underscore' })
     }
   }
   return errors
 }
 
 export interface EnrollInput {
-  email: string
+  /** Optional: students may be created with a username and no email. */
+  email?: string
+  username?: string
   name: string
 }
 
 export interface EnrollResult {
-  email: string
+  email?: string
+  username?: string
   name: string
   status: 'created' | 'enrolled' | 'already_enrolled' | 'error'
   /** One-time temp password — only set when status === 'created' */
   tempPassword?: string
   error?: string
+}
+
+/**
+ * Pick a username that is not taken. The base comes from the email local part
+ * or the student name; a short random suffix resolves collisions without
+ * leaking the student's numeric id.
+ */
+async function allocateUsername(
+  tx: Pick<PrismaClient, 'user'>,
+  base: string,
+): Promise<string> {
+  const normalized = normalizeUsername(base).slice(0, 24) || 'student'
+  for (let attempt = 0; attempt < 5; attempt++) {
+    const candidate = attempt === 0
+      ? normalized
+      : `${normalized.slice(0, 24)}_${crypto.randomInt(100000, 999999)}`
+    const taken = await tx.user.findUnique({ where: { username: candidate }, select: { id: true } })
+    if (!taken) return candidate
+  }
+  throw new Error('Could not allocate a unique username')
 }
 
 /**
@@ -144,18 +174,30 @@ export async function enrollStudents(
   const results: EnrollResult[] = []
 
   for (const row of rows) {
+    const email = row.email?.trim() || undefined
+    const requestedUsername = row.username?.trim() ? normalizeUsername(row.username.trim()) : undefined
     try {
       const result = await prisma.$transaction(async (tx) => {
         // ── 1. Find or create User + Student profile ─────────────────────────
-        let user = await tx.user.findUnique({ where: { email: row.email } })
+        // A username is the primary student identity; email is optional and
+        // remains a fallback for accounts created by an earlier deployment.
+        let user = requestedUsername
+          ? await tx.user.findUnique({ where: { username: requestedUsername } })
+          : null
+        if (!user && email) {
+          user = await tx.user.findUnique({ where: { email } })
+        }
         let tempPassword: string | undefined
+        let resolvedUsername = user?.username ?? requestedUsername
 
         if (!user) {
           tempPassword = generateTempPassword()
           const passwordHash = await hashPassword(tempPassword)
+          resolvedUsername = requestedUsername ?? await allocateUsername(tx, suggestUsername(row.name, email))
           user = await tx.user.create({
             data: {
-              email: row.email,
+              username: resolvedUsername,
+              email,
               name: row.name,
               passwordHash,
               role: Role.STUDENT,
@@ -164,6 +206,11 @@ export async function enrollStudents(
           })
           // Create Student profile
           await tx.student.create({ data: { userId: user.id } })
+        } else if (!user.username) {
+          // Legacy account with no username: give it one without changing the
+          // identity the teacher is enrolling by.
+          resolvedUsername = await allocateUsername(tx, suggestUsername(user.name, email))
+          await tx.user.update({ where: { id: user.id }, data: { username: resolvedUsername } })
         }
 
         // Ensure Student profile exists (user may have been TEACHER or ADMIN)
@@ -181,7 +228,12 @@ export async function enrollStudents(
           include: { deck: true },
         })
         if (existingEnrollment && !existingEnrollment.archivedAt) {
-          return { email: row.email, name: row.name, status: 'already_enrolled' as const }
+          return {
+            email,
+            username: resolvedUsername ?? undefined,
+            name: row.name,
+            status: 'already_enrolled' as const,
+          }
         }
 
         let deckId: string
@@ -217,20 +269,33 @@ export async function enrollStudents(
         }
 
         const status = tempPassword ? 'created' : 'enrolled'
-        return { email: row.email, name: row.name, status: status as 'created' | 'enrolled', tempPassword }
+        return {
+          email,
+          username: resolvedUsername ?? undefined,
+          name: row.name,
+          status: status as 'created' | 'enrolled',
+          tempPassword,
+        }
       })
 
       if (result.status === 'created') {
         logAuditEvent('student_account_created', {
           actorUserId,
           studentEmail: result.email,
+          studentUsername: result.username,
           classId,
         })
       }
 
       results.push(result)
     } catch (err: any) {
-      results.push({ email: row.email, name: row.name, status: 'error', error: err?.message ?? 'Unknown error' })
+      results.push({
+        email,
+        username: requestedUsername,
+        name: row.name,
+        status: 'error',
+        error: err?.message ?? 'Unknown error',
+      })
     }
   }
 

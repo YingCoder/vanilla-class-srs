@@ -11,6 +11,7 @@ import {
   verifyRefreshToken,
   generateResetToken,
   hashResetToken,
+  normalizeUsername,
 } from '../services/auth.service'
 import { sendPasswordResetEmail } from '../services/email.service'
 import { requireAuth } from '../middleware/auth'
@@ -24,8 +25,10 @@ const router = asyncRouter()
 // limit still blunts scripted guessing against a single account, without one
 // student's typos affecting anyone else's login.
 export function authRateLimitKey(req: Request): string {
-  const email = typeof req.body?.email === 'string' ? req.body.email.trim().toLowerCase() : ''
-  return `${ipKeyGenerator(req.ip ?? '')}:${email}`
+  const body = req.body ?? {}
+  const raw = body.identifier ?? body.username ?? body.email
+  const identifier = typeof raw === 'string' ? raw.trim().toLowerCase() : ''
+  return `${ipKeyGenerator(req.ip ?? '')}:${identifier}`
 }
 
 const authRateLimit = rateLimit({
@@ -40,8 +43,14 @@ const authRateLimit = rateLimit({
 // ─── POST /api/auth/login ────────────────────────────────────────────────────
 
 const LoginSchema = z.object({
-  email: z.string().email(),
+  // New clients send `identifier` (username or email). `email` and `username`
+  // stay accepted for the existing client and any school tooling.
+  identifier: z.string().trim().min(3).optional(),
+  email: z.string().trim().email().optional(),
+  username: z.string().trim().min(3).optional(),
   password: z.string().min(1),
+}).refine((data) => !!(data.identifier || data.email || data.username), {
+  message: 'username or email is required',
 })
 
 router.post('/login', authRateLimit, async (req: Request, res: Response) => {
@@ -51,8 +60,12 @@ router.post('/login', authRateLimit, async (req: Request, res: Response) => {
     return
   }
 
-  const { email, password } = parsed.data
-  const user = await prisma.user.findUnique({ where: { email } })
+  const { password } = parsed.data
+  const rawIdentifier = (parsed.data.identifier ?? parsed.data.username ?? parsed.data.email ?? '').trim()
+  const usernameCandidate = normalizeUsername(rawIdentifier)
+  const user = await prisma.user.findFirst({
+    where: { OR: [{ email: rawIdentifier }, { username: usernameCandidate }] },
+  })
 
   // Use constant-time compare even when user is not found to prevent timing attacks
   const dummyHash = '$2b$12$invalidhashpaddingtomatchbcryptlength000000000000000000'
@@ -60,14 +73,20 @@ router.post('/login', authRateLimit, async (req: Request, res: Response) => {
   const valid = await comparePassword(password, hash)
 
   if (!user || !valid) {
-    logAuditEvent('login_failure', { email, ip: req.ip })
-    res.status(401).json({ error: 'Invalid email or password' })
+    logAuditEvent('login_failure', { identifier: rawIdentifier, ip: req.ip })
+    res.status(401).json({ error: 'Invalid username or password' })
     return
   }
 
   await prisma.user.update({ where: { id: user.id }, data: { lastLoginAt: new Date() } })
 
-  logAuditEvent('login_success', { userId: user.id, email: user.email, role: user.role, ip: req.ip })
+  logAuditEvent('login_success', {
+    userId: user.id,
+    username: user.username,
+    email: user.email,
+    role: user.role,
+    ip: req.ip,
+  })
 
   setAuthCookies(res, user.id, user.role)
 
@@ -75,6 +94,7 @@ router.post('/login', authRateLimit, async (req: Request, res: Response) => {
     user: {
       sub: user.id,
       name: user.name,
+      username: user.username,
       email: user.email,
       role: user.role,
       mustChangePassword: user.mustChangePassword,
@@ -120,6 +140,7 @@ router.post('/refresh', async (req: Request, res: Response) => {
     res.json({
       user: {
         sub: user.id,
+        username: user.username,
         email: user.email,
         name: user.name,
         role: user.role,
@@ -187,7 +208,9 @@ router.post('/forgot-password', authRateLimit, async (req: Request, res: Respons
 
   // Always respond 200 — don't leak whether the email is registered. The audit
   // log entry below is server-side only, never reflected back in the response.
-  if (!user) {
+  // Accounts without an email (students) cannot use email reset; their teacher
+  // resets the password from the class roster instead.
+  if (!user || !user.email) {
     logAuditEvent('password_reset_requested', { email: parsed.data.email, userFound: false })
     res.json({ ok: true })
     return
