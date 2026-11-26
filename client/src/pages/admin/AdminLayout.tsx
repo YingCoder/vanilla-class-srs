@@ -10,7 +10,10 @@ const navItems = [
   { to: '/admin/classes', label: '班级' },
   { to: '/admin/cardsets', label: '词集' },
   { to: '/admin/stats', label: '统计' },
+  { to: '/admin/game', label: '激励看板' },
+  { to: '/admin/mnemonics', label: '邪修口诀库' },
   { to: '/admin/leadership', label: '学科/年级报表' },
+  { to: '/admin/releases', label: '热更新推送' },
 ]
 
 export default function AdminLayout() {

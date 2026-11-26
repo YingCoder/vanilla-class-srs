@@ -8,7 +8,10 @@ import AppShell from '../../components/AppShell'
 
 const navItems = [
   { to: '/teacher/classes', label: '我的班级' },
+  { to: '/teacher/game', label: '激励看板' },
+  { to: '/teacher/mnemonics', label: '邪修口诀库' },
   { to: '/teacher/cardsets', label: '词集' },
+  { to: '/teacher/releases', label: '热更新推送' },
 ]
 
 export default function TeacherLayout() {

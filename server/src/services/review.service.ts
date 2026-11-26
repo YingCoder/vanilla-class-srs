@@ -10,9 +10,29 @@
 import { PrismaClient, FSRSState } from '@prisma/client'
 import { schedule } from '@vanilla-srs/shared/fsrs'
 import type { FSRSParams } from '@vanilla-srs/shared/fsrs'
+import { mapFsrsToEbbinghausStage } from '@vanilla-srs/shared/ebbinghaus'
+import {
+  rarityFromStage,
+  shanghaiDayBounds,
+  xpForGrade,
+} from '@vanilla-srs/shared/gamification'
+import { preferHighestRetentionDueFirst } from '@vanilla-srs/shared/world'
+import { lookupZhongkaoWord, type WordMnemonic } from '@vanilla-srs/shared/vocab'
 import { DEFAULT_MIN_CARDS_PER_SESSION, getWeeklyGoal, WeeklyGoal } from './homework.service'
 import { computeStreakAndBestDay } from './streak.service'
 import { settleSessionRewards, type RewardSettlement } from './reward.service'
+import { getEffectiveGameConfig } from './gameConfig.service'
+import { getRuntimeMnemonicOverlays, type RuntimeMnemonicOverlays } from './mnemonicOverlay.service'
+import { isClassSeasonActive } from './seasonPlan.service'
+import {
+  countTomorrowDueCards,
+  getStudentGameSummary,
+  getWeakBossPool,
+  isGamificationAvailable,
+  recordComebackIfEligibleInTx,
+  recordGameRewardEventInTx,
+  type RewardFeedback,
+} from './gamification.service'
 
 // Caps how many due/review cards appear in a single session — a UX/session-length decision,
 // not an FSRS scheduling parameter, so it lives here rather than in the configurable
@@ -28,15 +48,19 @@ export interface SessionCard {
   cardId: string
   word: string
   pos: string | null
+  ipa: string | null
   definitionL2: string | null
   definitionL1: string | null
   exampleSentence: string | null // student override first, then card default
+  mnemonic: WordMnemonic | null
   state: FSRSState
   due: Date
   stability: number
   difficulty: number
   lapses: number
   reps: number
+  bestStage: number | null
+  lastReview: Date | null
 }
 
 export interface StartSessionResult {
@@ -152,21 +176,28 @@ async function newCardsReviewedToday(prisma: PrismaClient, deckId: string): Prom
 
 // ── start ────────────────────────────────────────────────────────────────────
 
-function toSessionCard(inst: any): SessionCard {
+function toSessionCard(inst: any, overlays?: RuntimeMnemonicOverlays): SessionCard {
+  const zhongkao = lookupZhongkaoWord(inst.card.word)
+  const key = inst.card.word.trim().toLowerCase()
+  const patchedMnemonic = overlays?.teacherPatches.get(key)
   return {
     instanceId: inst.id,
     cardId: inst.cardId,
     word: inst.card.word,
     pos: inst.card.pos,
+    ipa: inst.card.ipa ?? zhongkao?.ipa ?? null,
     definitionL2: inst.card.definitionL2,
     definitionL1: inst.definitionL1 ?? inst.card.definitionL1,
     exampleSentence: inst.exampleSentence ?? inst.card.exampleSentence,
+    mnemonic: patchedMnemonic ?? (inst.card.mnemonic as WordMnemonic | null | undefined) ?? zhongkao?.mnemonic ?? null,
     state: inst.state,
     due: inst.due,
     stability: inst.stability,
     difficulty: inst.difficulty,
     lapses: inst.lapses,
     reps: inst.reps,
+    bestStage: inst.bestStage ?? null,
+    lastReview: inst.lastReview ?? null,
   }
 }
 
@@ -184,10 +215,11 @@ async function resumeOpenSession(
     include: { card: true },
   })
   const byId = new Map(instances.map((instance) => [instance.id, instance]))
+  const overlays = await getRuntimeMnemonicOverlays(prisma)
   const cards = remainingIds
     .map((id) => byId.get(id))
     .filter((instance): instance is NonNullable<typeof instance> => Boolean(instance))
-    .map(toSessionCard)
+    .map((instance) => toSessionCard(instance, overlays))
 
   if (cards.length === 0) return null
   return {
@@ -354,6 +386,43 @@ export async function startSession(
     allInstances.push(distinctInstances[repeatIndex % distinctInstances.length])
   }
 
+  const [overlays, seasonActive] = await Promise.all([
+    getRuntimeMnemonicOverlays(prisma),
+    isClassSeasonActive(prisma, enrollment.classId, now),
+  ])
+
+  // World hook: only a newly-created queue's first due card changes. An open
+  // session returns above with its persisted order untouched; FSRS scheduling is unchanged.
+  allInstances = preferHighestRetentionDueFirst(allInstances, now)
+
+  const queueIds = allInstances.map((inst) => inst.id)
+  if (seasonActive && allInstances.length > 1) {
+    // R6 Sprint Season queue priority (no FSRS due mutation!):
+    // 1) due <= now, 2) weak (Again in 7d), 3) stage <= 3, 4) remaining
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 86_400_000)
+    const weakSet = new Set<string>()
+    if (typeof (prisma as any)?.reviewEvent?.findMany === 'function') {
+      const recentAgains = await prisma.reviewEvent.findMany({
+        where: {
+          grade: 1,
+          reviewedAt: { gte: sevenDaysAgo },
+          cardInstanceId: { in: queueIds },
+        },
+        select: { cardInstanceId: true },
+      })
+      for (const ev of recentAgains) weakSet.add(ev.cardInstanceId)
+    }
+    const rankOf = (inst: any): number => {
+      const isDue = inst.state !== 'NEW' && inst.due <= now
+      if (isDue) return 0
+      if (weakSet.has(inst.id)) return 1
+      const stage = mapFsrsToEbbinghausStage(inst.state, inst.stability, inst.reps)
+      if (stage <= 3) return 2
+      return 3
+    }
+    allInstances.sort((a, b) => rankOf(a) - rankOf(b))
+  }
+
   // Create the ReviewSession record
   const session = await prisma.reviewSession.create({
     data: {
@@ -363,7 +432,7 @@ export async function startSession(
     },
   })
 
-  const cards: SessionCard[] = allInstances.map(toSessionCard)
+  const cards: SessionCard[] = allInstances.map((inst) => toSessionCard(inst, overlays))
 
   return { sessionId: session.id, cards, deckId: deck.id }
 }
@@ -407,27 +476,11 @@ export async function startRestudy(
   })
 
   // Preserve the caller's ordering
+  const overlays = await getRuntimeMnemonicOverlays(prisma)
   const byId = Object.fromEntries(instances.map((i) => [i.id, i]))
   const cards: SessionCard[] = instanceIds
     .filter((id) => byId[id])
-    .map((id) => {
-      const inst = byId[id]
-      return {
-        instanceId: inst.id,
-        cardId: inst.cardId,
-        word: inst.card.word,
-        pos: inst.card.pos,
-        definitionL2: inst.card.definitionL2,
-        definitionL1: inst.definitionL1 ?? inst.card.definitionL1,
-        exampleSentence: inst.exampleSentence ?? inst.card.exampleSentence,
-        state: inst.state,
-        due: inst.due,
-        stability: inst.stability,
-        difficulty: inst.difficulty,
-        lapses: inst.lapses,
-        reps: inst.reps,
-      }
-    })
+    .map((id) => toSessionCard(byId[id], overlays))
 
   return { sessionId: session.id, cards, deckId: deck.id }
 }
@@ -443,8 +496,15 @@ export interface GradeResult {
   retrievability: number
   lapses: number
   reps: number
+  bestStage?: number | null
   /** If true, card should be re-appended to the session queue at the client. */
   requeue: boolean
+  upgradedCard?: {
+    word: string
+    fromRarity: string | null
+    toRarity: string
+  } | null
+  reward?: RewardFeedback
 }
 
 export async function gradeCard(
@@ -455,6 +515,7 @@ export async function gradeCard(
   grade: number,
   responseTimeMs: number | undefined,
   now: Date = new Date(),
+  submissionId?: string,
 ): Promise<GradeResult | { error: string; status: number }> {
   if (grade < 1 || grade > 4) {
     return { error: 'Grade must be 1–4', status: 400 }
@@ -481,7 +542,62 @@ export async function gradeCard(
     return { error: 'Card instance not found', status: 404 }
   }
 
+  const gamificationOn = isGamificationAvailable(prisma)
+  const { config, configVersion } = gamificationOn
+    ? await getEffectiveGameConfig(prisma, session.deck.enrollment.classId)
+    : { config: undefined, configVersion: 'default' }
+  const { localDate, start: dayStart, end: dayEnd } = shanghaiDayBounds(now)
+
+  // Fast idempotent replay check when submissionId is supplied
+  if (submissionId && (prisma.reviewEvent as any)?.findUnique) {
+    const existing = await prisma.reviewEvent.findUnique({
+      where: { sessionId_submissionId: { sessionId, submissionId } },
+    })
+    if (existing) {
+      const summary = gamificationOn
+        ? await getStudentGameSummary(prisma, studentId, session.deck.enrollment.id, now)
+        : null
+      return {
+        instanceId,
+        state: instance.state,
+        due: instance.due,
+        stability: instance.stability,
+        difficulty: instance.difficulty,
+        retrievability: instance.retrievability,
+        lapses: instance.lapses,
+        reps: instance.reps,
+        bestStage: instance.bestStage,
+        requeue: false,
+        reward: summary
+          ? {
+              xp: 0,
+              bonusXp: 0,
+              totalAwardedXp: 0,
+              totalXp: summary.level.totalXp,
+              dailyXp: summary.today.xpEarned,
+              dailyCap: summary.today.dailyCap,
+              remainingDailyXp: summary.today.remainingDailyXp,
+              capped: summary.today.capped,
+              level: summary.level.level,
+              title: summary.level.title,
+              levelUp: null,
+              ringsClosed: summary.today.rings.ringsClosed,
+              ringsClosedJustNow: false,
+              streakDays: summary.profile.streakDays,
+              freezeTickets: summary.profile.freezeTickets,
+              ticketEarned: 0,
+              newBadges: [],
+              configVersion: summary.configVersion,
+              replayed: true,
+            }
+          : undefined,
+      }
+    }
+  }
+
   const params = session.deck.fsrsParams as unknown as FSRSParams
+  const isDue = instance.state === 'NEW' || instance.due <= now
+  const wasDueReview = instance.state !== 'NEW' && instance.due <= now
 
   // Apply FSRS scheduling
   const fsrsResult = schedule(
@@ -499,57 +615,180 @@ export async function gradeCard(
     now,
   )
 
-  // Update CardInstance
-  await prisma.cardInstance.update({
-    where: { id: instanceId },
-    data: {
+  const newStage = mapFsrsToEbbinghausStage(fsrsResult.state, fsrsResult.stability, fsrsResult.reps)
+  const prevBestStage =
+    instance.bestStage !== null && instance.bestStage !== undefined
+      ? instance.bestStage
+      : instance.state === 'NEW' && instance.reps <= 0
+        ? null
+        : mapFsrsToEbbinghausStage(instance.state as any, instance.stability, instance.reps)
+  const nextBestStage = Math.max(prevBestStage ?? -1, newStage)
+  const prevRarity = rarityFromStage(prevBestStage)
+  const nextRarity = rarityFromStage(nextBestStage)
+  const upgradedCard =
+    nextRarity && (!prevRarity || prevRarity.key !== nextRarity.key)
+      ? {
+          word: instance.card.word,
+          fromRarity: prevRarity?.label ?? null,
+          toRarity: nextRarity.label,
+        }
+      : null
+
+  const runGrade = async (tx: PrismaClient): Promise<GradeResult> => {
+    const priorTodayCount = gamificationOn
+      ? await tx.reviewEvent.count({
+          where: {
+            cardInstanceId: instanceId,
+            reviewedAt: { gte: dayStart, lt: dayEnd },
+          },
+        })
+      : 0
+    const nthToday = priorTodayCount + 1
+
+    await tx.cardInstance.update({
+      where: { id: instanceId },
+      data: {
+        stability: fsrsResult.stability,
+        difficulty: fsrsResult.difficulty,
+        retrievability: fsrsResult.retrievability,
+        reps: fsrsResult.reps,
+        lapses: fsrsResult.lapses,
+        state: fsrsResult.state,
+        due: fsrsResult.due,
+        lastReview: fsrsResult.lastReview,
+        ...(gamificationOn ? { bestStage: nextBestStage } : {}),
+      },
+    })
+
+    const event = await tx.reviewEvent.create({
+      data: {
+        sessionId,
+        cardInstanceId: instanceId,
+        grade,
+        responseTimeMs: responseTimeMs ?? null,
+        ...(submissionId ? { submissionId } : {}),
+        reviewedAt: now,
+      },
+    })
+
+    let requeue = false
+    if (grade === 1) {
+      const priorAgainCount = await tx.reviewEvent.count({
+        where: {
+          sessionId,
+          cardInstanceId: instanceId,
+          grade: 1,
+          NOT: { id: event.id },
+        },
+      })
+      requeue = priorAgainCount < 3
+    }
+
+    let reward: RewardFeedback | undefined
+    if (gamificationOn && config) {
+      await recordComebackIfEligibleInTx(
+        tx,
+        studentId,
+        instanceId,
+        grade,
+        localDate,
+        configVersion,
+        now,
+      )
+      const baseXp = xpForGrade(grade, isDue, nthToday, config)
+      reward = await recordGameRewardEventInTx({
+        tx,
+        studentId,
+        enrollmentId: session.deck.enrollment.id,
+        deckId: session.deckId,
+        classId: session.deck.enrollment.classId,
+        type: 'REVIEW_GRADE',
+        sourceId: submissionId ?? event.id,
+        baseXp,
+        localDate,
+        now,
+        config,
+        configVersion,
+        meta: {
+          cardId: instance.cardId,
+          cardInstanceId: instanceId,
+          word: instance.card.word,
+          grade,
+          isDue,
+          nthToday,
+          prevBestStage,
+          nextBestStage,
+        },
+        countAsReviewCardIds: wasDueReview ? [instanceId] : [],
+      })
+    }
+
+    return {
+      instanceId,
+      state: fsrsResult.state,
+      due: fsrsResult.due,
       stability: fsrsResult.stability,
       difficulty: fsrsResult.difficulty,
       retrievability: fsrsResult.retrievability,
-      reps: fsrsResult.reps,
       lapses: fsrsResult.lapses,
-      state: fsrsResult.state,
-      due: fsrsResult.due,
-      lastReview: fsrsResult.lastReview,
-    },
-  })
-
-  // Write ReviewEvent
-  const event = await prisma.reviewEvent.create({
-    data: {
-      sessionId,
-      cardInstanceId: instanceId,
-      grade,
-      responseTimeMs: responseTimeMs ?? null,
-      reviewedAt: now,
-    },
-  })
-
-  // Lapse re-queue logic: if grade=1 (Again), re-queue up to 3 times per card per session.
-  let requeue = false
-  if (grade === 1) {
-    const priorAgainCount = await prisma.reviewEvent.count({
-      where: {
-        sessionId,
-        cardInstanceId: instanceId,
-        grade: 1,
-        NOT: { id: event.id },
-      },
-    })
-    requeue = priorAgainCount < 3
+      reps: fsrsResult.reps,
+      bestStage: nextBestStage,
+      requeue,
+      upgradedCard,
+      reward,
+    }
   }
 
-  return {
-    instanceId,
-    state: fsrsResult.state,
-    due: fsrsResult.due,
-    stability: fsrsResult.stability,
-    difficulty: fsrsResult.difficulty,
-    retrievability: fsrsResult.retrievability,
-    lapses: fsrsResult.lapses,
-    reps: fsrsResult.reps,
-    requeue,
+  if (typeof (prisma as any).$transaction === 'function') {
+    try {
+      return await prisma.$transaction((tx) => runGrade(tx as unknown as PrismaClient))
+    } catch (err: any) {
+      if (err?.code === 'P2002' && submissionId) {
+        const current = await prisma.cardInstance.findUnique({ where: { id: instanceId } })
+        const summary = gamificationOn
+          ? await getStudentGameSummary(prisma, studentId, session.deck.enrollment.id, now)
+          : null
+        return {
+          instanceId,
+          state: current?.state ?? instance.state,
+          due: current?.due ?? instance.due,
+          stability: current?.stability ?? instance.stability,
+          difficulty: current?.difficulty ?? instance.difficulty,
+          retrievability: current?.retrievability ?? instance.retrievability,
+          lapses: current?.lapses ?? instance.lapses,
+          reps: current?.reps ?? instance.reps,
+          bestStage: current?.bestStage ?? instance.bestStage,
+          requeue: false,
+          reward: summary
+            ? {
+                xp: 0,
+                bonusXp: 0,
+                totalAwardedXp: 0,
+                totalXp: summary.level.totalXp,
+                dailyXp: summary.today.xpEarned,
+                dailyCap: summary.today.dailyCap,
+                remainingDailyXp: summary.today.remainingDailyXp,
+                capped: summary.today.capped,
+                level: summary.level.level,
+                title: summary.level.title,
+                levelUp: null,
+                ringsClosed: summary.today.rings.ringsClosed,
+                ringsClosedJustNow: false,
+                streakDays: summary.profile.streakDays,
+                freezeTickets: summary.profile.freezeTickets,
+                ticketEarned: 0,
+                newBadges: [],
+                configVersion: summary.configVersion,
+                replayed: true,
+              }
+            : undefined,
+        }
+      }
+      throw err
+    }
   }
+
+  return runGrade(prisma)
 }
 
 // ── finish ───────────────────────────────────────────────────────────────────
@@ -574,6 +813,7 @@ export async function finishSession(
   sessionId: string,
   now: Date = new Date(),
   tz: string = 'UTC',
+  options?: { isWeakRestudy?: boolean },
 ): Promise<
   | {
       ok: boolean
@@ -584,6 +824,9 @@ export async function finishSession(
       todayCardsTotal: number
       currentStreak: number
       rewards: RewardSettlement
+      restudyReward?: RewardFeedback | null
+      tomorrowDueCount?: number
+      gameSummary?: Awaited<ReturnType<typeof getStudentGameSummary>>
     }
   | { error: string; status: number }
 > {
@@ -630,6 +873,57 @@ export async function finishSession(
   // uniqueness, so a retried finish cannot duplicate XP or coins.
   const rewards = await settleSessionRewards(prisma, sessionId, endedAtForToday)
 
+  let restudyReward: RewardFeedback | null = null
+  let tomorrowDueCount: number | undefined
+  let gameSummary: Awaited<ReturnType<typeof getStudentGameSummary>> = null
+
+  if (isGamificationAvailable(prisma)) {
+    const { config, configVersion } = await getEffectiveGameConfig(prisma)
+    const { localDate } = shanghaiDayBounds(endedAtForToday)
+
+    if (options?.isWeakRestudy && (updated?.cardsReviewed ?? 0) > 0) {
+      const weakPool = await getWeakBossPool(prisma, studentId, session.deck.enrollment.id, endedAtForToday)
+      restudyReward = await prisma.$transaction(async (tx) => {
+        const resReward = await recordGameRewardEventInTx({
+          tx: tx as unknown as PrismaClient,
+          studentId,
+          enrollmentId: session.deck.enrollment.id,
+          deckId: session.deckId,
+          classId: session.deck.enrollment.classId,
+          type: 'WEAK_RESTUDY',
+          sourceId: sessionId,
+          baseXp: config.weakRetryXp,
+          localDate,
+          now: endedAtForToday,
+          config,
+          configVersion,
+          isWeakRestudy: true,
+          meta: { sessionId, cardsReviewed: updated?.cardsReviewed ?? 0 },
+        })
+        if (weakPool && weakPool.wordCount === 0) {
+          await recordGameRewardEventInTx({
+            tx: tx as unknown as PrismaClient,
+            studentId,
+            enrollmentId: session.deck.enrollment.id,
+            deckId: session.deckId,
+            classId: session.deck.enrollment.classId,
+            type: 'WEAK_CLEAR_DAY',
+            sourceId: localDate,
+            baseXp: 0,
+            localDate,
+            now: endedAtForToday,
+            config,
+            configVersion,
+          })
+        }
+        return resReward
+      })
+    }
+
+    tomorrowDueCount = await countTomorrowDueCards(prisma, session.deckId, endedAtForToday)
+    gameSummary = await getStudentGameSummary(prisma, studentId, session.deck.enrollment.id, endedAtForToday)
+  }
+
   return {
     ok: true,
     cardsReviewed: updated?.cardsReviewed ?? 0,
@@ -642,5 +936,8 @@ export async function finishSession(
     todayCardsTotal: cardsPerDay[todayKey] ?? 0,
     currentStreak,
     rewards,
+    ...(restudyReward !== null ? { restudyReward } : {}),
+    ...(tomorrowDueCount !== undefined ? { tomorrowDueCount } : {}),
+    ...(gameSummary !== null ? { gameSummary } : {}),
   }
 }

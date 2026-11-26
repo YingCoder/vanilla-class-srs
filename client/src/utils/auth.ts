@@ -12,7 +12,7 @@ export interface AuthUser {
 export interface AuthContextValue {
   user: AuthUser | null
   loading: boolean
-  login: (identifier: string, password: string) => Promise<void>
+  login: (identifier: string, password: string) => Promise<AuthUser>
   logout: () => Promise<void>
   refresh: () => Promise<void>
 }
@@ -20,7 +20,7 @@ export interface AuthContextValue {
 export const AuthContext = createContext<AuthContextValue>({
   user: null,
   loading: true,
-  login: async () => {},
+  login: async () => { throw new Error('AuthProvider missing') },
   logout: async () => {},
   refresh: async () => {},
 })

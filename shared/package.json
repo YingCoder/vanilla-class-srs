@@ -4,9 +4,21 @@
   "private": true,
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "world": ["./dist/world.d.ts"],
+      "world-content": ["./dist/worldContent.d.ts"]
+    }
+  },
   "exports": {
     ".": "./dist/index.js",
-    "./fsrs": "./dist/fsrs/index.js",
+    "./fsrs": { "source": "./fsrs/index.ts", "default": "./dist/fsrs/index.js" },
+    "./ebbinghaus": { "source": "./ebbinghaus.ts", "default": "./dist/ebbinghaus.js" },
+    "./gamification": { "source": "./gamification.ts", "default": "./dist/gamification.js" },
+    "./stage4": { "source": "./stage4.ts", "default": "./dist/stage4.js" },
+    "./world": { "source": "./world.ts", "default": "./dist/world.js" },
+    "./world-content": { "source": "./worldContent.ts", "default": "./dist/worldContent.js" },
+    "./vocab": { "source": "./vocab/index.ts", "default": "./dist/vocab/index.js" },
     "./word-camp": "./dist/word-camp.js",
     "./types": "./dist/types/index.js"
   },

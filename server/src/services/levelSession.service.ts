@@ -5,6 +5,7 @@
  */
 
 import type { PrismaClient } from '@prisma/client'
+import { lookupZhongkaoWord, type WordMnemonic } from '@vanilla-srs/shared/vocab'
 import { buildChoiceOptions } from './choice.service'
 import {
   questionKindForLevel,
@@ -55,9 +56,11 @@ export interface LevelSessionView {
     taskWordId: string
     word: string
     pos: string | null
+    ipa: string | null
     definitionL1: string | null
     definitionL2: string | null
     exampleSentence: string | null
+    mnemonic: WordMnemonic | null
   }[] | null
   questions: PublicQuestion[]
 }
@@ -95,14 +98,19 @@ function viewOf(session: any, alreadyCleared = false): LevelSessionView {
     words: isL1
       ? session.task.words
           .filter((word: any) => word.kind === 'NEW')
-          .map((word: any) => ({
-            taskWordId: word.id,
-            word: word.word,
-            pos: word.pos,
-            definitionL1: word.definitionL1,
-            definitionL2: word.definitionL2,
-            exampleSentence: word.exampleSentence,
-          }))
+          .map((word: any) => {
+            const zhongkao = lookupZhongkaoWord(word.word)
+            return {
+              taskWordId: word.id,
+              word: word.word,
+              pos: word.pos,
+              ipa: word.ipa ?? zhongkao?.ipa ?? null,
+              definitionL1: word.definitionL1,
+              definitionL2: word.definitionL2,
+              exampleSentence: word.exampleSentence,
+              mnemonic: (word.mnemonic as WordMnemonic | null | undefined) ?? zhongkao?.mnemonic ?? null,
+            }
+          })
       : null,
     questions: session.questions.map(publicQuestion),
   }

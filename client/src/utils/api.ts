@@ -4,6 +4,8 @@
  * Cookies (httpOnly JWT) are sent automatically via credentials: 'include'.
  */
 
+import { getAppliedReleaseMeta } from './pwa'
+
 export class ApiError extends Error {
   constructor(public status: number, message: string) {
     super(message)
@@ -25,11 +27,18 @@ async function tryRefresh(): Promise<boolean> {
   return refreshPromise
 }
 
-async function request<T>(method: string, path: string, body?: unknown, isRetry = false): Promise<T> {
+interface RequestOptions { headers?: Record<string, string> }
+
+async function request<T>(method: string, path: string, body?: unknown, isRetry = false, options?: RequestOptions): Promise<T> {
+  const headers: Record<string, string> = {
+    'X-Client-Version': getAppliedReleaseMeta().version,
+    ...options?.headers,
+  }
+  if (body) headers['Content-Type'] = 'application/json'
   const opts: RequestInit = {
     method,
     credentials: 'include',
-    headers: body ? { 'Content-Type': 'application/json' } : undefined,
+    headers,
     body: body ? JSON.stringify(body) : undefined,
   }
   const res = await fetch(`/api${path}`, opts)
@@ -38,7 +47,7 @@ async function request<T>(method: string, path: string, body?: unknown, isRetry 
     // and retry once. Skip for the refresh/login endpoints themselves to avoid loops.
     if (res.status === 401 && !isRetry && path !== '/auth/refresh' && path !== '/auth/login') {
       const refreshed = await tryRefresh()
-      if (refreshed) return request<T>(method, path, body, true)
+      if (refreshed) return request<T>(method, path, body, true, options)
     }
     let msg = res.statusText
     try { const j = await res.json(); msg = j.error ?? msg } catch { /* ignore */ }
@@ -52,7 +61,8 @@ async function request<T>(method: string, path: string, body?: unknown, isRetry 
 
 export const api = {
   get: <T>(path: string) => request<T>('GET', path),
-  post: <T>(path: string, body?: unknown) => request<T>('POST', path, body),
+  post: <T>(path: string, body?: unknown, options?: RequestOptions) => request<T>('POST', path, body, false, options),
+  put: <T>(path: string, body?: unknown) => request<T>('PUT', path, body),
   patch: <T>(path: string, body?: unknown) => request<T>('PATCH', path, body),
   delete: <T>(path: string) => request<T>('DELETE', path),
 }

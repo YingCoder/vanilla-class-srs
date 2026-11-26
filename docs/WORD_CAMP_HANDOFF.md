@@ -2,7 +2,7 @@
 
 > 面向下一个接手开发的模型/工程师。  
 > 本文件是**快速上下文**，不是规格本身；实现细节以代码、测试和 `word-camp-development-v1.1.md` 为准。  
-> 整理时间：2026-11-23；整理时 HEAD `e7da676`（本文件会产生新提交）。
+> 整理时间：2026-11-26；整理时包含 Stage 5 世界观包装层（本文件会产生新提交）。
 
 ---
 
@@ -37,6 +37,8 @@ docker compose -p wordcamp ps
 教师/管理员已能建班、建词集、导入词表、分配任务、重置密码、查看今日学习名单；学生已能用用户名登录、改密、断点续学、做认词四选一和服务端判分的拼写题、获得一次性奖励与复习计划。
 
 **每日任务/关卡学生闭环已完成**：`/student/task` 今日任务主页 + `/student/levels/:id` 关卡页（L1 预览/L2/L3 选择/L5 拼写/Boss/复习，提示/重试/揭晓/星级/弱词/奖励，L4 显示“等价练习”跳转认词）；服务端闭环见 `docs/WORD_CAMP_STAGE1_PROGRESS.md` §13。
+
+**Stage 5 世界观包装层已完成并验证**：`/student/task` 改为 `WorldHome` 营地家园（迷雾预报 + IslandScene 词灵场景 + 糖晶 + 四岛地图/建造/明日预报对话）；`/student/adventure` 承接原 `TaskPage` 关卡地图；复习页词灵随卡、四级“雾”评分、显式“继续”步进与“今天到此为止”结算；登录页前置匿名“唤醒”体验。新接口 `GET /api/students/game/home`、`POST /api/students/game/home/build`（幂等键）、`GET /api/students/world-content`；新迁移 `20261126010000_world_content_release` 与 `20261127010000_world_home`（迁移总数 20）。匿名首体验事件按设计不上报服务端。
 
 **尚未完成**：教师/管理员“今日任务完成”看板、听音题（L4 接口显式 409，UI 走等价练习）、错词重练入口、教师自定义任务配置、完整学情报表、真机/微信验收。
 
@@ -147,13 +149,13 @@ shared/：FSRS-5 调度 + 纯奖励规则 + 学习日工具
 
 ### 4.2 迁移
 
-共 15 个，最后五个与本项目强相关：
+共 20 个，最后五个与本项目强相关：
 
-- `20261123010000_reward_ledger`
-- `20261123020000_card_variants`
 - `20261123030000_session_version`
 - `20261123040000_review_session_queue`
 - `20261123050000_daily_study_tasks`（每日任务/关卡五表）
+- `20261126010000_world_content_release`（世界观内容热发布 `WORLD_CONTENT` 负载类型）
+- `20261127010000_world_home`（家园 `StudentHomeBuilding`、`StudentGameProfile.sugarCrystalsSpent`、`GameEvent.sugarCrystalRatio` 快照）
 
 新增字段/表必须新增迁移目录，并在干净库验证：
 
@@ -186,6 +188,7 @@ docker run --rm --network wordcamp_default `
 | 拼写题 | `spelling.service.ts`、`SpellingPage.tsx` | 变体/大小写/空格/1 字符差单测；Docker `colour` 命中 variant，+5 XP |
 | 每日任务/关卡服务端 | `dailyTask.service.ts`、`levelSession.service.ts`、`levelAttempt.service.ts`、`studentTask.ts` | 375 项单测；幂等/调度/奖励 Docker 端到端 |
 | 每日任务/关卡学生 UI | `client/src/pages/student/TaskPage.tsx`、`LevelSessionPage.tsx` | 浏览器真实流程：REVIEW 9/9 通关、+35 XP、9 词调度、任务完成横幅 |
+| Stage 5 世界观包装层 | 见下方 §5.2 | 浏览器全流程 + 57 项定向测试 + 建造幂等 curl 证据 |
 
 ### 5.1 当前测试基线
 
@@ -199,6 +202,46 @@ docker run --rm --network wordcamp_default `
 | 当前栈 | client 200、server healthy、health ok |
 
 > 注意：`subjectLead.integration.test.ts` 的 12 项默认被跳过，因为需要 `SL_TEST_DATABASE_URL` 且强制 `127.0.0.1` + `sl_fresh`。复现步骤见 [`docs/WORD_CAMP_VERSIONING.md`](WORD_CAMP_VERSIONING.md) §5（用临时 socat 把容器 db 映射到宿主 5433）。
+
+### 5.2 Stage 5 世界观包装层（已实现 / 已验证 / 未验证）
+
+设计依据：[`docs/单词特训营 — 世界观与游戏化体验设计方案.md`](单词特训营%20—%20世界观与游戏化体验设计方案.md)。原则：词灵/糖晶/四岛全部从既有 capped XP 账本派生，**不改 FSRS、不改奖励结算、不设概率奖励/无限循环/损失恐吓/付费交易/公开排行**。
+
+**已实现**
+
+- 词灵：`shared/world.ts` + `client/src/components/WordSpirit.tsx`（确定性 SVG，`spiritFormFromStage` 单调不回退，`spiritAppearanceSeed` 按规范化单词着色）。
+- 家园与糖晶：`server/src/services/home.service.ts`、`server/src/routes/studentGame.ts`（`GET /students/game/home`、`POST /students/game/home/build`）、`client/src/components/WorldHome.tsx` + `IslandScene.tsx` + `WorldDialog.tsx`。
+- 世界内容热发布：`shared/worldContent.ts`（内置包 + 校验）、`server/src/services/worldContent.service.ts`、`server/src/routes/releases.ts`（`/admin/releases` 与 `/teachers/releases` 共用 `manageReleasesRouter`，管理员 ALL/CLASSES、教师仅本班）、学生端 `studentStage4.ts` `GET /students/world-content`。
+- 匿名首体验：`client/src/components/FirstWakeExperience.tsx`、`client/src/pages/auth/LoginPage.tsx`（未登录默认唤醒流程）。
+- 复习/关卡包装：`ReviewPage.tsx`（词灵随卡、四级雾评分、显式“继续”）、`LevelSessionPage.tsx`（邂逅/辨义/辨词/念咒语/雾兽战、据点灯结算）、`TaskPage.tsx`（岛名/据点灯星）。
+- 保持率曲线：`EbbinghausStrip.tsx` 弹窗折线 + 数据表（`dataviz` 校验蓝 `#2a78d6`/`#3987e5` PASS）。
+- 样式与无障碍：`client/src/world.css`（令牌、深色覆盖、`prefers-reduced-motion`、`forced-colors`）。
+
+**已验证（本轮 Playwright + curl + vitest，390×844 为主）**
+
+- 匿名唤醒全流程：蛋 → 3 词认词 → 点燃篝火 → “今天到此为止” → 登录切换，0 控制台错误。
+- 家园页：真实到期数（6→0）、预估分钟、四岛地图（4 岛 D1–23 + 雾兽日）、故事/建造/预报对话、糖晶余额与 XP 换算（28 XP→2 糖晶、90+70 XP 后 93）。
+- 复习页：grade=1 揭示释义并显式“继续”步进、grade=4 闪光庆祝、FSRS 重排（重来词稍后重现）、结算“你唤醒了 N 只词灵 + 今天到此为止”且无“再来一轮”。
+- 关卡页：L1 六词浏览通关、结算“据点灯亮起 ★ + 回营地，今天到这里”。
+- 建造：`POST /students/game/home/build` 缺糖晶 409、非法建筑 400、缺幂等键 400、同键重放不重复扣费（93→13→13）、灯塔建成后解锁真实明日时段预报；UI 点击建造 83→3 糖晶并显示建成通知。
+- 响应式：360×640 与 1280×900 布局正常；深色主题可读。
+- 定向测试：`world.rules`/`worldContent`/`release.service`/`gamification`/`gamification.service`/`stage4.rules`/`ebbinghaus` = **7 文件 57 测试通过**；`home.service` 真实 PostgreSQL 集成（含 8 路并发升级、幂等重放、多班钱包、0 XP→0 糖晶）在 Stage 5 会话中通过。
+- 迁移：线上库补齐到 20 个；`docker compose -p wordcamp` 三包重建后 `/api/health` ok。
+
+**未验证 / 已知问题**
+
+- 客户端主包 gzip ≈ 208 KB，超过 ~128 KB 目标，未分包。
+- 服务器全量测试存在 28 个环境性失败（mock 损坏 + `DATABASE_URL` 缺失）与 exit 139 段错误，与世界观功能无关；未在本会话修复。
+- 匿名首体验漏斗指标按设计不上报服务端。
+- 雾兽（weak-boss）模式路径未在浏览器走通（两次 grade=1 的词已越过 stage≤2 池子，UI 正确显示“当前没有近7天待攻克弱词”）；代码层已修推进逻辑但未端到端跑通雾兽战。
+- `TaskPage.tsx` 仍有 `storyDay`/`selectedDay` 未用变量等松散点；据点微剧只在 `WorldHome` 自动弹出。
+- 真机/微信验收未做。
+
+### 5.3 Stage 5 修复的自身缺陷
+
+- `client/src/world.css` 补 `:root` 下缺失的 `--world-grass`/`--world-soil`（浅色主题 SVG 此前渲染为黑色块）。
+- `client/src/pages/student/ReviewPage.tsx` 评分后不再立即 `finishRound` 结束整轮；雾兽模式评分只扣 HP，推进/弱词回排统一由“继续”处理。
+- `client/src/index.css` 窄屏（≤400px）顶栏品牌名截断为省略号，避免与 XP 胶囊/主题按钮重叠。
 
 ---
 
@@ -327,6 +370,8 @@ git diff --check
 | `server/src/services/spelling.service.ts` | 拼写判分（变体/编辑距离） |
 | `server/src/services/choice.service.ts` | 四选一选项生成与判分 |
 | `server/src/services/reward.service.ts` | 奖励账本/上限/等级 |
+| `server/src/services/home.service.ts` | Stage 5 家园聚合与糖晶建造（行锁 + 幂等键） |
+| `server/src/services/worldContent.service.ts` | Stage 5 世界内容发布/范围解析/回滚 |
 | `server/src/services/todayRoster.service.ts` | 教师今日学习名单 |
 | `server/src/services/todayProgress.service.ts` | 学生今日进度 |
 | `server/src/lib/csv.ts` | CSV 编码探测/导出转义 |
@@ -335,8 +380,12 @@ git diff --check
 
 | 文件 | 作用 |
 | --- | --- |
-| `client/src/pages/student/ReviewPage.tsx` | 复习主流程、自评、断点续学、今日进度 |
-| `client/src/pages/student/TaskPage.tsx` | 今日任务主页（六个关卡入口、星级/状态、完成横幅） |
+| `client/src/pages/student/ReviewPage.tsx` | 复习主流程、自评、断点续学、今日进度（Stage 5 词灵随卡/雾评分/显式继续） |
+| `client/src/pages/student/TaskPage.tsx` | 今日任务主页（六个关卡入口、星级/状态、完成横幅），现挂 `/student/adventure` |
+| `client/src/components/WorldHome.tsx` | Stage 5 营地家园主页（迷雾预报/建造/四岛/故事），现挂 `/student/task` |
+| `client/src/components/IslandScene.tsx` | Stage 5 营地 SVG 场景 |
+| `client/src/components/WordSpirit.tsx` | Stage 5 词灵 SVG |
+| `client/src/components/FirstWakeExperience.tsx` | Stage 5 匿名首体验 |
 | `client/src/pages/student/LevelSessionPage.tsx` | 关卡作答页（L1 预览/L2/L3 选择/L5 拼写、提示/重试/揭晓/结算） |
 | `client/src/pages/student/SpellingPage.tsx` | 拼写练习 |
 | `client/src/pages/student/ChoicePage.tsx` | 认词四选一 |
@@ -352,6 +401,8 @@ git diff --check
 | `shared/fsrs/fsrs.ts` | FSRS-5 公式与调度 |
 | `shared/fsrs/constants.ts` | 默认权重/参数 |
 | `shared/word-camp.ts` | 奖励事件键、上限、等级、学习日、纯规则 |
+| `shared/world.ts` | Stage 5 词灵形态/外观 seed、糖晶换算规则、家园契约类型 |
+| `shared/worldContent.ts` | Stage 5 内置四岛内容包、世界内容 JSON 校验/解析 |
 
 ---
 
@@ -374,3 +425,12 @@ git diff --check
 3. 如果迁移/协议变化，更新本文档“数据模型/已知坑”。
 4. `git diff --check` → 提交（不要把 secret、日志、`node_modules` 提交）。
 5. 汇报时区分“已实现/已验证/未验证/外部阻塞”，不要把计划写成完成。
+
+
+---
+
+## Stage 4 留存验证与规模化（R1–R11）完成摘要
+
+- **规则与词库**：[shared/stage4.ts](../shared/stage4.ts)、[shared/gamification.ts](../shared/gamification.ts) 及 Day 4–14 手工扩充口诀已合入（688 核心词覆盖 431 词 / 62.6%）。
+- **数据库与服务端**：迁移 [20261126000000_stage4_retention_scale/migration.sql](../prisma/migrations/20261126000000_stage4_retention_scale/migration.sql) 与 10 余项 Stage 4 服务、路由及脚本已通过真实 PostgreSQL 18.4（`sl_fresh`、`stage4_test`、`stage3_copy`）全量验证；修复高并发下学生账本行锁 `SELECT ... FOR UPDATE`。
+- **前后端界面与性能**：学生端 Task/Review/Deck/Stats 与师长端 `/teacher/mnemonics`、`/admin/mnemonics`、`/teacher/game`、`/admin/game`、`/admin/releases` 全部构建并通过 Chromium Mobile（390×844 / 360×640）与 Desktop 端到端回归，学生首屏主包 gzip < 200 KB，详细进度见 [WORD_CAMP_STAGE4_PROGRESS.md](./WORD_CAMP_STAGE4_PROGRESS.md)。

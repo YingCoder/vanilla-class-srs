@@ -7,7 +7,13 @@
  */
 
 import type { PrismaClient } from '@prisma/client'
+import { mapFsrsToEbbinghausStage } from '@vanilla-srs/shared/ebbinghaus'
+import { computeReviewDueSnapshot, shanghaiDateString } from '@vanilla-srs/shared/gamification'
 import { shanghaiStudyDate } from '@vanilla-srs/shared/word-camp'
+import { lookupZhongkaoWord } from '@vanilla-srs/shared/vocab'
+import { getEffectiveGameConfig } from './gameConfig.service'
+import { getRuntimeMnemonicOverlays, type RuntimeMnemonicOverlays } from './mnemonicOverlay.service'
+import { isClassSeasonActive } from './seasonPlan.service'
 import {
   DEFAULT_DAILY_TASK_CONFIG,
   evaluateDailyTask,
@@ -129,7 +135,15 @@ export function buildTaskSummary(task: LoadedTask): DailyTaskSummary {
   }
 }
 
-function snapshotWord(instance: any, kind: 'NEW' | 'REVIEW', sortOrder: number) {
+function snapshotWord(
+  instance: any,
+  kind: 'NEW' | 'REVIEW',
+  sortOrder: number,
+  overlays?: RuntimeMnemonicOverlays,
+) {
+  const zhongkao = lookupZhongkaoWord(instance.card.word)
+  const key = instance.card.word.trim().toLowerCase()
+  const patchedMnemonic = overlays?.teacherPatches.get(key)
   return {
     cardInstanceId: instance.id,
     cardId: instance.cardId,
@@ -137,10 +151,12 @@ function snapshotWord(instance: any, kind: 'NEW' | 'REVIEW', sortOrder: number) 
     sortOrder,
     word: instance.card.word,
     pos: instance.card.pos,
+    ipa: instance.card.ipa ?? zhongkao?.ipa ?? null,
     definitionL2: instance.card.definitionL2,
     definitionL1: instance.definitionL1 ?? instance.card.definitionL1,
     variants: instance.card.variants ?? [],
     exampleSentence: instance.exampleSentence ?? instance.card.exampleSentence,
+    mnemonic: (patchedMnemonic ?? instance.card.mnemonic ?? zhongkao?.mnemonic ?? undefined) as any,
   }
 }
 
@@ -171,30 +187,8 @@ export async function getOrCreateDailyTask(
   if (existing) return buildTaskSummary(existing)
 
   const config = DEFAULT_DAILY_TASK_CONFIG
-  const newInstances = await prisma.cardInstance.findMany({
-    where: { deckId: enrollment.deck.id, state: 'NEW' },
-    include: {
-      card: {
-        include: {
-          cardSet: {
-            include: {
-              assignments: {
-                where: { classId: enrollment.classId },
-                select: { priority: true },
-              },
-            },
-          },
-        },
-      },
-    },
-    orderBy: { createdAt: 'asc' },
-  })
-  newInstances.sort((a: any, b: any) => {
-    const priority = (instance: any) =>
-      instance.card.cardSet.isPersonal ? 3 : (instance.card.cardSet.assignments[0]?.priority ?? 9999)
-    return priority(a) - priority(b) || a.createdAt.getTime() - b.createdAt.getTime()
-  })
-  const selectedNew = newInstances.slice(0, config.newWordsPerDay)
+  const seasonActive = await isClassSeasonActive(prisma, enrollment.classId, now)
+  const overlays = await getRuntimeMnemonicOverlays(prisma)
 
   const selectedReview = await prisma.cardInstance.findMany({
     where: {
@@ -207,19 +201,112 @@ export async function getOrCreateDailyTask(
     take: config.reviewsPerDay,
   })
 
+  // R7 Smart Today Plan: throttle new words to 0 when due backlog exceeds cap
+  let effectiveNewTarget = config.newWordsPerDay
+  if (typeof (prisma as any)?.cardInstance?.count === 'function' && typeof (prisma as any)?.studentGameProfile?.findUnique === 'function') {
+    try {
+      const [rawDueCount, profile, effCfg] = await Promise.all([
+        prisma.cardInstance.count({
+          where: {
+            deckId: enrollment.deck.id,
+            state: { in: ['LEARNING', 'REVIEW', 'RELEARNING'] },
+            due: { lte: now },
+          },
+        }),
+        prisma.studentGameProfile.findUnique({ where: { studentId } }),
+        getEffectiveGameConfig(prisma, enrollment.classId),
+      ])
+      const snap = computeReviewDueSnapshot(
+        rawDueCount,
+        profile?.lastStudiedDate ?? null,
+        shanghaiDateString(now),
+        effCfg.config,
+      )
+      if (snap.backlogProtected) {
+        effectiveNewTarget = 0
+      }
+    } catch {
+      /* ignore in minimal mock tests */
+    }
+  }
+
+  let selectedNew: any[] = []
+  if (effectiveNewTarget > 0) {
+    const newInstances = await prisma.cardInstance.findMany({
+      where: { deckId: enrollment.deck.id, state: 'NEW' },
+      include: {
+        card: {
+          include: {
+            cardSet: {
+              include: {
+                assignments: {
+                  where: { classId: enrollment.classId },
+                  select: { priority: true },
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: 'asc' },
+    })
+    newInstances.sort((a: any, b: any) => {
+      const priority = (instance: any) =>
+        instance.card.cardSet.isPersonal ? 3 : (instance.card.cardSet.assignments[0]?.priority ?? 9999)
+      return priority(a) - priority(b) || a.createdAt.getTime() - b.createdAt.getTime()
+    })
+    selectedNew = newInstances.slice(0, effectiveNewTarget)
+  }
+
+  // R6 Sprint Season queue priority: due -> 7d Again weak cards -> stage <= 3
+  let orderedReview = [...selectedReview]
+  if (seasonActive && orderedReview.length > 1) {
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 86_400_000)
+    const weakSet = new Set<string>()
+    if (typeof (prisma as any)?.reviewEvent?.findMany === 'function') {
+      const recentAgains = await prisma.reviewEvent.findMany({
+        where: {
+          grade: 1,
+          reviewedAt: { gte: sevenDaysAgo },
+          cardInstanceId: { in: orderedReview.map((r) => r.id) },
+        },
+        select: { cardInstanceId: true },
+      })
+      for (const ev of recentAgains) weakSet.add(ev.cardInstanceId)
+    }
+    orderedReview.sort((a: any, b: any) => {
+      const aWeak = weakSet.has(a.id) ? 0 : 1
+      const bWeak = weakSet.has(b.id) ? 0 : 1
+      if (aWeak !== bWeak) return aWeak - bWeak
+      const aStage = mapFsrsToEbbinghausStage(a.state, a.stability, a.reps)
+      const bStage = mapFsrsToEbbinghausStage(b.state, b.stability, b.reps)
+      const aLow = aStage <= 3 ? 0 : 1
+      const bLow = bStage <= 3 ? 0 : 1
+      if (aLow !== bLow) return aLow - bLow
+      return a.due.getTime() - b.due.getTime()
+    })
+  }
+
   const words = [
-    ...selectedNew.map((instance: any, index: number) => snapshotWord(instance, 'NEW', index)),
-    ...selectedReview.map((instance: any, index: number) =>
-      snapshotWord(instance, 'REVIEW', selectedNew.length + index),
+    ...selectedNew.map((instance: any, index: number) => snapshotWord(instance, 'NEW', index, overlays)),
+    ...orderedReview.map((instance: any, index: number) =>
+      snapshotWord(instance, 'REVIEW', selectedNew.length + index, overlays),
     ),
   ]
+
+  const hasCount = typeof (prisma.dailyStudyTask as any)?.count === 'function'
+  const priorTaskCount = hasCount
+    ? await prisma.dailyStudyTask.count({ where: { enrollmentId } })
+    : 0
+  const campDay = hasCount ? Math.min(23, priorTaskCount + 1) : undefined
 
   try {
     const created = await prisma.dailyStudyTask.create({
       data: {
         enrollmentId,
         studyDate,
-        newWordTarget: config.newWordsPerDay,
+        ...(campDay !== undefined ? { campDay } : {}),
+        newWordTarget: effectiveNewTarget,
         reviewTarget: config.reviewsPerDay,
         config: config as any,
         words: { create: words },

@@ -1,463 +1,632 @@
-import { useState, FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
-import { api, ApiError, downloadBlob } from '../../utils/api'
-import { useApi } from '../../hooks/useApi'
+import { useCallback, useEffect, useMemo, useState } from 'react'
+import { ZHONGKAO_23_DAYS, type ZhongkaoWord } from '@vanilla-srs/shared/vocab'
+import { buildEbbinghausSnapshot } from '@vanilla-srs/shared/ebbinghaus'
+import { rarityFromStage, type CardRarityInfo } from '@vanilla-srs/shared/gamification'
+import type { FSRSState } from '@vanilla-srs/shared/fsrs'
+import { api } from '../../utils/api'
+import { trackAnalyticsEvent } from '../../utils/analytics'
+import { useGame } from '../../components/GameContext'
+import type { StudentAlternativeItem } from '../../components/MnemonicCardBlock'
+import type { WordMnemonic } from '@vanilla-srs/shared/vocab'
 import { useEnrollment } from '../../utils/enrollment'
-import { Modal } from '../../components/Modal'
-import './DeckPage.css'
+import { speakWord } from '../../utils/audio'
+import MnemonicCardBlock from '../../components/MnemonicCardBlock'
 
-interface CardInstance {
+interface DeckCardInstance {
   id: string
-  state: 'NEW' | 'LEARNING' | 'REVIEW' | 'RELEARNING'
+  state: FSRSState
+  stability: number
+  reps: number
   due: string
-  origin: string
-  exampleSentence: string | null
+  bestStage?: number | null
   definitionL1: string | null
   card: {
+    id: string
     word: string
     pos: string | null
-    definitionL2: string | null
+    ipa?: string | null
     definitionL1: string | null
-    exampleSentence: string | null
+    definitionL2: string | null
   }
 }
 
-interface CardHistory {
-  instanceId: string
-  word: string
-  pos: string | null
-  events: { reviewedAt: string; grade: number; responseTimeMs: number | null }[]
+interface AlbumCard extends ZhongkaoWord {
+  collected: boolean
+  bestStage: number | null
+  currentStage: number
+  rarity: CardRarityInfo | null
 }
 
-interface DeckResponse {
-  instances: CardInstance[]
-  definitionL2Label: string
-  definitionL1Label: string
+interface CardAlbumResponse {
+  summary: {
+    totalWords: number
+    collectedCount: number
+    candyCount: number
+    silverCount: number
+    goldCount: number
+    diamondCount: number
+  }
+  day: number
+  cards: AlbumCard[]
 }
 
-const stateColors: Record<string, string> = {
-  NEW: 'badge-gray',
-  LEARNING: 'badge-yellow',
-  REVIEW: 'badge-green',
-  RELEARNING: 'badge-red',
-}
-
-const gradeLabels: Record<number, string> = { 1: 'Again', 2: 'Hard', 3: 'Good', 4: 'Easy' }
-const gradeColors: Record<number, string> = { 1: 'var(--color-accent)', 2: 'var(--color-warning)', 3: 'var(--color-accent-alt)', 4: 'var(--color-accent-alt)' }
-
-export default function StudentDeckPage() {
+export default function DeckPage() {
   const { active } = useEnrollment()
-  const navigate = useNavigate()
-  const { data: deckData, loading, error, reload } = useApi<DeckResponse>(
-    () => api.get(`/students/deck?enrollmentId=${active?.enrollmentId}`),
-    [active?.enrollmentId]
-  )
-  const instances = deckData?.instances
-  const definitionL2Label = deckData?.definitionL2Label ?? 'L2 Definition'
-  const definitionL1Label = deckData?.definitionL1Label ?? 'L1 Definition'
-  const [filter, setFilter] = useState<string>('ALL')
-  const [search, setSearch] = useState('')
-  const [addModal, setAddModal] = useState(false)
-  const [editModal, setEditModal] = useState<CardInstance | null>(null)
-  const [historyModal, setHistoryModal] = useState<CardInstance | null>(null)
-  const [historyData, setHistoryData] = useState<CardHistory | null>(null)
-  const [historyLoading, setHistoryLoading] = useState(false)
-  const [addForm, setAddForm] = useState({ word: '', pos: '', definitionL2: '', definitionL1: '', exampleSentence: '' })
-  const [editForm, setEditForm] = useState({ word: '', pos: '', definitionL2: '', definitionL1: '', exampleSentence: '' })
-  const [formError, setFormError] = useState<string | null>(null)
-  const [saving, setSaving] = useState(false)
-  const [showStateInfo, setShowStateInfo] = useState(false)
-  // Default matches the API's natural order: due date, soonest first.
-  const [sortKey, setSortKey] = useState<'word' | 'due'>('due')
-  const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc')
+  const { summary } = useGame()
+  const [mode, setMode] = useState<'zhongkao' | 'album' | 'mydeck'>('zhongkao')
+  const [selectedDay, setSelectedDay] = useState(1)
+  const [query, setQuery] = useState('')
+  const [onlyMnemonic, setOnlyMnemonic] = useState(false)
+  const [inspectedWord, setInspectedWord] = useState<(ZhongkaoWord & { rarity?: CardRarityInfo | null; bestStage?: number | null }) | null>(null)
+  const [patchMap, setPatchMap] = useState<Record<string, WordMnemonic>>({})
+  const [studentAltMap, setStudentAltMap] = useState<Record<string, StudentAlternativeItem[]>>({})
+  const [vocabPacks, setVocabPacks] = useState<Array<{ id: string; name: string; daysCount: number; totalWords: number; isBuiltin: boolean }>>([])
+  const [selectedPackId, setSelectedPackId] = useState<string>('builtin-zhongkao-23d')
+  const [customPackCards, setCustomPackCards] = useState<any[] | null>(null)
+  const [cocreateOpen, setCocreateOpen] = useState(false)
+  const [coTag, setCoTag] = useState('谐音记忆')
+  const [coHook, setCoHook] = useState('')
+  const [coStory, setCoStory] = useState('')
+  const [coChunksText, setCoChunksText] = useState('')
+  const [coTrap, setCoTrap] = useState('')
+  const [coBusy, setCoBusy] = useState(false)
+  const [coNotice, setCoNotice] = useState<string | null>(null)
 
-  if (!active) { navigate('/student'); return null }
+  useEffect(() => {
+    api
+      .get<{
+        days?: Array<{
+          day: number
+          words: Array<{
+            word: string
+            mnemonic?: WordMnemonic | null
+            studentAlternatives?: StudentAlternativeItem[]
+          }>
+        }>
+      }>('/releases/vocab-pack')
+      .then((res) => {
+        const nextPatches: Record<string, WordMnemonic> = {}
+        const nextAlts: Record<string, StudentAlternativeItem[]> = {}
+        for (const d of res?.days ?? []) {
+          for (const w of d.words ?? []) {
+            const k = w.word.trim().toLowerCase()
+            if (w.mnemonic) nextPatches[k] = w.mnemonic
+            if (w.studentAlternatives && w.studentAlternatives.length > 0) {
+              nextAlts[k] = w.studentAlternatives
+            }
+          }
+        }
+        setPatchMap(nextPatches)
+        setStudentAltMap(nextAlts)
+      })
+      .catch(() => {})
+    api
+      .get<Array<{ id: string; name: string; daysCount: number; totalWords: number; isBuiltin: boolean }>>('/students/vocab-packs')
+      .then((packs) => {
+        if (Array.isArray(packs)) setVocabPacks(packs)
+      })
+      .catch(() => {})
+  }, [])
 
-  const toggleSort = (key: 'word' | 'due') => {
-    if (sortKey === key) {
-      setSortDir((d) => (d === 'asc' ? 'desc' : 'asc'))
-    } else {
-      setSortKey(key)
-      setSortDir('asc')
+  useEffect(() => {
+    if (!active || !selectedPackId || selectedPackId === 'builtin-zhongkao-23d') {
+      setCustomPackCards(null)
+      return
     }
-  }
+    api
+      .get<{ cards: any[] }>(`/students/vocab-packs/${selectedPackId}/cards?enrollmentId=${active.enrollmentId}&day=${selectedDay}`)
+      .then((res) => setCustomPackCards(res.cards ?? []))
+      .catch(() => setCustomPackCards([]))
+  }, [active, selectedPackId, selectedDay])
 
-  const filtered = (instances ?? [])
-    .filter((inst) => {
-      const matchState = filter === 'ALL' || inst.state === filter
-      const q = search.toLowerCase()
-      const matchSearch = !q || inst.card.word.toLowerCase().includes(q)
-      return matchState && matchSearch
-    })
-    .slice()
-    .sort((a, b) => {
-      const cmp = sortKey === 'word'
-        ? a.card.word.localeCompare(b.card.word)
-        : new Date(a.due).getTime() - new Date(b.due).getTime()
-      return sortDir === 'asc' ? cmp : -cmp
-    })
-
-  const handleAdd = async (e: FormEvent) => {
-    e.preventDefault()
-    if (!addForm.definitionL2.trim() && !addForm.definitionL1.trim()) {
-      setFormError('At least one definition (L1 or L2) is required.'); return
-    }
-    setSaving(true)
-    setFormError(null)
+  const submitCoCreation = async () => {
+    if (!active || !inspectedWord || coBusy) return
+    setCoBusy(true)
+    setCoNotice(null)
+    const chunks: Array<[string, string]> = coChunksText
+      .split(/[;；\n]/)
+      .map((s) => s.split(/[:|→]/).map((x) => x.trim()))
+      .filter((pair) => pair.length >= 2 && pair[0] && pair[1])
+      .map(([a, b]) => [a, b] as [string, string])
     try {
-      await api.post('/students/deck/cards', { enrollmentId: active.enrollmentId, ...addForm })
-      setAddModal(false)
-      reload()
-    } catch (e) {
-      setFormError(e instanceof ApiError ? e.message : 'Failed')
+      await api.post('/students/mnemonics', {
+        enrollmentId: active.enrollmentId,
+        word: inspectedWord.word,
+        tag: coTag,
+        hook: coHook.trim(),
+        story: coStory.trim(),
+        chunks: chunks.length > 0 ? chunks : [[inspectedWord.word.slice(0, 3), coHook.trim() || inspectedWord.word]],
+        trap: coTrap.trim() || null,
+      })
+      trackAnalyticsEvent('mnemonic_cocreate_submit', { word: inspectedWord.word }, { enrollmentId: active.enrollmentId })
+      setCoNotice('已提交教师审核！审核通过后将展示为「同学版」，每日首次通过还可获 XP + 邪修创作者徽章。')
+      setCoHook('')
+      setCoStory('')
+      setCoChunksText('')
+      setCoTrap('')
+    } catch (err: any) {
+      setCoNotice(err.message || '提交失败，请检查内容长度或敏感词')
     } finally {
-      setSaving(false)
+      setCoBusy(false)
     }
   }
 
-  const isOwnCard = (inst: CardInstance) => inst.origin === 'STUDENT_ADDED'
-  const isDeletable = (inst: CardInstance) => inst.origin !== 'TEACHER_ASSIGNED'
+  const [album, setAlbum] = useState<CardAlbumResponse | null>(null)
+  const [albumLoading, setAlbumLoading] = useState(false)
 
-  const handleEditSave = async (e: FormEvent) => {
-    e.preventDefault()
-    if (!editModal) return
-    if (isOwnCard(editModal)) {
-      if (!editForm.definitionL2.trim() && !editForm.definitionL1.trim()) {
-        setFormError('At least one definition (L1 or L2) is required.'); return
-      }
-    }
-    setSaving(true)
-    setFormError(null)
-    try {
-      const payload = isOwnCard(editModal)
-        ? editForm
-        : { definitionL1: editForm.definitionL1, exampleSentence: editForm.exampleSentence }
-      await api.patch(`/students/deck/cards/${editModal.id}`, payload)
-      setEditModal(null)
-      reload()
-    } catch (e) {
-      setFormError(e instanceof ApiError ? e.message : 'Failed')
-    } finally {
-      setSaving(false)
-    }
-  }
+  const [instances, setInstances] = useState<DeckCardInstance[]>([])
+  const [deckLoading, setDeckLoading] = useState(false)
+  const [addOpen, setAddOpen] = useState(false)
+  const [newWord, setNewWord] = useState('')
+  const [newZh, setNewZh] = useState('')
+  const [newEx, setNewEx] = useState('')
+  const [saveMsg, setSaveMsg] = useState<string | null>(null)
 
-  const handleDelete = async (inst: CardInstance) => {
-    if (!confirm(`Delete "${inst.card.word}" from your deck? This cannot be undone.`)) return
+  const loadDeck = useCallback(async () => {
+    if (!active) return
+    setDeckLoading(true)
     try {
-      await api.delete(`/students/deck/cards/${inst.id}`)
-      reload()
-    } catch (e) {
-      alert(e instanceof ApiError ? e.message : 'Failed')
-    }
-  }
-
-  const openHistory = async (inst: CardInstance) => {
-    setHistoryModal(inst)
-    setHistoryData(null)
-    setHistoryLoading(true)
-    try {
-      const data = await api.get<CardHistory>(
-        `/students/deck/cards/${inst.id}/history?enrollmentId=${active.enrollmentId}`
+      const res = await api.get<{ instances: DeckCardInstance[] }>(
+        `/students/deck?enrollmentId=${active.enrollmentId}`,
       )
-      setHistoryData(data)
-    } catch (e) {
-      setHistoryData(null)
+      setInstances(res.instances ?? [])
+    } catch {
+      /* ignore when browsing built-in 23-day library */
     } finally {
-      setHistoryLoading(false)
+      setDeckLoading(false)
     }
-  }
+  }, [active])
 
-  const handleExport = async () => {
+  const loadAlbum = useCallback(async (day: number) => {
+    if (!active) return
+    setAlbumLoading(true)
     try {
-      const blob = await api.get<Blob>(`/students/deck/export?enrollmentId=${active.enrollmentId}`)
-      downloadBlob(blob, 'deck-export.csv')
-    } catch (e) {
-      alert(e instanceof ApiError ? e.message : 'Export failed')
+      const res = await api.get<CardAlbumResponse>(
+        `/students/game/cards?enrollmentId=${active.enrollmentId}&day=${day}`,
+      )
+      setAlbum(res)
+    } catch {
+      setAlbum(null)
+    } finally {
+      setAlbumLoading(false)
+    }
+  }, [active])
+
+  useEffect(() => {
+    if (mode === 'mydeck') void loadDeck()
+    if (mode === 'album') void loadAlbum(selectedDay)
+  }, [mode, selectedDay, loadDeck, loadAlbum])
+
+  const filteredZhongkao = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    const pool = q
+      ? ZHONGKAO_23_DAYS.flatMap((d) => d.words.map((w) => ({ ...w, day: d.day })))
+      : (ZHONGKAO_23_DAYS.find((d) => d.day === selectedDay)?.words ?? []).map((w) => ({
+          ...w,
+          day: selectedDay,
+        }))
+    return pool.filter((w) => {
+      if (onlyMnemonic && !w.mnemonic) return false
+      if (!q) return true
+      return w.word.toLowerCase().includes(q) || w.meaning.includes(q)
+    })
+  }, [query, selectedDay, onlyMnemonic])
+
+  const handleAddOwnCard = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!active || !newWord.trim() || !newZh.trim()) return
+    try {
+      await api.post('/students/deck/cards', {
+        enrollmentId: active.enrollmentId,
+        word: newWord.trim(),
+        definitionL1: newZh.trim(),
+        exampleSentence: newEx.trim() || undefined,
+      })
+      setNewWord('')
+      setNewZh('')
+      setNewEx('')
+      setAddOpen(false)
+      setSaveMsg('已加入个人词卡，将按艾宾浩斯节奏提醒复习！')
+      void loadDeck()
+    } catch (err: any) {
+      setSaveMsg(err.message || '添加失败')
     }
   }
 
   return (
-    <div>
-      {addModal && (
-        <Modal title="Add Card to Deck" onClose={() => setAddModal(false)}>
-          <form onSubmit={handleAdd}>
-            {formError && <div className="alert alert-danger">{formError}</div>}
-            <div className="form-group">
-              <label className="form-label">Word *</label>
-              <input className="form-input" value={addForm.word} onChange={(e) => setAddForm({ ...addForm, word: e.target.value })} required />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Part of Speech</label>
-              <input className="form-input" value={addForm.pos} onChange={(e) => setAddForm({ ...addForm, pos: e.target.value })} placeholder="noun, verb, adj…" />
-            </div>
-            <div className="form-group">
-              <label className="form-label">{definitionL2Label}</label>
-              <textarea className="form-textarea" value={addForm.definitionL2} onChange={(e) => setAddForm({ ...addForm, definitionL2: e.target.value })} rows={2} />
-            </div>
-            <div className="form-group">
-              <label className="form-label">{definitionL1Label}</label>
-              <textarea className="form-textarea" value={addForm.definitionL1} onChange={(e) => setAddForm({ ...addForm, definitionL1: e.target.value })} rows={2} />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Example Sentence</label>
-              <textarea className="form-textarea" value={addForm.exampleSentence} onChange={(e) => setAddForm({ ...addForm, exampleSentence: e.target.value })} rows={2} />
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" onClick={() => setAddModal(false)}>Cancel</button>
-              <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Adding…' : 'Add Card'}</button>
-            </div>
-          </form>
-        </Modal>
-      )}
+    <>
+      <div className="eb-candy-strip">
+        <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+          <button
+            type="button"
+            className={`candy-pill ${mode === 'zhongkao' ? 'berry' : ''}`}
+            style={{ minHeight: 36, padding: '0 10px', fontSize: 12 }}
+            onClick={() => setMode('zhongkao')}
+          >
+            词表
+          </button>
+          <button
+            type="button"
+            className={`candy-pill ${mode === 'album' ? 'berry' : ''}`}
+            style={{ minHeight: 36, padding: '0 10px', fontSize: 12 }}
+            onClick={() => setMode('album')}
+          >
+            卡册
+          </button>
+          <button
+            type="button"
+            className={`candy-pill ${mode === 'mydeck' ? 'berry' : ''}`}
+            style={{ minHeight: 36, padding: '0 10px', fontSize: 12 }}
+            onClick={() => setMode('mydeck')}
+          >
+            班级词卡 ({instances.length})
+          </button>
+        </div>
+        {mode === 'mydeck' && active && (
+          <button
+            type="button"
+            className="candy-pill sky"
+            style={{ minHeight: 36, padding: '0 10px', fontSize: 12 }}
+            onClick={() => setAddOpen(true)}
+          >
+            + 自建词
+          </button>
+        )}
+      </div>
 
-      {editModal && isOwnCard(editModal) && (
-        <Modal title={`Edit "${editModal.card.word}"`} onClose={() => setEditModal(null)}>
-          <p style={{ fontSize: 13, color: 'var(--color-text-muted)', marginBottom: 12 }}>
-            This is a card you added yourself, so you can edit anything on it.
-          </p>
-          <form onSubmit={handleEditSave}>
-            {formError && <div className="alert alert-danger">{formError}</div>}
-            <div className="form-group">
-              <label className="form-label">Word *</label>
-              <input className="form-input" value={editForm.word} onChange={(e) => setEditForm({ ...editForm, word: e.target.value })} required />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Part of Speech</label>
-              <input className="form-input" value={editForm.pos} onChange={(e) => setEditForm({ ...editForm, pos: e.target.value })} placeholder="noun, verb, adj…" />
-            </div>
-            <div className="form-group">
-              <label className="form-label">{definitionL2Label}</label>
-              <textarea className="form-textarea" value={editForm.definitionL2} onChange={(e) => setEditForm({ ...editForm, definitionL2: e.target.value })} rows={2} />
-            </div>
-            <div className="form-group">
-              <label className="form-label">{definitionL1Label}</label>
-              <textarea className="form-textarea" value={editForm.definitionL1} onChange={(e) => setEditForm({ ...editForm, definitionL1: e.target.value })} rows={2} />
-            </div>
-            <div className="form-group">
-              <label className="form-label">Example Sentence</label>
-              <textarea className="form-textarea" value={editForm.exampleSentence} onChange={(e) => setEditForm({ ...editForm, exampleSentence: e.target.value })} rows={2} />
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" onClick={() => setEditModal(null)}>Cancel</button>
-              <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Saving…' : 'Save'}</button>
-            </div>
-          </form>
-        </Modal>
-      )}
+      {saveMsg && <div className="alert alert-success" style={{ marginBottom: 0 }}>{saveMsg}</div>}
 
-      {editModal && !isOwnCard(editModal) && (
-        <Modal title={`Edit — "${editModal.card.word}"`} onClose={() => setEditModal(null)}>
-          <p style={{ fontSize: 13, color: 'var(--color-text-muted)', marginBottom: 12 }}>
-            You can personalise the example sentence, and fill in a {definitionL1Label.toLowerCase()} for your own
-            reference. Leave the example blank to use the teacher's version.
-          </p>
-          <form onSubmit={handleEditSave}>
-            {formError && <div className="alert alert-danger">{formError}</div>}
-            <div className="form-group">
-              <label className="form-label">{definitionL1Label}</label>
-              <textarea className="form-textarea" value={editForm.definitionL1} onChange={(e) => setEditForm({ ...editForm, definitionL1: e.target.value })} rows={2} placeholder={editModal.card.definitionL1 ?? 'No L1 definition yet'} />
+      {mode === 'album' ? (
+        <div className="camp-hero-card" style={{ gap: 8, overflow: 'hidden' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: 13, fontWeight: 800, flexShrink: 0, gap: 6, flexWrap: 'wrap' }}>
+            <span>
+              已收集 {album?.summary.collectedCount ?? 0}/{album?.summary.totalWords ?? 688} · 闪钻 {album?.summary.diamondCount ?? 0}
+            </span>
+            <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+              {vocabPacks.length > 1 && (
+                <select
+                  className="form-control"
+                  aria-label="切换词包"
+                  style={{ height: 30, fontSize: 12, width: 155, padding: '2px 6px' }}
+                  value={selectedPackId}
+                  onChange={(e) => setSelectedPackId(e.target.value)}
+                >
+                  {vocabPacks.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} ({p.totalWords})
+                    </option>
+                  ))}
+                </select>
+              )}
+              <span style={{ fontSize: 11, color: 'var(--color-text-muted)' }}>
+                金 {album?.summary.goldCount ?? 0} · 银 {album?.summary.silverCount ?? 0} · 糖 {album?.summary.candyCount ?? 0}
+              </span>
             </div>
-            <div className="form-group">
-              <label className="form-label">Example Sentence</label>
-              <textarea className="form-textarea" value={editForm.exampleSentence} onChange={(e) => setEditForm({ ...editForm, exampleSentence: e.target.value })} rows={3} placeholder={editModal.card.exampleSentence ?? 'No example on card'} />
-            </div>
-            <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" onClick={() => setEditModal(null)}>Cancel</button>
-              <button type="submit" className="btn btn-primary" disabled={saving}>{saving ? 'Saving…' : 'Save'}</button>
-            </div>
-          </form>
-        </Modal>
-      )}
+          </div>
 
-      {/* Per-card history modal — §21.2 */}
-      {historyModal && (
-        <Modal title={`Review History — "${historyModal.card.word}"`} onClose={() => setHistoryModal(null)}>
-          {historyLoading && <div className="spinner" />}
-          {historyData && (
+          {selectedPackId !== 'builtin-zhongkao-23d' && customPackCards ? (
             <>
-              {historyData.events.length === 0 ? (
-                <p style={{ fontSize: 14, color: 'var(--color-text-muted)' }}>No reviews yet for this card.</p>
+              <div style={{ display: 'flex', gap: 6, alignItems: 'center', justifyContent: 'space-between', fontSize: 12 }}>
+                <span>扩展词包第 {selectedDay} 天（共 {customPackCards.length} 词）</span>
+                <div style={{ display: 'flex', gap: 4 }}>
+                  <button type="button" className="candy-pill" style={{ minHeight: 28, fontSize: 11 }} onClick={() => setSelectedDay((d) => Math.max(1, d - 1))}>
+                    上一天
+                  </button>
+                  <button type="button" className="candy-pill" style={{ minHeight: 28, fontSize: 11 }} onClick={() => setSelectedDay((d) => d + 1)}>
+                    下一天
+                  </button>
+                </div>
+              </div>
+              <div className="album-card-grid">
+                {customPackCards.map((card: any) => (
+                  <button
+                    key={`${selectedPackId}-${selectedDay}-${card.word}`}
+                    type="button"
+                    className={`album-card-tile ${card.rarity ? card.rarity.cssClass : 'rarity-locked'}`}
+                    onClick={() =>
+                      setInspectedWord({
+                        word: card.word,
+                        ipa: card.ipa || '',
+                        meaning: card.meaning,
+                        mnemonic: card.mnemonic ?? null,
+                        bestStage: card.bestStage ?? null,
+                        rarity: card.rarity ?? null,
+                      })
+                    }
+                  >
+                    <div className="album-card-top">
+                      <span className="album-rarity-pill">{card.rarity ? card.rarity.label : '未解锁'}</span>
+                    </div>
+                    <strong className="album-word">{card.word}</strong>
+                    <div className="album-meaning">{card.collected ? card.meaning : '学习后解锁释义剪影'}</div>
+                  </button>
+                ))}
+              </div>
+            </>
+          ) : (
+            <>
+              <div style={{ display: 'flex', gap: 6, overflowX: 'auto', flexShrink: 0, paddingBottom: 4 }}>
+                {ZHONGKAO_23_DAYS.map((d) => (
+                  <button
+                    key={d.day}
+                    type="button"
+                    className={`candy-pill ${selectedDay === d.day ? 'berry' : ''}`}
+                    style={{ minHeight: 36, minWidth: 44, padding: '0 8px', fontSize: 12 }}
+                    onClick={() => setSelectedDay(d.day)}
+                  >
+                    D{d.day}
+                  </button>
+                ))}
+              </div>
+
+              {albumLoading ? (
+                <div style={{ padding: 20, textAlign: 'center' }}>正在整理第 {selectedDay} 天卡册...</div>
               ) : (
-                <table className="table" style={{ fontSize: 13 }}>
-                  <thead>
-                    <tr><th>Date</th><th>Grade</th><th>Response Time</th></tr>
-                  </thead>
-                  <tbody>
-                    {historyData.events.map((ev, i) => (
-                      <tr key={i}>
-                        <td>{new Date(ev.reviewedAt).toLocaleString()}</td>
-                        <td>
-                          <span style={{ color: gradeColors[ev.grade], fontWeight: 600 }}>
-                            {gradeLabels[ev.grade] ?? ev.grade}
-                          </span>
-                        </td>
-                        <td style={{ color: 'var(--color-text-muted)' }}>
-                          {ev.responseTimeMs ? `${(ev.responseTimeMs / 1000).toFixed(1)}s` : '—'}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+                <div className="album-card-grid">
+                  {(album?.cards ?? (ZHONGKAO_23_DAYS.find((d) => d.day === selectedDay)?.words ?? []).map((w) => ({
+                    ...w,
+                    collected: false,
+                    bestStage: null,
+                    currentStage: 0,
+                    rarity: null,
+                  }))).map((card) => (
+                    <button
+                      key={`${selectedDay}-${card.word}`}
+                      type="button"
+                      className={`album-card-tile ${card.rarity ? card.rarity.cssClass : 'rarity-locked'}`}
+                      onClick={() => setInspectedWord(card)}
+                    >
+                      <div className="album-card-top">
+                        <span className="album-rarity-pill">
+                          {card.rarity ? card.rarity.label : '未解锁'}
+                        </span>
+                        {card.mnemonic && <span>✨</span>}
+                      </div>
+                      <strong className="album-word">{card.word}</strong>
+                      <div className="album-meaning">
+                        {card.collected ? card.meaning : '学习后解锁释义剪影'}
+                      </div>
+                    </button>
+                  ))}
+                </div>
               )}
             </>
           )}
-          <div className="modal-footer">
-            <button className="btn btn-secondary" onClick={() => setHistoryModal(null)}>Close</button>
-          </div>
-        </Modal>
-      )}
-
-      <div className="page-header">
-        <h1 className="page-title" style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
-          <img src="/Vanilla-deck.png" alt="" style={{ width: 36, height: 36, objectFit: 'contain' }} />
-          My Deck
-        </h1>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
-          <button className="btn btn-primary btn-sm" onClick={() => { setAddForm({ word: '', pos: '', definitionL2: '', definitionL1: '', exampleSentence: '' }); setFormError(null); setAddModal(true) }}>+ Add Card</button>
-          <button className="btn btn-secondary btn-sm" onClick={handleExport}>Export CSV</button>
         </div>
-      </div>
+      ) : mode === 'zhongkao' ? (
+        <div className="camp-hero-card" style={{ gap: 8, overflow: 'hidden' }}>
+          <div style={{ display: 'flex', gap: 6, overflowX: 'auto', flexShrink: 0, paddingBottom: 4 }}>
+            {ZHONGKAO_23_DAYS.map((d) => (
+              <button
+                key={d.day}
+                type="button"
+                className={`candy-pill ${selectedDay === d.day && !query ? 'berry' : ''}`}
+                style={{ minHeight: 36, minWidth: 44, padding: '0 8px', fontSize: 12 }}
+                onClick={() => { setQuery(''); setSelectedDay(d.day) }}
+              >
+                D{d.day}
+              </button>
+            ))}
+          </div>
 
-      {/* Filters */}
-      <div style={{ display: 'flex', gap: 8, marginBottom: 16, flexWrap: 'wrap', alignItems: 'center' }}>
-        <input className="form-input" style={{ maxWidth: 200 }} placeholder="Search word…" value={search} onChange={(e) => setSearch(e.target.value)} />
-        {['ALL', 'NEW', 'LEARNING', 'REVIEW', 'RELEARNING'].map((s) => (
-          <button
-            key={s}
-            className={`btn btn-sm btn-${filter === s ? 'primary' : 'secondary'}`}
-            onClick={() => setFilter(s)}
-          >{s}</button>
-        ))}
-        <button
-          type="button"
-          onClick={() => setShowStateInfo(true)}
-          aria-label="What do these statuses mean?"
-          style={{
-            width: 16, height: 16, borderRadius: '50%', border: 'none', padding: 0,
-            background: 'var(--color-info)', color: 'var(--color-vanilla)',
-            fontSize: 10, fontWeight: 700, lineHeight: '16px', cursor: 'pointer',
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-          }}
-        >
-          ?
-        </button>
-      </div>
+          <div style={{ display: 'flex', gap: 6, flexShrink: 0 }}>
+            <input
+              className="form-input"
+              type="search"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="搜 688 个中考词或中文释义..."
+              style={{ flex: 1, minHeight: 42 }}
+            />
+            <button
+              type="button"
+              className={`candy-pill ${onlyMnemonic ? 'berry' : ''}`}
+              style={{ minHeight: 42 }}
+              onClick={() => setOnlyMnemonic((v) => !v)}
+            >
+              仅邪修
+            </button>
+          </div>
 
-      {showStateInfo && (
-        <Modal title="What do these statuses mean?" onClose={() => setShowStateInfo(false)}>
-          <ul style={{ paddingLeft: 20, display: 'flex', flexDirection: 'column', gap: 10 }}>
-            <li><strong>New</strong> — You haven't studied this word yet.</li>
-            <li><strong>Learning</strong> — You've started studying this word, but it's not locked in yet.</li>
-            <li><strong>Review</strong> — You know this word, and you're reviewing it on a normal, growing schedule.</li>
-            <li><strong>Relearning</strong> — You forgot this word after knowing it, so it's back to being studied more often for a while.</li>
-          </ul>
-        </Modal>
-      )}
-
-      {loading && <div className="spinner" />}
-      {error && <div className="alert alert-danger">{error}</div>}
-
-      <div className="student-deck-mobile-sort" aria-label="Sort cards">
-        <span>Sort by</span>
-        {(['word', 'due'] as const).map((key) => (
-          <button key={key} type="button" className="btn btn-secondary btn-sm"
-            aria-pressed={sortKey === key} onClick={() => toggleSort(key)}>
-            {key === 'word' ? 'Word' : 'Due'}
-            {sortKey === key && (sortDir === 'asc' ? ' ▲' : ' ▼')}
-          </button>
-        ))}
-      </div>
-      <div className="student-deck-table-wrap">
-        <table className="table student-deck-table" role="table">
-          <colgroup>
-            <col className="student-deck-word-column" />
-            <col className="student-deck-definition-column" />
-            <col className="student-deck-status-column" />
-            <col className="student-deck-actions-column" />
-          </colgroup>
-          <thead>
-            <tr>
-              <th>
+          <div style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+            {filteredZhongkao.slice(0, 80).map((w) => (
+              <div
+                key={`${w.day}-${w.word}`}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  gap: 8,
+                  padding: '8px 2px',
+                  borderBottom: '1px solid var(--color-border)',
+                  minHeight: 48,
+                }}
+              >
+                <div style={{ minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
+                    <strong>{w.word}</strong>
+                    <span style={{ fontSize: 12, color: 'var(--color-text-muted)' }}>{w.ipa}</span>
+                    {w.mnemonic && <span className="badge badge-yellow">{w.mnemonic.hook}</span>}
+                  </div>
+                  <div style={{ fontSize: 13, color: 'var(--color-text-muted)' }}>{w.meaning}</div>
+                </div>
                 <button
                   type="button"
-                  onClick={() => toggleSort('word')}
-                  style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, font: 'inherit', color: 'inherit', textTransform: 'inherit', letterSpacing: 'inherit' }}
+                  className="candy-pill"
+                  style={{ minHeight: 36, flexShrink: 0 }}
+                  onClick={() => setInspectedWord(w)}
                 >
-                  Word
-                  <span style={{ fontSize: 10, opacity: sortKey === 'word' ? 1 : 0.35 }}>
-                    {sortKey === 'word' && sortDir === 'desc' ? '▼' : '▲'}
-                  </span>
+                  看邪修卡
                 </button>
-              </th>
-              <th>{definitionL2Label}</th>
-              <th>
-                <div>Review Status</div>
-                <button
-                  type="button"
-                  onClick={() => toggleSort('due')}
-                  style={{ background: 'none', border: 'none', padding: 0, cursor: 'pointer', display: 'inline-flex', alignItems: 'center', gap: 4, font: 'inherit', color: 'inherit', textTransform: 'inherit', letterSpacing: 'inherit' }}
-                >
-                  Due
-                  <span style={{ fontSize: 10, opacity: sortKey === 'due' ? 1 : 0.35 }}>
-                    {sortKey === 'due' && sortDir === 'desc' ? '▼' : '▲'}
-                  </span>
-                </button>
-              </th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length === 0 && <tr><td colSpan={4} className="table-empty">No cards match the filter.</td></tr>}
-            {filtered.map((inst) => (
-              <tr key={inst.id} role="row">
-                <td role="cell" className="student-deck-word">
-                  <div className="student-deck-word-text">{inst.card.word}</div>
-                  {inst.card.pos && <div className="student-deck-pos">{inst.card.pos}</div>}
-                </td>
-                <td role="cell" className="student-deck-definition">
-                  <span className="student-deck-mobile-label">{definitionL2Label}</span>
-                  <div>{inst.card.definitionL2 || <span className="student-deck-muted">—</span>}</div>
-                </td>
-                <td role="cell" className="student-deck-status">
-                  <span className="student-deck-mobile-label">Review Status</span>
-                  <span className={`badge ${stateColors[inst.state]}`}>{inst.state}</span>
-                  <div className="student-deck-due">Due: {inst.state === 'NEW' ? '—' : new Date(inst.due).toLocaleDateString()}</div>
-                </td>
-                <td role="cell">
-                  <div className="student-deck-actions">
-                    <button
-                      className="btn btn-secondary btn-sm"
-                      onClick={() => openHistory(inst)}
-                    >
-                      History
-                    </button>
-                    <button
-                      className="btn btn-secondary btn-sm"
-                      onClick={() => {
-                        setEditForm({
-                          word: inst.card.word,
-                          pos: inst.card.pos ?? '',
-                          definitionL2: inst.card.definitionL2 ?? '',
-                          definitionL1: isOwnCard(inst) ? (inst.card.definitionL1 ?? '') : (inst.definitionL1 ?? ''),
-                          exampleSentence: isOwnCard(inst) ? (inst.card.exampleSentence ?? '') : (inst.exampleSentence ?? ''),
-                        })
-                        setFormError(null)
-                        setEditModal(inst)
+              </div>
+            ))}
+          </div>
+        </div>
+      ) : (
+        <div className="camp-hero-card" style={{ gap: 8, overflow: 'hidden' }}>
+          {deckLoading ? (
+            <div style={{ padding: 20, textAlign: 'center' }}>加载班级词卡中...</div>
+          ) : (
+            <div style={{ flex: 1, minHeight: 0, overflowY: 'auto' }}>
+              {instances.length === 0 ? (
+                <p style={{ color: 'var(--color-text-muted)', padding: 12 }}>当前班级词卡为空，点击右上角可自建词卡或前往「班级词集」选学。</p>
+              ) : (
+                instances.map((inst) => {
+                  const snap = buildEbbinghausSnapshot({
+                    state: inst.state,
+                    stability: inst.stability,
+                    reps: inst.reps,
+                    due: inst.due,
+                  })
+                  const rarity = rarityFromStage(inst.bestStage ?? (inst.reps > 0 ? snap.stage : null))
+                  return (
+                    <div
+                      key={inst.id}
+                      style={{
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        padding: '8px 2px',
+                        borderBottom: '1px solid var(--color-border)',
+                        gap: 8,
                       }}
                     >
-                      Edit
+                      <div>
+                        <strong>{inst.card.word}</strong>{' '}
+                        {rarity && <span className="badge badge-yellow">{rarity.label}</span>}
+                        <div style={{ fontSize: 13, color: 'var(--color-text-muted)' }}>
+                          {inst.definitionL1 || inst.card.definitionL1 || inst.card.definitionL2}
+                        </div>
+                      </div>
+                      <span className="badge badge-blue">
+                        {snap.stageLabel} · {snap.nextReviewText}
+                      </span>
+                    </div>
+                  )
+                })
+              )}
+            </div>
+          )}
+        </div>
+      )}
+
+      {inspectedWord && (
+        <div className="modal-backdrop" role="dialog" aria-modal="true">
+          <div
+            className={`camp-modal-card ${inspectedWord.rarity ? inspectedWord.rarity.cssClass : ''}`}
+            style={{ display: 'flex', flexDirection: 'column', gap: 10 }}
+          >
+            <div className="modal-header" style={{ marginBottom: 0 }}>
+              <div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                  <h2 style={{ fontSize: 26 }}>{inspectedWord.word}</h2>
+                  {inspectedWord.rarity && (
+                    <span className="badge badge-yellow">{inspectedWord.rarity.label}</span>
+                  )}
+                </div>
+                <div style={{ fontSize: 14, color: 'var(--color-text-muted)' }}>
+                  {inspectedWord.ipa} · {inspectedWord.meaning}
+                </div>
+              </div>
+              <button type="button" className="candy-pill" onClick={() => speakWord(inspectedWord.word)}>
+                🔊 读音
+              </button>
+            </div>
+            <MnemonicCardBlock
+              word={inspectedWord.word}
+              mnemonic={patchMap[inspectedWord.word.toLowerCase()] ?? inspectedWord.mnemonic}
+              studentAlternatives={studentAltMap[inspectedWord.word.toLowerCase()] ?? []}
+            />
+            {summary?.classSettings?.mnemonicCoCreateOpen && (inspectedWord.bestStage ?? 0) >= 4 && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                <button
+                  type="button"
+                  className="candy-pill sticky"
+                  style={{ minHeight: 34 }}
+                  onClick={() => {
+                    setCocreateOpen((v) => !v)
+                    setCoNotice(null)
+                  }}
+                >
+                  {cocreateOpen ? '收起共创表单' : '✍️ 写我的邪修口诀（共创）'}
+                </button>
+                {cocreateOpen && (
+                  <div className="camp-def-box" style={{ display: 'flex', flexDirection: 'column', gap: 6, padding: 10 }}>
+                    {coNotice && <div className="alert alert-info" style={{ marginBottom: 0 }}>{coNotice}</div>}
+                    <div style={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+                      {['谐音记忆', '词根词缀', '画面联想', '对比记忆', '考场防坑'].map((t) => (
+                        <button
+                          key={t}
+                          type="button"
+                          className={`candy-pill ${coTag === t ? 'berry' : ''}`}
+                          style={{ minHeight: 28, padding: '0 8px', fontSize: 11 }}
+                          onClick={() => setCoTag(t)}
+                        >
+                          {t}
+                        </button>
+                      ))}
+                    </div>
+                    <input
+                      className="form-control"
+                      placeholder="记忆钩子（4-40字，如：re(回)+ward(看)）"
+                      value={coHook}
+                      onChange={(e) => setCoHook(e.target.value)}
+                    />
+                    <textarea
+                      className="form-control"
+                      rows={2}
+                      placeholder="记忆故事（10-240字）"
+                      value={coStory}
+                      onChange={(e) => setCoStory(e.target.value)}
+                    />
+                    <input
+                      className="form-control"
+                      placeholder="拆解（可选，如 re|回;ward|看）"
+                      value={coChunksText}
+                      onChange={(e) => setCoChunksText(e.target.value)}
+                    />
+                    <button
+                      type="button"
+                      className="camp-btn camp-btn-mint"
+                      disabled={coBusy || !coHook.trim() || !coStory.trim()}
+                      onClick={() => void submitCoCreation()}
+                    >
+                      提交老师审核
                     </button>
-                    {isDeletable(inst) && (
-                      <button className="btn btn-danger btn-sm" onClick={() => handleDelete(inst)}>Delete</button>
-                    )}
                   </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+                )}
+              </div>
+            )}
+            <button type="button" className="camp-btn camp-btn-mint" onClick={() => setInspectedWord(null)}>
+              收起词卡
+            </button>
+          </div>
+        </div>
+      )}
+
+      {addOpen && (
+        <div className="modal-backdrop" role="dialog" aria-modal="true">
+          <form className="camp-modal-card" onSubmit={(e) => void handleAddOwnCard(e)}>
+            <div className="modal-header">
+              <h2>添加自习词卡</h2>
+              <button type="button" className="candy-pill" onClick={() => setAddOpen(false)}>取消</button>
+            </div>
+            <div className="form-group">
+              <label className="form-label" htmlFor="own-word">英文单词</label>
+              <input id="own-word" className="form-input" value={newWord} onChange={(e) => setNewWord(e.target.value)} required autoCapitalize="none" />
+            </div>
+            <div className="form-group">
+              <label className="form-label" htmlFor="own-zh">中文释义</label>
+              <input id="own-zh" className="form-input" value={newZh} onChange={(e) => setNewZh(e.target.value)} required />
+            </div>
+            <div className="form-group">
+              <label className="form-label" htmlFor="own-ex">例句（选填）</label>
+              <input id="own-ex" className="form-input" value={newEx} onChange={(e) => setNewEx(e.target.value)} />
+            </div>
+            <button type="submit" className="camp-btn camp-btn-berry" style={{ width: '100%' }}>保存并加入复习</button>
+          </form>
+        </div>
+      )}
+    </>
   )
 }

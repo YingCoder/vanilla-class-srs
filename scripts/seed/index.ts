@@ -5,10 +5,11 @@ import * as path from 'path';
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 import { PrismaClient, FSRSState, CardOrigin } from '@prisma/client';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 
 import { STUDENT_NAMES } from './data/names';
 import { CARD_SETS } from './data/words';
+import { ZHONGKAO_23_DAYS } from '../../shared/vocab/zhongkao23';
 
 const prisma = new PrismaClient();
 
@@ -44,6 +45,28 @@ function daysFromNow(days: number): Date {
 
 async function wipe(): Promise<void> {
   process.stdout.write('Wiping existing data... ');
+  await prisma.vocabPackItem.deleteMany();
+  await prisma.vocabPack.deleteMany();
+  await prisma.weeklyReport.deleteMany();
+  await prisma.classSeason.deleteMany();
+  await prisma.squadCheer.deleteMany();
+  await prisma.squadWeek.deleteMany();
+  await prisma.squadMember.deleteMany();
+  await prisma.squad.deleteMany();
+  await prisma.mnemonicEntry.deleteMany();
+  await prisma.reminderLog.deleteMany();
+  await prisma.reminderPref.deleteMany();
+  await prisma.pushSubscription.deleteMany();
+  await prisma.analyticsDailyRollup.deleteMany();
+  await prisma.analyticsEvent.deleteMany();
+  await prisma.teacherCheerRead.deleteMany();
+  await prisma.teacherCheer.deleteMany();
+  await prisma.classChallenge.deleteMany();
+  await prisma.classGameSetting.deleteMany();
+  await prisma.studentBadge.deleteMany();
+  await prisma.dailyGameState.deleteMany();
+  await prisma.gameEvent.deleteMany();
+  await prisma.studentGameProfile.deleteMany();
   await prisma.reviewEvent.deleteMany();
   await prisma.reviewSession.deleteMany();
   await prisma.cardInstance.deleteMany();
@@ -62,6 +85,7 @@ async function wipe(): Promise<void> {
   await prisma.user.deleteMany();
   await prisma.subjectGrade.deleteMany();
   await prisma.department.deleteMany();
+  await prisma.appRelease.deleteMany();
   console.log('done.');
 }
 
@@ -480,6 +504,53 @@ async function seed(): Promise<void> {
       },
     });
   }
+
+  // ── 23天中考英语高频词 (688 词 + 邪修口诀) & 初始热更新版本 ──
+  console.log('Seeding 23-day Zhongkao 688 words & baseline AppRelease...');
+  const zkCardSet = await prisma.cardSet.create({
+    data: {
+      name: '23天中考英语高频词（688词·含邪修口诀）',
+      description: '依据《23天背完中考英语高频词》全书导入，已适配音标、艾宾浩斯阶段及手工精编邪修口诀。',
+      status: 'DEPARTMENTAL',
+      subjectGradeId: sg11.id,
+    },
+  });
+  await prisma.card.createMany({
+    data: ZHONGKAO_23_DAYS.flatMap((dayItem) =>
+      dayItem.words.map((w) => ({
+        cardSetId: zkCardSet.id,
+        word: w.word,
+        ipa: w.ipa,
+        definitionL1: `Day${dayItem.day} ${w.meaning}`,
+        exampleSentence: w.mnemonic?.example ?? null,
+        mnemonic: (w.mnemonic ?? undefined) as any,
+      })),
+    ),
+  });
+  for (const sg of [sg11, sg12]) {
+    await prisma.subjectGradeAssignment.create({
+      data: {
+        subjectGradeId: sg.id,
+        cardSetId: zkCardSet.id,
+        type: 'OPTIONAL',
+        assignedBy: adminUser.id,
+      },
+    });
+  }
+
+  await prisma.appRelease.create({
+    data: {
+      version: 'v2.4.0',
+      packVersion: 'Pack-23D-688',
+      title: '香草单词营 · 23天中考高频词首发包',
+      notes: '包含23天688词与136条手工邪修口诀，支持艾宾浩斯8阶复习与iOS免签名主屏安装。',
+      pushMode: 'SILENT',
+      payloadType: 'VOCAB_PACK',
+      isActive: true,
+      publishedBy: adminUser.name,
+      publisherRole: 'ADMIN',
+    },
+  });
 
   // ── Summary ──
   console.log('\n=== SEED COMPLETE ===');

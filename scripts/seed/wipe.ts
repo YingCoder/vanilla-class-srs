@@ -12,6 +12,29 @@ async function wipe(): Promise<void> {
   console.log('Wiping all data...');
 
   // Delete in reverse dependency order to respect FK constraints
+  await prisma.vocabPackItem.deleteMany();
+  await prisma.vocabPack.deleteMany();
+  await prisma.weeklyReport.deleteMany();
+  await prisma.classSeason.deleteMany();
+  await prisma.squadCheer.deleteMany();
+  await prisma.squadWeek.deleteMany();
+  await prisma.squadMember.deleteMany();
+  await prisma.squad.deleteMany();
+  await prisma.mnemonicEntry.deleteMany();
+  await prisma.reminderLog.deleteMany();
+  await prisma.reminderPref.deleteMany();
+  await prisma.pushSubscription.deleteMany();
+  await prisma.analyticsDailyRollup.deleteMany();
+  await prisma.analyticsEvent.deleteMany();
+  await prisma.teacherCheerRead.deleteMany();
+  await prisma.teacherCheer.deleteMany();
+  await prisma.classChallenge.deleteMany();
+  await prisma.classGameSetting.deleteMany();
+  await prisma.studentBadge.deleteMany();
+  await prisma.dailyGameState.deleteMany();
+  await prisma.gameEvent.deleteMany();
+  await prisma.studentGameProfile.deleteMany();
+
   await prisma.reviewEvent.deleteMany();
   console.log('  ✓ ReviewEvent');
 
@@ -65,6 +88,9 @@ async function wipe(): Promise<void> {
 
   await prisma.department.deleteMany();
   console.log('  ✓ Department');
+
+  await prisma.appRelease.deleteMany();
+  console.log('  ✓ AppRelease');
 
   console.log('\nAll data wiped successfully.');
 }

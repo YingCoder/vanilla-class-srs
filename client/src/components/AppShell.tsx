@@ -1,5 +1,6 @@
 import { ReactNode, useEffect, useState } from 'react'
 import { Outlet, NavLink, useLocation } from 'react-router-dom'
+import ThemeToggleButton from './ThemeToggleButton'
 
 interface NavItem {
   to: string
@@ -61,6 +62,7 @@ export default function AppShell({ roleLabel, userName, navItems, extra, footerE
       </div>
       {footerExtra}
       <div style={{ padding: '8px 16px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+        <ThemeToggleButton compact />
         <NavLink to="/change-password" className="sidebar-nav-link">修改密码</NavLink>
         <button className="btn btn-secondary btn-sm" onClick={onSignOut}>退出登录</button>
       </div>

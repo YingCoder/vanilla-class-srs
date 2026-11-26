@@ -11,6 +11,6 @@
     "declaration": true,
     "declarationMap": true
   },
-  "include": ["types/**/*", "fsrs/**/*", "word-camp.ts"],
+  "include": ["types/**/*", "fsrs/**/*", "vocab/**/*", "ebbinghaus.ts", "gamification.ts", "stage4.ts", "world.ts", "worldContent.ts", "word-camp.ts", "index.ts"],
   "exclude": ["node_modules", "dist"]
 }

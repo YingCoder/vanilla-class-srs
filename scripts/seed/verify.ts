@@ -138,9 +138,9 @@ async function verify(): Promise<void> {
 
   // ── CardSets & Cards
   printSection('CardSets & Cards');
-  await check('Total CardSets',           () => prisma.cardSet.count(),                                     5);
-  await check('Total Cards (5×20)',       () => prisma.card.count(),                                        100);
-  await check('DEPARTMENTAL CardSets',    () => prisma.cardSet.count({ where: { status: 'DEPARTMENTAL' } }), 3);
+  await check('Total CardSets',           () => prisma.cardSet.count(),                                     6);
+  await check('Total Cards (5×20 + 688)', () => prisma.card.count(),                                        788);
+  await check('DEPARTMENTAL CardSets',    () => prisma.cardSet.count({ where: { status: 'DEPARTMENTAL' } }), 4);
   await check('PRIVATE CardSets',         () => prisma.cardSet.count({ where: { status: 'PRIVATE' } }),      2);
   await check('Personal CardSets (none)', () => prisma.cardSet.count({ where: { isPersonal: true } }),       0);
   await check('All cards have at least one definition', () => prisma.card.count({ where: { definitionL1: null, definitionL2: null } }), 0);
@@ -150,7 +150,7 @@ async function verify(): Promise<void> {
   await check('Total Assignments',             () => prisma.assignment.count(),                                40);
   await check('MANDATORY Assignments',         () => prisma.assignment.count({ where: { type: 'MANDATORY' } }), 28);
   await check('OPTIONAL Assignments',          () => prisma.assignment.count({ where: { type: 'OPTIONAL' } }),  12);
-  await check('SubjectGradeAssignments (3×2)', () => prisma.subjectGradeAssignment.count(),                    6);
+  await check('SubjectGradeAssignments (4×2)', () => prisma.subjectGradeAssignment.count(),                    8);
 
   // ── CardInstances
   printSection('CardInstances');

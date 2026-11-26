@@ -3,10 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "seed": "ts-node seed/index.ts",
-    "wipe": "ts-node seed/wipe.ts",
-    "purge": "ts-node seed/purge-department.ts",
-    "verify": "ts-node seed/verify.ts"
+    "seed": "npx tsx seed/index.ts",
+    "wipe": "npx tsx seed/wipe.ts",
+    "purge": "npx tsx seed/purge-department.ts",
+    "verify": "npx tsx seed/verify.ts"
   },
   "dependencies": {
     "@prisma/client": "*",

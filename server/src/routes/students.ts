@@ -487,6 +487,7 @@ const GradeSchema = z.object({
   instanceId: z.string().uuid(),
   grade: z.number().int().min(1).max(4),
   responseTimeMs: z.number().int().positive().optional(),
+  submissionId: z.string().trim().min(1).max(100).optional(),
 })
 
 // POST /api/students/review/grade
@@ -501,6 +502,8 @@ router.post('/review/grade', validate(GradeSchema), async (req: Request, res: Re
     req.body.instanceId,
     req.body.grade,
     req.body.responseTimeMs,
+    undefined,
+    req.body.submissionId,
   )
   if ('error' in result) { res.status(result.status).json({ error: result.error }); return }
   res.json(result)
@@ -574,6 +577,7 @@ router.post('/review/choice-answer', validate(ChoiceAnswerSchema), async (req: R
 const FinishSchema = z.object({
   sessionId: z.string().uuid(),
   tz: z.string().optional(),
+  isWeakRestudy: z.boolean().optional(),
 })
 
 // POST /api/students/review/finish
@@ -581,7 +585,9 @@ router.post('/review/finish', validate(FinishSchema), async (req: Request, res: 
   const student = await getStudent(req.user!.sub)
   if (!student) { res.status(403).json({ error: 'No student profile found' }); return }
 
-  const result = await finishSession(prisma, student.id, req.body.sessionId, new Date(), req.body.tz || 'UTC')
+  const result = await finishSession(prisma, student.id, req.body.sessionId, new Date(), req.body.tz || 'UTC', {
+    isWeakRestudy: req.body.isWeakRestudy,
+  })
   if ('error' in result) { res.status(result.status).json({ error: result.error }); return }
   res.json(result)
 })

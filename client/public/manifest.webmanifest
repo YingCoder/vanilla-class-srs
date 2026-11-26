@@ -1,0 +1,26 @@
+{
+  "name": "香草单词营 · 23天中考特训",
+  "short_name": "香草单词营",
+  "description": "艾宾浩斯记忆法 × 邪修暴走口诀 · 23天攻克中考688高频词",
+  "start_url": "/student/task",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF0EC",
+  "theme_color": "#FFF0EC",
+  "lang": "zh-CN",
+  "icons": [
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/favicon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

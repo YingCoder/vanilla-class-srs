@@ -151,17 +151,24 @@ model TeacherSubjectGrade {
 }
 
 model Class {
-  id             String                @id @default(uuid())
-  name           String                // e.g. "Class 12A"
-  teacherId      String
-  teacher        Teacher               @relation(fields: [teacherId], references: [id])
-  subjectGradeId String
-  subjectGrade   SubjectGrade          @relation(fields: [subjectGradeId], references: [id])
-  enrollments    Enrollment[]
-  assignments    Assignment[]
-  homeworkReqs   HomeworkRequirement[]
-  createdAt      DateTime              @default(now())
-  archivedAt     DateTime?
+  id              String                @id @default(uuid())
+  name            String                // e.g. "Class 12A"
+  teacherId       String
+  teacher         Teacher               @relation(fields: [teacherId], references: [id])
+  subjectGradeId  String
+  subjectGrade    SubjectGrade          @relation(fields: [subjectGradeId], references: [id])
+  enrollments     Enrollment[]
+  assignments     Assignment[]
+  homeworkReqs    HomeworkRequirement[]
+  gameSetting     ClassGameSetting?
+  challenges      ClassChallenge[]
+  cheers          TeacherCheer[]
+  analyticsEvents AnalyticsEvent[]
+  squads          Squad[]
+  season          ClassSeason?
+  weeklyReports   WeeklyReport[]
+  createdAt       DateTime              @default(now())
+  archivedAt      DateTime?
 }
 
 // ─────────────────────────────────────────────
@@ -169,11 +176,23 @@ model Class {
 // ─────────────────────────────────────────────
 
 model Student {
-  id          String       @id @default(uuid())
-  userId      String       @unique
-  user        User         @relation(fields: [userId], references: [id])
-  enrollments Enrollment[]
-  createdAt   DateTime     @default(now())
+  id                String              @id @default(uuid())
+  userId            String              @unique
+  user              User                @relation(fields: [userId], references: [id])
+  enrollments       Enrollment[]
+  gameProfile       StudentGameProfile?
+  gameEvents        GameEvent[]
+  homeBuildings     StudentHomeBuilding[]
+  dailyGameStates   DailyGameState[]
+  badges            StudentBadge[]
+  cheerReads        TeacherCheerRead[]
+  analyticsEvents   AnalyticsEvent[]
+  pushSubscriptions PushSubscription[]
+  reminderPref      ReminderPref?
+  reminderLogs      ReminderLog[]
+  squadMembers      SquadMember[]
+  squadCheers       SquadCheer[]
+  createdAt         DateTime            @default(now())
 }
 
 model Enrollment {
@@ -242,9 +261,11 @@ model Card {
   // At least one of definitionL1 or definitionL2 must be non-null (enforced at app layer)
   word            String
   pos             String? // part of speech
+  ipa             String? // phonetic transcription e.g. /bɪˈkɒz/
   definitionL2    String? // target language definition (e.g. English)
   definitionL1    String? // native language definition (e.g. Chinese)
   exampleSentence String? // teacher-provided example sentence
+  mnemonic        Json?   // structured 邪修记忆 { tag, hook, story, chunks, trap, example }
   // Additional accepted spellings for grading (e.g. colour / color), spec §6.1.
   variants        String[] @default([])
 
@@ -333,12 +354,15 @@ model CardInstance {
   reps           Int       @default(0)
   lapses         Int       @default(0)
   state          FSRSState @default(NEW)
+  bestStage      Int?      // Historical highest Ebbinghaus stage (0..8); null = uncollected
 
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
   reviewEvents ReviewEvent[]
 
   @@unique([deckId, cardId])
+  @@index([deckId, state, due])
+  @@index([deckId, bestStage(sort: Desc), id])
 }
 
 // ─────────────────────────────────────────────
@@ -402,7 +426,10 @@ model ReviewEvent {
   cardInstance   CardInstance  @relation(fields: [cardInstanceId], references: [id])
   grade          Int           // FSRS grades: 1 (Again) 2 (Hard) 3 (Good) 4 (Easy)
   responseTimeMs Int?
+  submissionId   String?
   reviewedAt     DateTime      @default(now())
+
+  @@unique([sessionId, submissionId])
 }
 
 // ─────────────────────────────────────────────
@@ -472,6 +499,7 @@ model DailyStudyTask {
   enrollmentId  String
   enrollment    Enrollment      @relation(fields: [enrollmentId], references: [id], onDelete: Cascade)
   studyDate     String          // Asia/Shanghai YYYY-MM-DD
+  campDay       Int?            // 1..23 camp map day index
   status        DailyTaskStatus @default(ACTIVE)
   version       Int             @default(1)
   newWordTarget Int
@@ -496,10 +524,12 @@ model DailyTaskWord {
   sortOrder          Int
   word               String
   pos                String?
+  ipa                String?
   definitionL2       String?
   definitionL1       String?
   variants           String[]          @default([])
   exampleSentence    String?
+  mnemonic           Json?
   scheduledAt        DateTime?
   scheduledRating    Int?
   scheduledSessionId String?
@@ -571,4 +601,389 @@ model LevelAnswer {
 
   @@unique([sessionId, submissionId])
   @@index([sessionId, questionId])
+}
+
+// ─────────────────────────────────────────────
+// Hot-Update Releases & Push Notifications
+// ─────────────────────────────────────────────
+
+enum ReleasePushMode {
+  BANNER
+  FORCE_RELOAD
+  SILENT
+}
+
+enum ReleasePayloadType {
+  APP_UI
+  VOCAB_PACK
+  MNEMONIC_PATCH
+  GAME_CONFIG
+  WORLD_CONTENT
+}
+
+model AppRelease {
+  id            String             @id @default(uuid())
+  version       String
+  packVersion   String             @map("pack_version")
+  title         String
+  notes         String
+  pushMode      ReleasePushMode    @default(BANNER) @map("push_mode")
+  payloadType   ReleasePayloadType @default(VOCAB_PACK) @map("payload_type")
+  configPayload Json?              @map("config_payload")
+  scope         Json?              @map("scope")
+  isActive      Boolean            @default(true) @map("is_active")
+  publishedBy   String             @map("published_by")
+  publisherRole String             @map("publisher_role")
+  publishedAt   DateTime           @default(now()) @map("published_at")
+
+  @@index([isActive, publishedAt])
+  @@map("app_releases")
+}
+
+// ─────────────────────────────────────────────
+// Stage 3 Gamification (G0, F1–F12)
+// ─────────────────────────────────────────────
+
+model GameEvent {
+  id        String   @id @default(uuid())
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  type      String
+  sourceId  String
+  xp        Int
+  // Immutable conversion rate at XP settlement. Legacy events permanently use 0.1.
+  sugarCrystalRatio Decimal @default(0.1) @db.Decimal(5, 4)
+  localDate String   // Asia/Shanghai YYYY-MM-DD
+  meta      Json?
+  createdAt DateTime @default(now())
+
+  @@unique([studentId, type, sourceId])
+  @@index([studentId, localDate])
+  @@index([localDate])
+}
+
+// Each purchased level is permanent. Sum(cost) is the only persisted currency debit.
+// Free campfire/hatchery are unconditional initial entitlements in shared/world.ts.
+model StudentHomeBuilding {
+  studentId   String
+  student     Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  buildingKey String
+  level       Int
+  cost        Int
+  requestId   String   // Idempotency-Key UUID, stable across HTTP retries and enrollments
+  builtAt     DateTime @default(now())
+
+  @@id([studentId, buildingKey, level])
+  @@unique([studentId, requestId])
+}
+
+model StudentGameProfile {
+  studentId        String   @id
+  student          Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  nickname         String?
+  avatarKey        String   @default("vanilla")
+  avatarFrame      String   @default("vanilla")
+  cardSkin         String   @default("classic")
+  soundEnabled     Boolean  @default(false)
+  fontScale        String   @default("normal")
+  reduceMotion     Boolean  @default(false)
+  lowSpecMode      Boolean  @default(false)
+  unlockedSkins    String[] @default([])
+  totalXp          Int      @default(0)
+  level            Int      @default(1)
+  streakDays       Int      @default(0)
+  longestStreak    Int      @default(0)
+  freezeTickets    Int      @default(0)
+  lastAchievedDate String?
+  streakCursorDate String?
+  lastStudiedDate  String?
+  updatedAt        DateTime @updatedAt
+}
+
+model DailyGameState {
+  studentId       String
+  student         Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  localDate       String   // Asia/Shanghai YYYY-MM-DD
+  xpEarned        Int      @default(0)
+  reviewDue       Int      @default(0)
+  reviewDone      Int      @default(0)
+  reviewedCardIds String[] @default([])
+  levelsPassed    String[] @default([])
+  ringsClosed     Boolean  @default(false)
+  weakBossDone    Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@id([studentId, localDate])
+}
+
+model StudentBadge {
+  id        String   @id @default(uuid())
+  studentId String
+  student   Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  badgeKey  String
+  earnedAt  DateTime @default(now())
+
+  @@unique([studentId, badgeKey])
+}
+
+model ClassGameSetting {
+  classId              String   @id
+  class                Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  leaderboardOpen      Boolean  @default(false)
+  weeklyTargetCards    Int      @default(300)
+  mnemonicCoCreateOpen Boolean  @default(false)
+  squadEnabled         Boolean  @default(false)
+  activePackId         String?
+  updatedAt            DateTime @updatedAt
+}
+
+model ClassChallenge {
+  id          String   @id @default(uuid())
+  classId     String
+  class       Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  weekStart   String   // Monday YYYY-MM-DD (Asia/Shanghai)
+  title       String   @default("本周全班挑战")
+  targetCount Int
+  status      String   @default("ACTIVE")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([classId, weekStart])
+}
+
+model TeacherCheer {
+  id         String             @id @default(uuid())
+  classId    String
+  class      Class              @relation(fields: [classId], references: [id], onDelete: Cascade)
+  senderId   String
+  senderName String
+  studentId  String?            // null = whole class
+  presetKey  String
+  message    String
+  sticker    String
+  createdAt  DateTime           @default(now())
+  reads      TeacherCheerRead[]
+
+  @@index([classId, createdAt])
+}
+
+model TeacherCheerRead {
+  cheerId   String
+  cheer     TeacherCheer @relation(fields: [cheerId], references: [id], onDelete: Cascade)
+  studentId String
+  student   Student      @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  readAt    DateTime     @default(now())
+
+  @@id([cheerId, studentId])
+}
+
+// ─────────────────────────────────────────────
+// Stage 4 Retention, Analytics, Scale & Content (R2–R11)
+// ─────────────────────────────────────────────
+
+model AnalyticsEvent {
+  id            String   @id @default(uuid())
+  studentId     String
+  student       Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  classId       String?
+  class         Class?   @relation(fields: [classId], references: [id], onDelete: SetNull)
+  clientEventId String
+  type          String
+  props         Json?
+  clientVersion String?
+  occurredAt    DateTime @default(now())
+  dayKey        String   // Asia/Shanghai YYYY-MM-DD
+
+  @@unique([studentId, clientEventId])
+  @@index([classId, dayKey, type])
+  @@index([studentId, dayKey])
+  @@index([dayKey])
+}
+
+model AnalyticsDailyRollup {
+  id             String   @id @default(uuid())
+  classId        String
+  dayKey         String
+  type           String
+  eventCount     Int
+  uniqueStudents Int
+  archivedAt     DateTime @default(now())
+
+  @@unique([classId, dayKey, type])
+  @@index([dayKey])
+}
+
+model PushSubscription {
+  id         String    @id @default(uuid())
+  studentId  String
+  student    Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  endpoint   String    @unique
+  p256dh     String
+  auth       String
+  userAgent  String?
+  disabledAt DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  @@index([studentId])
+}
+
+model ReminderPref {
+  studentId           String   @id
+  student             Student  @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  enabled             Boolean  @default(false)
+  hour                Int      @default(19)
+  pausedUntil         String?  // Asia/Shanghai YYYY-MM-DD
+  consecutiveUnopened Int      @default(0)
+  updatedAt           DateTime @updatedAt
+}
+
+model ReminderLog {
+  id         String    @id @default(uuid())
+  studentId  String
+  student    Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  templateId String
+  channel    String    @default("WEB_PUSH") // WEB_PUSH | IN_APP | TEACHER_CHEER
+  localDate  String    // Asia/Shanghai YYYY-MM-DD
+  weekStart  String    // Monday YYYY-MM-DD
+  sentAt     DateTime  @default(now())
+  openedAt   DateTime?
+
+  @@index([studentId, localDate])
+  @@index([studentId, weekStart])
+}
+
+model MnemonicEntry {
+  id             String    @id @default(uuid())
+  word           String
+  campDay        Int?
+  source         String    // TEACHER | IMPORT | STUDENT
+  status         String    @default("DRAFT") // DRAFT | PENDING | APPROVED | REJECTED
+  authorId       String?
+  authorRole     String    // TEACHER | ADMIN | STUDENT
+  authorNickname String?   // Only nickname exposed for approved student entries
+  reviewerId     String?
+  reviewNote     String?
+  batchId        String?
+  tag            String
+  hook           String
+  story          String
+  chunks         Json
+  trap           String?
+  example        String?
+  releaseVersion String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  reviewedAt     DateTime?
+
+  @@index([word, status])
+  @@index([status, campDay])
+  @@index([batchId])
+}
+
+model Squad {
+  id         String        @id @default(uuid())
+  classId    String
+  class      Class         @relation(fields: [classId], references: [id], onDelete: Cascade)
+  name       String
+  createdAt  DateTime      @default(now())
+  archivedAt DateTime?
+  members    SquadMember[]
+  weeks      SquadWeek[]
+  cheers     SquadCheer[]
+
+  @@index([classId, archivedAt])
+}
+
+model SquadMember {
+  id        String    @id @default(uuid())
+  squadId   String
+  squad     Squad     @relation(fields: [squadId], references: [id], onDelete: Cascade)
+  studentId String
+  student   Student   @relation(fields: [studentId], references: [id], onDelete: Cascade)
+  joinedAt  DateTime  @default(now())
+  leftAt    DateTime?
+
+  @@unique([squadId, studentId])
+  @@index([studentId, leftAt])
+}
+
+model SquadWeek {
+  id         String    @id @default(uuid())
+  squadId    String
+  squad      Squad     @relation(fields: [squadId], references: [id], onDelete: Cascade)
+  weekStart  String    // Monday YYYY-MM-DD (Asia/Shanghai)
+  achieved   Boolean   @default(false)
+  achievedAt DateTime?
+
+  @@unique([squadId, weekStart])
+}
+
+model SquadCheer {
+  id              String   @id @default(uuid())
+  squadId         String
+  squad           Squad    @relation(fields: [squadId], references: [id], onDelete: Cascade)
+  senderStudentId String
+  sender          Student  @relation(fields: [senderStudentId], references: [id], onDelete: Cascade)
+  presetKey       String
+  message         String
+  sticker         String
+  localDate       String   // Asia/Shanghai YYYY-MM-DD
+  weekStart       String
+  createdAt       DateTime @default(now())
+
+  @@index([squadId, weekStart])
+  @@index([senderStudentId, localDate])
+}
+
+model ClassSeason {
+  id        String   @id @default(uuid())
+  classId   String   @unique
+  class     Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  name      String   @default("中考冲刺赛季")
+  examDate  String   // YYYY-MM-DD
+  startDate String   // YYYY-MM-DD
+  status    String   @default("AUTO") // AUTO | ACTIVE | PAUSED | ENDED
+  updatedBy String?
+  updatedAt DateTime @updatedAt
+}
+
+model WeeklyReport {
+  id          String   @id @default(uuid())
+  classId     String
+  class       Class    @relation(fields: [classId], references: [id], onDelete: Cascade)
+  weekStart   String   // Monday YYYY-MM-DD
+  payload     Json
+  generatedAt DateTime @default(now())
+
+  @@unique([classId, weekStart])
+}
+
+model VocabPack {
+  id          String          @id @default(uuid())
+  slug        String          @unique
+  name        String
+  description String?
+  daysCount   Int             @default(1)
+  isBuiltin   Boolean         @default(false)
+  createdBy   String?
+  isActive    Boolean         @default(true)
+  createdAt   DateTime        @default(now())
+  items       VocabPackItem[]
+}
+
+model VocabPackItem {
+  id        String    @id @default(uuid())
+  packId    String
+  pack      VocabPack @relation(fields: [packId], references: [id], onDelete: Cascade)
+  day       Int       @default(1)
+  word      String
+  ipa       String?
+  meaning   String
+  mnemonic  Json?
+  sortOrder Int       @default(0)
+
+  @@unique([packId, word])
+  @@index([packId, day])
 }

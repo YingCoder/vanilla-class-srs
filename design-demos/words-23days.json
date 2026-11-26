@@ -1,0 +1,6589 @@
+[
+  {
+    "day": 1,
+    "words": [
+      {
+        "word": "make",
+        "ipa": "/meɪk/",
+        "meaning": "v.制造，做，建造",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "妈(m)烤(ke)大饼",
+          "story": "字母 m 像妈妈，a 是大圆饼，ke 谐音「烤」——妈妈亲手做大饼，就是「制造、做」。",
+          "chunks": [
+            [
+              "m",
+              "妈"
+            ],
+            [
+              "a",
+              "大饼"
+            ],
+            [
+              "ke",
+              "烤出来"
+            ]
+          ],
+          "trap": "过去式/过去分词是 made，别写成 maked。",
+          "example": "We can make a study plan together. 我们可以一起制定学习计划。"
+        }
+      },
+      {
+        "word": "because",
+        "ipa": "/bɪˈkɒz/",
+        "meaning": "conj.因为，由于",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "被烤死",
+          "story": "为什么今天集体翘课去吹空调？「因为」外面太阳太大差点「被烤死」(be-cause)！",
+          "chunks": [
+            [
+              "be",
+              "被"
+            ],
+            [
+              "cause",
+              "烤死"
+            ]
+          ],
+          "trap": "中考铁律：because 和 so 绝对不能在同一个句子里连用！",
+          "example": "I stayed up to review because the exam is tomorrow. 因为明天考试，我熬夜复习了。"
+        }
+      },
+      {
+        "word": "other",
+        "ipa": "/ˈʌðə/",
+        "meaning": "a.其他的，别的，另外的",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "哦(o)这(the)人(r)",
+          "story": "「哦(o)，这(the)个人(r)」不是主角，是「其他的、另外的」路人甲。",
+          "chunks": [
+            [
+              "o",
+              "哦"
+            ],
+            [
+              "the",
+              "这"
+            ],
+            [
+              "r",
+              "路人"
+            ]
+          ],
+          "trap": "other + 复数名词；the other 指两者中的另一个。",
+          "example": "Some students like cards, while other students prefer spelling. 有的同学爱看词卡，别的同学爱拼写。"
+        }
+      },
+      {
+        "word": "know",
+        "ipa": "/nəʊ/",
+        "meaning": "v.知道，认识",
+        "mnemonic": {
+          "tag": "拼写防坑",
+          "hook": "沉默保镖 k 守门",
+          "story": "把 k 想成站在门口不说话的保镖，后面接 now(现在)——保镖心里早就「知道」现在的全部情报。",
+          "chunks": [
+            [
+              "k",
+              "沉默保镖"
+            ],
+            [
+              "now",
+              "现在早知道"
+            ]
+          ],
+          "trap": "词首 k 不发音！过去式 knew，过去分词 known。",
+          "example": "Do you know the secret behind this word? 你知道这个词背后的秘籍吗？"
+        }
+      },
+      {
+        "word": "learn",
+        "ipa": "/lɜːn/",
+        "meaning": "v.学会，学习",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "左耳(ear)进右脑记",
+          "story": "中间藏着一只大耳朵 ear！上学用耳朵认真听，才能「学会、学习」。",
+          "chunks": [
+            [
+              "l",
+              "竖起"
+            ],
+            [
+              "ear",
+              "耳朵"
+            ],
+            [
+              "n",
+              "小门"
+            ]
+          ],
+          "trap": "learn from 向某人学习；learn to do 学会做某事。",
+          "example": "You can learn thirty words a day easily. 你每天都能轻松学会三十个词。"
+        }
+      },
+      {
+        "word": "should",
+        "ipa": "/ʃʊd/",
+        "meaning": "aux.应该，将要，可能",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "坏了就该修的",
+          "story": "读音神似「修的」！电脑卡成 PPT 了，「应该」赶紧拿去「修的」——记住字母 l 是不发音的哑巴螺丝钉。",
+          "chunks": [
+            [
+              "sh",
+              "师"
+            ],
+            [
+              "ou",
+              "偶"
+            ],
+            [
+              "l",
+              "哑巴钉"
+            ],
+            [
+              "d",
+              "的"
+            ]
+          ],
+          "trap": "情态动词后必须接动词原形！",
+          "example": "You should review your weak words before bed. 你睡前应该复习一下薄弱词。"
+        }
+      },
+      {
+        "word": "most",
+        "ipa": "/məʊst/",
+        "meaning": "ad.最a.最多的",
+        "mnemonic": {
+          "tag": "画面联想",
+          "hook": "三座山(m)占最多",
+          "story": "开头字母 m 像连绵三座大山，后面 ost 像高高的石碑——站在最高峰俯瞰，就是「最、最多的」。",
+          "chunks": [
+            [
+              "m",
+              "三座山"
+            ],
+            [
+              "ost",
+              "最高峰"
+            ]
+          ],
+          "trap": "most of + 限定词 + 名词；作副词构成多音节最高级。",
+          "example": "Most students remember jokes faster than rules. 大多数学生记段子比记语法快。"
+        }
+      },
+      {
+        "word": "play",
+        "ipa": "/pleɪ/",
+        "meaning": "v.玩，扮演n.游戏，戏剧，比赛",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "p 屁颠跑去 lay(躺)",
+          "story": "放学屁颠屁颠(p)跑回家往沙发上一躺(lay)，开黑「玩游戏」美滋滋！",
+          "chunks": [
+            [
+              "p",
+              "跑回家"
+            ],
+            [
+              "lay",
+              "躺平开玩"
+            ]
+          ],
+          "trap": "play + 球类不加 the；play the + 乐器必须加 the！",
+          "example": "Let's play a quick word game after class. 下课后我们来玩一局快速单词闯关吧。"
+        }
+      },
+      {
+        "word": "need",
+        "ipa": "/niːd/",
+        "meaning": "v./n.需要，必需",
+        "mnemonic": {
+          "tag": "画面联想",
+          "hook": "两眼(ee)放光",
+          "story": "中间两个 e 像两只圆溜溜瞪大的眼睛——两眼放光死死盯着奶茶，说明你极度「需要」！",
+          "chunks": [
+            [
+              "n",
+              "你"
+            ],
+            [
+              "ee",
+              "两眼放光"
+            ],
+            [
+              "d",
+              "的"
+            ]
+          ],
+          "trap": "实义动词 need to do；作情态动词多用于否定 needn't do。",
+          "example": "We need more sleep before the big test. 大考前我们需要更多睡眠。"
+        }
+      },
+      {
+        "word": "just",
+        "ipa": "/ʤʌst/",
+        "meaning": "ad.正好，仅仅，刚才",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "哥们(j)你(u)站住(st)",
+          "story": "j 像勾人的手指，u 是你，st 是 street 街头——刚拐弯就被叫住：「正好、刚才」要找你！",
+          "chunks": [
+            [
+              "j",
+              "招手"
+            ],
+            [
+              "u",
+              "你"
+            ],
+            [
+              "st",
+              "站住"
+            ]
+          ],
+          "trap": "just now「刚才」通常配一般过去时；just 配现在完成时。",
+          "example": "I just finished Day 1 in five minutes! 我刚才五分钟就刷完了第一天！"
+        }
+      },
+      {
+        "word": "different",
+        "ipa": "/ˈdɪfərənt/",
+        "meaning": "a.不同的",
+        "mnemonic": {
+          "tag": "词根暴走",
+          "hook": "双担(ff)分开扛",
+          "story": "dif(分开) + fer(扛) + ent：两个 f 就像两根扁担，各扛各的行李分开走，走出的路线当然「不同的」！",
+          "chunks": [
+            [
+              "dif",
+              "分开"
+            ],
+            [
+              "fer",
+              "扛扁担"
+            ],
+            [
+              "ent",
+              "状态"
+            ]
+          ],
+          "trap": "必考搭配 be different from「与…不同」，拼写双写 ff 别丢！",
+          "example": "Everyone has a different memory trick. 每个人都有不同的记忆妙招。"
+        }
+      },
+      {
+        "word": "keep",
+        "ipa": "/kiːp/",
+        "meaning": "v.保持，继续，遵守",
+        "mnemonic": {
+          "tag": "画面联想",
+          "hook": "瞪大双眼(ee)盯住",
+          "story": "又是双 e 大眼睛！考场监考老师瞪着两只大眼(ee)盯着你，让你「保持、遵守」考场纪律。",
+          "chunks": [
+            [
+              "k",
+              "看"
+            ],
+            [
+              "ee",
+              "瞪大双眼"
+            ],
+            [
+              "p",
+              "纪律"
+            ]
+          ],
+          "trap": "keep doing sth 坚持一直做某事；过去式 kept。",
+          "example": "Keep going for 23 days and you will surprise yourself. 坚持23天，你会惊艳自己。"
+        }
+      },
+      {
+        "word": "start",
+        "ipa": "/stɑːt/",
+        "meaning": "v./n.开始，出发",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "追星(star)踢一脚(t)",
+          "story": "前面是 star(星星)，后面踹一脚 t——正式「开始、出发」去追星啦！",
+          "chunks": [
+            [
+              "star",
+              "星星"
+            ],
+            [
+              "t",
+              "踏出第一步"
+            ]
+          ],
+          "trap": "start to do 和 start doing 意思基本相同。",
+          "example": "Tap the card to start today's mission. 点击词卡开始今天的任务。"
+        }
+      },
+      {
+        "word": "great",
+        "ipa": "/ɡreɪt/",
+        "meaning": "a.伟大的ad.好极了",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "果然(gr)超能吃(eat)",
+          "story": "gr(果然) + eat(吃)——果然一顿狂吃之后心情「好极了」，干饭人真是「伟大的」！",
+          "chunks": [
+            [
+              "gr",
+              "果然"
+            ],
+            [
+              "eat",
+              "干饭"
+            ]
+          ],
+          "trap": "注意 ea 组合读 /eɪ/，别顺口读成 /iː/！",
+          "example": "That mnemonic is a great way to remember it. 这个口诀真是记住它的绝妙方法。"
+        }
+      },
+      {
+        "word": "show",
+        "ipa": "/ʃəʊ/",
+        "meaning": "v.展示，证明，显现n.表演",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "蛇(s)教你如何(how)秀",
+          "story": "一条弯曲的小蛇(s)上台教你「如何(how)」走猫步，全场最会「展示、表演」的就是它！",
+          "chunks": [
+            [
+              "s",
+              "小蛇"
+            ],
+            [
+              "how",
+              "如何秀"
+            ]
+          ],
+          "trap": "show sb around 带某人参观；on show 正在展出。",
+          "example": "Show me your notebook after the quiz. 测验完把你的笔记本给我展示一下。"
+        }
+      },
+      {
+        "word": "little",
+        "ipa": "/ˈlɪtl/",
+        "meaning": "a.小的，少的，短的",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "藏在盒子里头",
+          "story": "读起来像「里头」！能塞进火柴盒「里头」的东西，肯定又「小」又「少」又「短」！",
+          "chunks": [
+            [
+              "lit",
+              "里头"
+            ],
+            [
+              "tle",
+              "小小的"
+            ]
+          ],
+          "trap": "a little 表「有一点」(肯定)；不加 a 的 little 表「几乎没有」(否定)！",
+          "example": "There is little time left before the bell rings. 打铃前几乎没剩多少时间了。"
+        }
+      },
+      {
+        "word": "last",
+        "ipa": "/lɑːst/",
+        "meaning": "a./ad.最后的 v.持续",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "拉(la)到街头(st)持久战",
+          "story": "倒数「最后」一名被班主任拉(la)到街头(st)背单词，没想到他「持续」站了一整晚。",
+          "chunks": [
+            [
+              "la",
+              "拉去"
+            ],
+            [
+              "st",
+              "街头持久战"
+            ]
+          ],
+          "trap": "作形容词是「最后的/上一个」，作动词是「持续」。",
+          "example": "This sprint will last only twenty-three days. 这场冲刺只会持续二十三天。"
+        }
+      },
+      {
+        "word": "right",
+        "ipa": "/raɪt/",
+        "meaning": "a./ad.对的，右边的，n.权利",
+        "mnemonic": {
+          "tag": "拼写防坑",
+          "hook": "r 向右 + igh 发光灯",
+          "story": "r 像路口右转箭头，中间 igh 记住 light/night/right 一家亲：往「右边」走就是「对的」，维护你的「权利」。",
+          "chunks": [
+            [
+              "r",
+              "右转"
+            ],
+            [
+              "igh",
+              "灯塔"
+            ],
+            [
+              "t",
+              "路牌"
+            ]
+          ],
+          "trap": "right away 立刻马上；on the right 在右边。",
+          "example": "You got the right answer on your very first try! 你第一次尝试就答对了！"
+        }
+      },
+      {
+        "word": "follow",
+        "ipa": "/ˈfɒləʊ/",
+        "meaning": "v.跟随，沿着，遵循",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "大佛(fo)落(llow)下来",
+          "story": "天上突然「佛(fo)落(llow)」下来发红包，全班同学排成两列 ll 队伍狂奔「跟随」！",
+          "chunks": [
+            [
+              "fo",
+              "大佛"
+            ],
+            [
+              "llow",
+              "落下来快跟"
+            ]
+          ],
+          "trap": "follow one's advice 听从某人的建议。",
+          "example": "Follow the red annotations if you forget the meaning. 忘了词义就跟着红笔批注走。"
+        }
+      },
+      {
+        "word": "become",
+        "ipa": "/bɪˈkʌm/",
+        "meaning": "v.变成，变得",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "be(是) + come(来)",
+          "story": "梦想「来(come)」敲门，你就「变成(become)」那个更好的人！",
+          "chunks": [
+            [
+              "be",
+              "成为"
+            ],
+            [
+              "come",
+              "来到"
+            ]
+          ],
+          "trap": "become 是系动词，后面直接接形容词或名词，过去式 became。",
+          "example": "Hard words become easy once you laugh at them. 只要你能把难词拿来玩梗，它就变简单了。"
+        }
+      },
+      {
+        "word": "important",
+        "ipa": "/ɪmˈpɔːtənt/",
+        "meaning": "a.重要的",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "进口(import)一只蚂蚁(ant)",
+          "story": "专门花重金海运「进口(import)」一只「蚂蚁(ant)」，这只蚂蚁后台硬得很，一定非常「重要的」！",
+          "chunks": [
+            [
+              "im",
+              "进"
+            ],
+            [
+              "port",
+              "港口"
+            ],
+            [
+              "ant",
+              "蚂蚁"
+            ]
+          ],
+          "trap": "名词形式是 importance；It is important for sb to do sth.",
+          "example": "Breakfast is the most important meal of the day. 早餐是一天中最重要的一顿饭。"
+        }
+      },
+      {
+        "word": "visit",
+        "ipa": "/ˈvɪzɪt/",
+        "meaning": "n./v.拜访，参观",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "VI 贵宾来坐(sit)",
+          "story": "VIP 少了 P 变成 VI 贵宾，来家里一「坐(sit)」就是三小时——这就是亲戚「拜访、参观」！",
+          "chunks": [
+            [
+              "vi",
+              "贵宾"
+            ],
+            [
+              "sit",
+              "坐下拜访"
+            ]
+          ],
+          "trap": "visit 既可当动词也可当名词；visitor 参观者。",
+          "example": "We plan to visit the science museum this Sunday. 我们计划这周日去参观科技馆。"
+        }
+      },
+      {
+        "word": "interest",
+        "ipa": "/ˈɪntrest/",
+        "meaning": "n.兴趣，利息",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "在中间(inter)休息(rest)",
+          "story": "刷题刷到头秃时，中间(inter)能「休息(rest)」十分钟，瞬间对学习恢复「兴趣」（钱放着休息还能生「利息」）。",
+          "chunks": [
+            [
+              "inter",
+              "在中间"
+            ],
+            [
+              "rest",
+              "休息生趣"
+            ]
+          ],
+          "trap": "interested 形容人感兴趣；interesting 形容事物有趣！",
+          "example": "Wild mnemonics spark real interest in English. 邪修记忆法点亮了大家学英语的真兴趣。"
+        }
+      },
+      {
+        "word": "around",
+        "ipa": "/əˈraʊnd/",
+        "meaning": "ad.在周围，到处，大约",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "画一个(a)圆圈(round)",
+          "story": "孙悟空在地面画「一个(a)圆圈(round)」把唐僧围住——圈子「在周围、到处」保护他。",
+          "chunks": [
+            [
+              "a",
+              "一个"
+            ],
+            [
+              "round",
+              "圆圈"
+            ]
+          ],
+          "trap": "look around 环顾四周；around + 数字 = 大约。",
+          "example": "Look around for clues inside the word itself. 在单词里面四处找找记忆线索。"
+        }
+      },
+      {
+        "word": "problem",
+        "ipa": "/ˈprɒbləm/",
+        "meaning": "n.问题，难题",
+        "mnemonic": {
+          "tag": "词根暴走",
+          "hook": "往前(pro)丢来一口黑锅",
+          "story": "pro(向前) + blem(丢/扔)：老板「往前丢」过来一口冒烟的大黑锅——这就是你要解决的「问题、难题」！",
+          "chunks": [
+            [
+              "pro",
+              "向前"
+            ],
+            [
+              "blem",
+              "扔黑锅"
+            ]
+          ],
+          "trap": "have problems (in) doing sth 做某事有困难；对比 question(等待回答的问题)。",
+          "example": "No problem! Let's crack this spelling together. 没问题！我们一起攻克这个拼写。"
+        }
+      },
+      {
+        "word": "country",
+        "ipa": "/ˈkʌntri/",
+        "meaning": "n.国家，乡村",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "扛(coun)锤(try)打江山",
+          "story": "读音像「扛锤」！先辈们「扛着大锤」在「乡村」里干活，一步步建设起强大的「国家」。",
+          "chunks": [
+            [
+              "coun",
+              "扛起"
+            ],
+            [
+              "try",
+              "大锤拼搏"
+            ]
+          ],
+          "trap": "复数变 y 为 i 加 es：countries；in the country = 在乡下。",
+          "example": "China is a country with thousands of years of history. 中国是一个拥有数千年历史的国家。"
+        }
+      },
+      {
+        "word": "really",
+        "ipa": "/ˈrɪəli/",
+        "meaning": "ad.真正地，实际上",
+        "mnemonic": {
+          "tag": "拼写防坑",
+          "hook": "真(real)的带两条腿(ly)",
+          "story": "real 是「真的」，变副词尾巴加 ly，合起来双写 ll 站得稳稳的，表示「真正地、实际上」。",
+          "chunks": [
+            [
+              "real",
+              "真货"
+            ],
+            [
+              "ly",
+              "双腿站稳"
+            ]
+          ],
+          "trap": "千万别漏掉双写 ll！real + ly = really。",
+          "example": "That joke really helped me spell the word! 那个段子真的帮我把单词拼出来了！"
+        }
+      },
+      {
+        "word": "mean",
+        "ipa": "/miːn/",
+        "meaning": "v.意思是，意味n.平均值",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「命」",
+          "story": "读起来像「命」！这句话到底是啥「意思」？考场上这二分关乎我的小「命」(平均值)啊！",
+          "chunks": [
+            [
+              "m",
+              "摸"
+            ],
+            [
+              "ean",
+              "命根意思"
+            ]
+          ],
+          "trap": "过去式 meant；mean to do 打算做；mean doing 意味着。",
+          "example": "What does this weird sentence mean? 这句奇怪的话是什么意思？"
+        }
+      },
+      {
+        "word": "stop",
+        "ipa": "/stɒp/",
+        "meaning": "n./v.停止，阻止，车站",
+        "mnemonic": {
+          "tag": "画面联想",
+          "hook": "弯路(s)遇到最高(top)路牌",
+          "story": "前面还是弯曲的 S 形山路，突然立起一块大牌子 top——全车急刹「停止」在「车站」！",
+          "chunks": [
+            [
+              "s",
+              "弯路"
+            ],
+            [
+              "top",
+              "立牌叫停"
+            ]
+          ],
+          "trap": "stop doing 停止正在做的事；stop to do 停下来去做另一件事！",
+          "example": "Stop worrying and test yourself with ten words. 别焦虑了，先用十个词测一测自己。"
+        }
+      },
+      {
+        "word": "change",
+        "ipa": "/ʧeɪnʤ/",
+        "meaning": "v.改变n.变化，零钱",
+        "mnemonic": {
+          "tag": "拼音暴击",
+          "hook": "嫦娥(chang-e)奔月",
+          "story": "拼音正好是 chang + e「嫦娥」！嫦娥吃了仙丹飞上月球，生活发生巨大「改变」，连口袋里都换成月宫「零钱」。",
+          "chunks": [
+            [
+              "chang",
+              "嫦"
+            ],
+            [
+              "e",
+              "娥大变身"
+            ]
+          ],
+          "trap": "作「零钱」讲时是不可数名词；change...into... 把…变成…。",
+          "example": "One clever hook can change how you feel about vocabulary. 一个好脑洞就能改变你背单词的体验。"
+        }
+      }
+    ]
+  },
+  {
+    "day": 2,
+    "words": [
+      {
+        "word": "kind",
+        "ipa": "/kaɪnd/",
+        "meaning": "n.种类 a.亲切的，善良的",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "看(k)的清清楚楚",
+          "story": "对每个「种类」的流浪猫都那么有耐心，这样的人真「亲切的、善良的」！",
+          "chunks": [
+            [
+              "k",
+              "看"
+            ],
+            [
+              "ind",
+              "心中温柔"
+            ]
+          ],
+          "trap": "a kind of 一种；kind of 有点儿（修饰形容词）。",
+          "example": "Our teacher is always kind to students who try hard. 我们老师对努力的同学总是很亲切。"
+        }
+      },
+      {
+        "word": "begin",
+        "ipa": "/bɪˈɡɪn/",
+        "meaning": "v.开始",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "在里面(in)求(beg)开始",
+          "story": "beg(乞求) + in(进去)：进考场前求老天保佑，铃声一响正式「开始」！",
+          "chunks": [
+            [
+              "beg",
+              "祈求"
+            ],
+            [
+              "in",
+              "进场开始"
+            ]
+          ],
+          "trap": "过去式 began，过去分词 begun，现在分词双写 n：beginning。",
+          "example": "Let's begin Day 2 with thirty high-frequency words. 让我们开始第二天三十个高频词吧。"
+        }
+      },
+      {
+        "word": "according",
+        "ipa": "/əˈkɔːdɪŋ/",
+        "meaning": "ad.根据，依据",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "一根绳(cord)拴着走",
+          "story": "ac(加强) + cord(绳/心) + ing：心连着同一根绳子走，「根据、依据」规矩办事。",
+          "chunks": [
+            [
+              "ac",
+              "去"
+            ],
+            [
+              "cord",
+              "按绳索"
+            ],
+            [
+              "ing",
+              "依循"
+            ]
+          ],
+          "trap": "固定搭配 according to「根据……」，后面不能接 me/you 以外误区：可接人名或报告。",
+          "example": "According to the plan, we review old cards every morning. 根据计划，我们每天早上复习旧卡。"
+        }
+      },
+      {
+        "word": "hear",
+        "ipa": "/hɪə/",
+        "meaning": "v.听，听到",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "h + ear(耳朵)",
+          "story": "把 h 看成椅子，人坐在椅子上竖起一只大耳朵(ear)——当然是「听，听到」！",
+          "chunks": [
+            [
+              "h",
+              "椅子"
+            ],
+            [
+              "ear",
+              "竖起耳朵"
+            ]
+          ],
+          "trap": "hear 强调听到的结果，listen 强调听的动作；过去式 heard。",
+          "example": "Did you hear the pronunciation clearly? 你听清刚才的发音了吗？"
+        }
+      },
+      {
+        "word": "young",
+        "ipa": "/jʌŋ/",
+        "meaning": "a.年轻的",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「羊/杨」",
+          "story": "读音像「样/羊」——像小羊羔一样蹦蹦跳跳，浑身冒着「年轻的」朝气！",
+          "chunks": [
+            [
+              "y",
+              "小羊"
+            ],
+            [
+              "oung",
+              "朝气"
+            ]
+          ],
+          "trap": "the young 表示一类人「年轻人」，作主语时谓语用复数。",
+          "example": "You are young and your memory is stronger than you think. 你还年轻，记忆力比你以为的更强。"
+        }
+      },
+      {
+        "word": "animal",
+        "ipa": "/ˈænɪməl/",
+        "meaning": "n.动物",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "爱你猫(a-ni-mal)",
+          "story": "拼读神似「爱你猫(a-ni-mal)」！猫咪当然是最可爱的小「动物」啦。",
+          "chunks": [
+            [
+              "a",
+              "爱"
+            ],
+            [
+              "ni",
+              "你"
+            ],
+            [
+              "mal",
+              "猫"
+            ]
+          ],
+          "trap": "以元音音素开头，前面冠词要用 an animal。",
+          "example": "The vanilla mascot looks like a friendly little animal. 香草吉祥物看起来像只友好的小动物。"
+        }
+      },
+      {
+        "word": "must",
+        "ipa": "/mʌst/",
+        "meaning": "aux.必须，一定",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "马斯特「必须」",
+          "story": "谐音「妈死的」(妈死盯着你)——老妈死死盯着你的作业本，今晚「必须、一定」写完！",
+          "chunks": [
+            [
+              "mu",
+              "母上"
+            ],
+            [
+              "st",
+              "死盯"
+            ]
+          ],
+          "trap": "Must I...? 的否定回答是 No, you needn't / don't have to，千万别用 mustn't(禁止)！",
+          "example": "We must finish ten new words before lunch. 午饭前我们必须拿下十个新词。"
+        }
+      },
+      {
+        "word": "while",
+        "ipa": "/waɪl/",
+        "meaning": "conj.当...的时候，虽然",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "外(whi)了(le)",
+          "story": "外面(whi)下雨了(le)——「当……的时候」外面下着雨，我们「虽然」困但还在刷词。",
+          "chunks": [
+            [
+              "whi",
+              "外面"
+            ],
+            [
+              "le",
+              "下雨了"
+            ]
+          ],
+          "trap": "while 后面通常跟延续性动词（常用进行时），也可表示「然而」对比。",
+          "example": "Listen to audio while riding the bus home. 坐公交回家的时候顺便听单词发音。"
+        }
+      },
+      {
+        "word": "enjoy",
+        "ipa": "/ɪnˈʤɔɪ/",
+        "meaning": "v.享受，喜欢",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "放进(en)快乐(joy)",
+          "story": "en(使进入) + joy(快乐)：把快乐直接塞进心里，每分每秒都在「享受、喜欢」！",
+          "chunks": [
+            [
+              "en",
+              "进入"
+            ],
+            [
+              "joy",
+              "快乐"
+            ]
+          ],
+          "trap": "高频考点：enjoy doing sth「喜欢做某事」，只能接动名词！",
+          "example": "Students actually enjoy memorizing words with funny hooks. 学生们其实很享受用搞笑口诀背单词。"
+        }
+      },
+      {
+        "word": "stay",
+        "ipa": "/steɪ/",
+        "meaning": "v./n.停留，保持",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "在街(st)说(say)留下来",
+          "story": "把 say(说) 里塞进一个 t（站成一棵树）——在街头站成一棵树，就是「停留、保持」！",
+          "chunks": [
+            [
+              "s",
+              "街"
+            ],
+            [
+              "t",
+              "站成树"
+            ],
+            [
+              "ay",
+              "停留"
+            ]
+          ],
+          "trap": "stay up late 熬夜；stay healthy 保持健康。",
+          "example": "Stay focused for just ten minutes a day. 每天只需保持专注十分钟。"
+        }
+      },
+      {
+        "word": "move",
+        "ipa": "/muːv/",
+        "meaning": "v.移动，感动",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「木屋」",
+          "story": "台风把山顶小「木屋」吹得「移动」了三米，村民们却互相救助，故事让人特别「感动」。",
+          "chunks": [
+            [
+              "mo",
+              "木"
+            ],
+            [
+              "ve",
+              "屋移动"
+            ]
+          ],
+          "trap": "be moved by 被……感动；move to 搬去某地。",
+          "example": "That brave rescue story really moved the whole class. 那个勇敢救援的故事真的感动了全班。"
+        }
+      },
+      {
+        "word": "same",
+        "ipa": "/seɪm/",
+        "meaning": "a.相同的",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「塞么」",
+          "story": "两件衣服颜色长得一模一样，「塞么」进同一个箱子，反正都是「相同的」！",
+          "chunks": [
+            [
+              "sa",
+              "塞"
+            ],
+            [
+              "me",
+              "么都一样"
+            ]
+          ],
+          "trap": "永远记住：the same 前面必须带定冠词 the！the same as 与…相同。",
+          "example": "Even twins don't always have the same study habits. 就算是双胞胎，学习习惯也不总是一样的。"
+        }
+      },
+      {
+        "word": "sure",
+        "ipa": "/ʃɔː/",
+        "meaning": "a.肯定的，确信的 ad.当然",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「树儿/输儿」",
+          "story": "「数一数(sure)」手里几张牌，心里「肯定的、确信的」自己这把稳赢！",
+          "chunks": [
+            [
+              "su",
+              "数一数"
+            ],
+            [
+              "re",
+              "确信"
+            ]
+          ],
+          "trap": "make sure 确保；be sure of / about 对…有把握。",
+          "example": "Make sure you type the spelling without looking. 确保不偷看，自己把拼写敲出来。"
+        }
+      },
+      {
+        "word": "speak",
+        "ipa": "/spiːk/",
+        "meaning": "v.讲，说话，发言，演讲",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "蛇(s)在山顶(peak)演讲",
+          "story": "一条小蛇(s)爬上最高峰(peak)，面向全森林「讲、说话、演讲」！",
+          "chunks": [
+            [
+              "s",
+              "小蛇"
+            ],
+            [
+              "peak",
+              "山峰演讲"
+            ]
+          ],
+          "trap": "speak + 语言（speak English）；过去式 spoke，过去分词 spoken。",
+          "example": "Don't be shy to speak English aloud during practice. 练习时大声说出英语，别害羞。"
+        }
+      },
+      {
+        "word": "pay",
+        "ipa": "/peɪ/",
+        "meaning": "v.付款，支付 n.工资，付款",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「赔」",
+          "story": "读音就是「赔」！打碎了老师的玻璃杯，只能掏零花钱「付款、赔偿」啦！",
+          "chunks": [
+            [
+              "p",
+              "破财"
+            ],
+            [
+              "ay",
+              "赔钱"
+            ]
+          ],
+          "trap": "人 + pay + 钱 + for + 物；过去式 paid（不是 payed！）。",
+          "example": "Hard work will pay off in the final exam. 努力付出会在期末考得到回报。"
+        }
+      },
+      {
+        "word": "spend",
+        "ipa": "/spend/",
+        "meaning": "v.花费，度过 n.费用",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "死(s)攥着笔(pen)度(d)时光",
+          "story": "手里死(s)攥着钢笔(pen)写卷子，「花费」时间、「度过」寒暑假。",
+          "chunks": [
+            [
+              "s",
+              "死攥"
+            ],
+            [
+              "pen",
+              "钢笔"
+            ],
+            [
+              "d",
+              "度日"
+            ]
+          ],
+          "trap": "中考必考：sb spend time/money (in) doing sth 或 on sth；过去式 spent。",
+          "example": "Spend ten minutes on words instead of scrolling short videos. 花十分钟背词，别刷短视频了。"
+        }
+      },
+      {
+        "word": "remember",
+        "ipa": "/rɪˈmembə/",
+        "meaning": "v.记得，想起，回忆",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "再(re)找回成员(member)",
+          "story": "re(再次) + member(成员)：把走散的团队成员一个个重新找回脑海，就是「记得、想起、回忆」！",
+          "chunks": [
+            [
+              "re",
+              "再次"
+            ],
+            [
+              "member",
+              "想起成员"
+            ]
+          ],
+          "trap": "remember to do 记得要去做（未做）；remember doing 记得做过（已做）！",
+          "example": "It is much easier to remember a word with a silly picture. 搭配搞笑画面记单词轻松多了。"
+        }
+      },
+      {
+        "word": "plant",
+        "ipa": "/plɑːnt/",
+        "meaning": "n.植物，工厂 v.种植",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "plan(计划) + t(小树苗)",
+          "story": "把一棵 t 形小树苗按照计划(plan)插进土里——既能「种植」变成「植物」，大厂房也叫「工厂」。",
+          "chunks": [
+            [
+              "plan",
+              "计划"
+            ],
+            [
+              "t",
+              "小树苗"
+            ]
+          ],
+          "trap": "考阅读常考熟词生义：power plant = 发电厂！",
+          "example": "We planted small trees behind the school library. 我们在学校图书馆后面种了小树。"
+        }
+      },
+      {
+        "word": "grow",
+        "ipa": "/ɡrəʊ/",
+        "meaning": "v.生长，种植，发展",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "绿(gr)色的猫头鹰(ow)长大",
+          "story": "gr(绿色) + ow(猫头鹰缩略)：小绿鹰一天天吃虫子「生长、发展」，越长越壮！",
+          "chunks": [
+            [
+              "gr",
+              "绿"
+            ],
+            [
+              "ow",
+              "慢慢长大"
+            ]
+          ],
+          "trap": "grow up 长大；过去式 grew，过去分词 grown。",
+          "example": "Your vocabulary will grow fast in three weeks. 三周内你的词汇量会飞速增长。"
+        }
+      },
+      {
+        "word": "travel",
+        "ipa": "/ˈtrævəl/",
+        "meaning": "n./v.旅行，移动",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "拖着(tra)自行车(vel)去旅行",
+          "story": "tra(拖拽) + vel(像车轮转)：背上包拖着单车到处逛，就是「旅行、移动」！",
+          "chunks": [
+            [
+              "tra",
+              "拖行"
+            ],
+            [
+              "vel",
+              "轮子远行"
+            ]
+          ],
+          "trap": "traveler / traveller 两种拼写都常见。",
+          "example": "Light travels much faster than sound. 光的传播速度比声音快得多。"
+        }
+      },
+      {
+        "word": "turn",
+        "ipa": "/tɜːn/",
+        "meaning": "v./n.转动，转向，旋转",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「腾」",
+          "story": "汽车猛一「腾(turn)」挪方向盘，360 度原地「转动、转向、旋转」！",
+          "chunks": [
+            [
+              "tur",
+              "腾挪"
+            ],
+            [
+              "n",
+              "拐弯"
+            ]
+          ],
+          "trap": "turn on/off 开关；turn up/down 调大调小；It's one's turn 轮到某人。",
+          "example": "Turn off distractions and flip ten cards now. 关掉干扰，现在先翻十张词卡。"
+        }
+      },
+      {
+        "word": "hard",
+        "ipa": "/hɑːd/",
+        "meaning": "a.硬的，困难的，严厉的",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「哈得」",
+          "story": "这题太「困难的、硬的」了，啃不动「哈得」直喘气，老师还很「严厉的」！",
+          "chunks": [
+            [
+              "h",
+              "好"
+            ],
+            [
+              "ard",
+              "硬啃"
+            ]
+          ],
+          "trap": "千万注意：hard 本身就可作副词「努力地」；hardly 是「几乎不」，意思完全相反！",
+          "example": "Spelling is not hard once you break words into chunks. 一旦把单词切块，拼写就不难了。"
+        }
+      },
+      {
+        "word": "usually",
+        "ipa": "/ˈjuːʒuəli/",
+        "meaning": "ad.通常，经常",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "使用(use)习惯成通常(ally)",
+          "story": "usual(平常的) + ly：平时老这么用(use)，久而久之变成「通常、经常」。",
+          "chunks": [
+            [
+              "usual",
+              "平常"
+            ],
+            [
+              "ly",
+              "总是如此"
+            ]
+          ],
+          "trap": "频度副词位置：be 动词/助动词之后，实义动词之前；双写 ll 别忘！",
+          "example": "I usually review old words before learning new ones. 我通常先复习旧词再学新词。"
+        }
+      },
+      {
+        "word": "true",
+        "ipa": "/truː/",
+        "meaning": "a.真的，真实的",
+        "mnemonic": {
+          "tag": "拼写防坑",
+          "hook": "真(tr)的有(u)点像(e)",
+          "story": "真金不怕火炼：tr(真) + u(你) + e(对)——别把末尾的 e 弄丢，变副词 truly 时才要砍掉 e！",
+          "chunks": [
+            [
+              "tr",
+              "真"
+            ],
+            [
+              "u",
+              "你"
+            ],
+            [
+              "e",
+              "结尾"
+            ]
+          ],
+          "trap": "副词 truly 要去掉 e！come true 实现。",
+          "example": "Is it true that Day 2 only takes eight minutes? 第二天真的只要八分钟吗？"
+        }
+      },
+      {
+        "word": "another",
+        "ipa": "/əˈnʌðə/",
+        "meaning": "pron./a.再一个，另一个",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "an(一个) + other(别的)",
+          "story": "直接拆成 an + other：「一个 + 别的」= 「再一个、另一个」！",
+          "chunks": [
+            [
+              "an",
+              "一个"
+            ],
+            [
+              "other",
+              "别的"
+            ]
+          ],
+          "trap": "another 指三者及以上中的「另一个」，后接单数名词。",
+          "example": "Give me another chance to spell that word! 再给我一次机会拼那个词！"
+        }
+      },
+      {
+        "word": "listen",
+        "ipa": "/ˈlɪsən/",
+        "meaning": "v./n.听，倾听",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "列(lis)出十(ten)条秘密来听",
+          "story": "lis(列表) + ten(十)：老板列了「十条」八卦悄悄话，大家立刻凑过来仔细「听、倾听」！",
+          "chunks": [
+            [
+              "lis",
+              "列出"
+            ],
+            [
+              "ten",
+              "十条听"
+            ]
+          ],
+          "trap": "t 不发音！不及物动词，后面接人或物必须加 to：listen to。",
+          "example": "Listen carefully to the stress of each syllable. 仔细听每个音节的重音位置。"
+        }
+      },
+      {
+        "word": "hold",
+        "ipa": "/həʊld/",
+        "meaning": "v.拿，保持，掌握 n.控制，保留",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "老(old)手稳稳拿住(h)",
+          "story": "h(手) + old(老练)：老手伸出一只手稳稳「拿、保持、掌握」全局，hold 住全场！",
+          "chunks": [
+            [
+              "h",
+              "伸手"
+            ],
+            [
+              "old",
+              "老练稳住"
+            ]
+          ],
+          "trap": "hold on 别挂断/坚持住；过去式 held。",
+          "example": "Hold on for one more minute—you almost cleared the level! 再坚持一分钟，这关马上通关了！"
+        }
+      },
+      {
+        "word": "special",
+        "ipa": "/ˈspeʃəl/",
+        "meaning": "a.特别的，特殊的，专门的",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「死掰手」",
+          "story": "为了抢最后一块限定蛋糕，两人「死掰手(special)」掰得不可开交——因为那块真是「特别的、专门的」！",
+          "chunks": [
+            [
+              "spe",
+              "死掰"
+            ],
+            [
+              "cial",
+              "特别款"
+            ]
+          ],
+          "trap": "special 结尾是 -cial 不是 -tial；副词 specially。",
+          "example": "Each day has a special boss challenge at the end. 每天最后都有一个特别的 Boss 挑战。"
+        }
+      },
+      {
+        "word": "care",
+        "ipa": "/keə/",
+        "meaning": "n./v.关心，担忧，照顾",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「开耳/看儿」",
+          "story": "car(小车) + e(鹅)：开着小车也不忘「关心、照顾」后座的小白鹅，时刻「担忧」它晕车。",
+          "chunks": [
+            [
+              "car",
+              "小车"
+            ],
+            [
+              "e",
+              "照顾鹅"
+            ]
+          ],
+          "trap": "take care of 照顾；care about 关心；care for 喜欢/照料。",
+          "example": "Take care of weak words before they pile up. 在薄弱词堆积前先照顾好它们。"
+        }
+      },
+      {
+        "word": "beautiful",
+        "ipa": "/ˈbjuːtɪfəl/",
+        "meaning": "a.美丽的",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "白鹅(b-e-a-u)提(ti)满(ful)花",
+          "story": "记拼写神器：**B**ig **E**lephants **A**re **U**gly 才怪，合体变成 beau + ti + ful 却超级「美丽的」！",
+          "chunks": [
+            [
+              "beau",
+              "白鹅美貌"
+            ],
+            [
+              "ti",
+              "提"
+            ],
+            [
+              "ful",
+              "满满"
+            ]
+          ],
+          "trap": "千万记住开头字母顺序是 b-e-a-u，别写成 baue 或 beutiful！",
+          "example": "That clean notebook layout looks really beautiful. 那个干净的手账排版真好看。"
+        }
+      }
+    ]
+  },
+  {
+    "day": 3,
+    "words": [
+      {
+        "word": "popular",
+        "ipa": "/ˈpɒpjələ/",
+        "meaning": "a.流行的，通俗的，受欢迎的",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「泡普拉」",
+          "story": "pop(流行爆款) + u + lar：街头最火的「流行泡泡茶」，全校都在喝，超级「流行的、受欢迎的」！",
+          "chunks": [
+            [
+              "pop",
+              "爆款"
+            ],
+            [
+              "u",
+              "你"
+            ],
+            [
+              "lar",
+              "都爱"
+            ]
+          ],
+          "trap": "be popular with 受某人欢迎；名词 popularity。",
+          "example": "Homophonic tricks are super popular among middle schoolers. 谐音梗在中学生里超级受欢迎。"
+        }
+      },
+      {
+        "word": "believe",
+        "ipa": "/bɪˈliːv/",
+        "meaning": "v.相信，认为",
+        "mnemonic": {
+          "tag": "拼写防坑",
+          "hook": "里面藏着一个谎言(lie)",
+          "story": "be + lie(撒谎) + ve：就算里面藏着一个「谎言(lie)」，我还是选择「相信、认为」你！",
+          "chunks": [
+            [
+              "be",
+              "是"
+            ],
+            [
+              "lie",
+              "谎言也信"
+            ],
+            [
+              "ve",
+              "我"
+            ]
+          ],
+          "trap": "拼写必考：i 在 e 前 (lie)！名词 belief。",
+          "example": "Believe in yourself—you can conquer all 688 words. 相信自己，你能拿下全部 688 词。"
+        }
+      },
+      {
+        "word": "plan",
+        "ipa": "/plæn/",
+        "meaning": "n./v.计划，设计",
+        "mnemonic": {
+          "tag": "拼写防坑",
+          "hook": "飞机(plane)少个尾巴 e",
+          "story": "造飞机(plane)之前，先把图纸上的尾巴 e 省掉，先画「计划、设计」草图！",
+          "chunks": [
+            [
+              "pl",
+              "铺路"
+            ],
+            [
+              "an",
+              "安排"
+            ]
+          ],
+          "trap": "过去式和现在分词双写 n：planned / planning！",
+          "example": "Follow the 23-day plan one step at a time. 一步一个脚印跟着 23 天计划走。"
+        }
+      },
+      {
+        "word": "worry",
+        "ipa": "/ˈwʌri/",
+        "meaning": "v./n.担心，烦恼",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「哇累」",
+          "story": "整天「担心、烦恼」明天的听写，叹一口气喊「哇累(worry)」！",
+          "chunks": [
+            [
+              "wo",
+              "哇"
+            ],
+            [
+              "rry",
+              "累到愁"
+            ]
+          ],
+          "trap": "worry about sth（动词）；be worried about sth（形容词）！",
+          "example": "Don't worry if you miss a word—the card shows a clue. 答错一词别担心，词卡会弹出救命线索。"
+        }
+      },
+      {
+        "word": "send",
+        "ipa": "/send/",
+        "meaning": "v.发送，派遣",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "s 形快递送到终点(end)",
+          "story": "快递车沿着 s 弯路一路狂飙到终点(end)，把包裹「发送、派遣」出去。",
+          "chunks": [
+            [
+              "s",
+              "弯路"
+            ],
+            [
+              "end",
+              "送到终点"
+            ]
+          ],
+          "trap": "过去式/过去分词 sent；send for 派人去请。",
+          "example": "Teachers can send daily word sets straight to the class. 老师可以把每日词集直接发给全班。"
+        }
+      },
+      {
+        "word": "wait",
+        "ipa": "/weɪt/",
+        "meaning": "v./n.等待",
+        "mnemonic": {
+          "tag": "拼写防坑",
+          "hook": "w 像波浪，ai 爱它",
+          "story": "站在海浪(w)边傻傻「等待」爱人(ai)归来。",
+          "chunks": [
+            [
+              "w",
+              "海浪"
+            ],
+            [
+              "ait",
+              "爱等"
+            ]
+          ],
+          "trap": "can't wait to do 迫不及待做某事；wait for 等待。",
+          "example": "Wait for the hint only after you try once. 先自己试一次再看提示。"
+        }
+      },
+      {
+        "word": "bring",
+        "ipa": "/brɪŋ/",
+        "meaning": "v.带来，促使，引起",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "b 哥带着戒指(ring)",
+          "story": "b(哥)手里偷偷藏着一枚钻戒(ring)「带来」求婚，结果「引起」全场尖叫。",
+          "chunks": [
+            [
+              "b",
+              "老兄"
+            ],
+            [
+              "ring",
+              "带着戒指"
+            ]
+          ],
+          "trap": "bring 带来（朝向说话人），take 带走；过去式 brought。",
+          "example": "Bring your wrong-word list into tomorrow's review. 把今天的错词带进明天的复习。"
+        }
+      },
+      {
+        "word": "minute",
+        "ipa": "/ˈmɪnɪt/",
+        "meaning": "n.分钟，片刻a.微小的",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "迷你(mini)的几分钟",
+          "story": "mini(迷你)变身 min + ute：「微小的」时间单位，一眨眼就是一「分钟、片刻」！",
+          "chunks": [
+            [
+              "min",
+              "迷你"
+            ],
+            [
+              "ute",
+              "片刻"
+            ]
+          ],
+          "trap": "读作 /maɪˈnjuːt/ 时意为「微小的」！in a minute 马上。",
+          "example": "Finish a mini sprint in just five minutes. 只需五分钟就能完成一轮小冲刺。"
+        }
+      },
+      {
+        "word": "decide",
+        "ipa": "/dɪˈsaɪd/",
+        "meaning": "v.决定",
+        "mnemonic": {
+          "tag": "词根暴走",
+          "hook": "向下(de)一刀切(cide)",
+          "story": "de(向下) + cide(切/杀)：干脆利落一刀「切」断犹豫，直接「决定」！",
+          "chunks": [
+            [
+              "de",
+              "向下"
+            ],
+            [
+              "cide",
+              "一刀斩断"
+            ]
+          ],
+          "trap": "decide to do sth 决定做某事；名词 decision。",
+          "example": "Decide to clear Level 5 before playing games. 决定先把第 5 关通关再去玩游戏。"
+        }
+      },
+      {
+        "word": "understand",
+        "ipa": "/ˌʌndəˈstænd/",
+        "meaning": "v.理解，明白，懂得",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "站在(stand)下面(under)看穿一切",
+          "story": "站在(stand)事情底部下面(under)把来龙去脉摸个透，终于「理解、明白、懂得」了！",
+          "chunks": [
+            [
+              "under",
+              "在底下"
+            ],
+            [
+              "stand",
+              "站稳看透"
+            ]
+          ],
+          "trap": "过去式/过去分词 understood。",
+          "example": "Once you understand the story, the spelling locks in. 一旦理解了小故事，拼写就焊死在脑子里。"
+        }
+      },
+      {
+        "word": "choose",
+        "ipa": "/ʧuːz/",
+        "meaning": "v.选择",
+        "mnemonic": {
+          "tag": "拼写防坑",
+          "hook": "两只圆眼(oo)挑挑拣拣",
+          "story": "两个圆圆的 o 瞪大眼睛在货架上精挑细选，仔细「选择」最好吃的那款。",
+          "chunks": [
+            [
+              "ch",
+              "挑"
+            ],
+            [
+              "oo",
+              "瞪大眼"
+            ],
+            [
+              "se",
+              "选"
+            ]
+          ],
+          "trap": "过去式少一个 o 变 chose！过去分词 chosen；名词 choice。",
+          "example": "Choose your favorite study style out of the three. 从三个设计方向里选你最喜欢的一个。"
+        }
+      },
+      {
+        "word": "lose",
+        "ipa": "/luːz/",
+        "meaning": "v.丢失，失败，迷失",
+        "mnemonic": {
+          "tag": "拼写防坑",
+          "hook": "只有一个 o，丢了一个 o！",
+          "story": "对比 loose(松的，两个 o)：lose 少了一个 o，说明「丢失」了一只轮子，「失败、迷失」了！",
+          "chunks": [
+            [
+              "l",
+              "轮子"
+            ],
+            [
+              "o",
+              "只剩一个"
+            ],
+            [
+              "se",
+              "丢了"
+            ]
+          ],
+          "trap": "过去式 lost；lose one's way 迷路；lose to 输给。",
+          "example": "Don't lose your streak over one busy evening! 别因为一个忙碌的晚上丢掉连续打卡！"
+        }
+      },
+      {
+        "word": "hope",
+        "ipa": "/həʊp/",
+        "meaning": "v./n.希望",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「好谱」",
+          "story": "手里拿到一份「好谱(hope)」，心里燃起夺冠的「希望」！",
+          "chunks": [
+            [
+              "ho",
+              "好"
+            ],
+            [
+              "pe",
+              "谱有希望"
+            ]
+          ],
+          "trap": "注意语法陷阱：没有 hope sb to do！只能 hope to do 或 hope that 从句！",
+          "example": "I hope to remember every word before June. 我希望六月前记住所有高频词。"
+        }
+      },
+      {
+        "word": "enough",
+        "ipa": "/ɪˈnʌf/",
+        "meaning": "a./ad.足够的，充足的",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "一拿富(e-nough)",
+          "story": "一伸手「一拿(en)就暴富(ough)」，口袋里的钱已经「足够的、充足的」啦！",
+          "chunks": [
+            [
+              "e",
+              "一"
+            ],
+            [
+              "nough",
+              "拿就够了"
+            ]
+          ],
+          "trap": "位置铁律：enough 修饰形容词/副词必须放在后面！例如 good enough！",
+          "example": "Ten words per level is short enough for a class break. 每关十个词够短，课间就能刷完。"
+        }
+      },
+      {
+        "word": "probably",
+        "ipa": "/ˈprɒbəbli/",
+        "meaning": "ad.大概，很可能",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "有问题的(prob) + 也许能行(ably)",
+          "story": "prob(试探) + ably(能力)——试探一下好像行得通，「大概、很可能」能成！",
+          "chunks": [
+            [
+              "prob",
+              "试探"
+            ],
+            [
+              "ably",
+              "大概能行"
+            ]
+          ],
+          "trap": "形容词 probable 变副词去 e 加 y。",
+          "example": "You will probably laugh at half of these hooks. 你很可能会被一半的邪修口诀逗笑。"
+        }
+      },
+      {
+        "word": "leave",
+        "ipa": "/liːv/",
+        "meaning": "v.离开",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "树叶(leaf)把 f 吹走变成离开",
+          "story": "leaf(叶子)的尾字母 f 换成了 v(车轮)——坐车告别落叶，「离开」这座城市。",
+          "chunks": [
+            [
+              "lea",
+              "叶子"
+            ],
+            [
+              "ve",
+              "乘车离开"
+            ]
+          ],
+          "trap": "leave A for B「离开 A 去往 B」；过去式 left；leave sth + 地点「把某物忘在某地」。",
+          "example": "Never leave a wrong word unreviewed overnight. 千万别让错词在夜里没人管。"
+        }
+      },
+      {
+        "word": "miss",
+        "ipa": "/mɪs/",
+        "meaning": "v.错过，想念n.小姐",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "迷思(miss)小姐",
+          "story": "「迷思(miss)小姐」每天都在「想念」远方的朋友，一不留神还「错过」了公交车。",
+          "chunks": [
+            [
+              "mi",
+              "迷"
+            ],
+            [
+              "ss",
+              "小姐双丝思念"
+            ]
+          ],
+          "trap": "miss doing sth 错过做某事；Miss 首字母大写称呼未婚女士。",
+          "example": "If you miss one letter, the spelling check warns you gently. 就算拼错一个字母，系统也会温柔提醒你很接近了。"
+        }
+      },
+      {
+        "word": "save",
+        "ipa": "/seɪv/",
+        "meaning": "v.解救，保存，节省",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「塞捂」",
+          "story": "把零花钱全「塞(sa)」进袜子里「捂(ve)」好，既能「节省、保存」，危急时还能「解救」钱包！",
+          "chunks": [
+            [
+              "sa",
+              "塞进"
+            ],
+            [
+              "ve",
+              "捂住省下"
+            ]
+          ],
+          "trap": "save one's life 救某人一命；save time 省时间。",
+          "example": "Your progress is saved after every single tap. 你每点一次进度都会实时保存。"
+        }
+      },
+      {
+        "word": "however",
+        "ipa": "/haʊˈevə/",
+        "meaning": "ad.然而conj.不管怎样",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "how(怎么) + ever(曾经)",
+          "story": "不管曾经(ever)怎么(how)惨，「然而」转折来了，逆风翻盘的时候到了！",
+          "chunks": [
+            [
+              "how",
+              "无论怎么"
+            ],
+            [
+              "ever",
+              "曾经都反转"
+            ]
+          ],
+          "trap": "however 后面必须用逗号隔开句子；but 后面不用逗号！",
+          "example": "Rote memorization is boring; however, wild hooks make it stick. 死记硬背很枯燥；然而邪修梗让人过目不忘。"
+        }
+      },
+      {
+        "word": "later",
+        "ipa": "/ˈleɪtə/",
+        "meaning": "ad.后来，稍后a.后来的",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "late(晚) + r(人)",
+          "story": "迟到(late)的人(r)总说「后来、稍后」就到！",
+          "chunks": [
+            [
+              "late",
+              "晚"
+            ],
+            [
+              "r",
+              "稍后"
+            ]
+          ],
+          "trap": "对比 latter(后者) 和 latest(最新的)！three days later = 三天后。",
+          "example": "Review hard cards again ten minutes later. 十分钟后把难词再过一遍。"
+        }
+      },
+      {
+        "word": "build",
+        "ipa": "/bɪld/",
+        "meaning": "v.建造，创建",
+        "mnemonic": {
+          "tag": "拼写防坑",
+          "hook": "不(bu)一(i)定(ld)能建好",
+          "story": "工地上「bu(不)+i(一)+ld(立定)」：地基不立定，大楼可「建造、创建」不起来！",
+          "chunks": [
+            [
+              "bui",
+              "不移地基"
+            ],
+            [
+              "ld",
+              "立定建造"
+            ]
+          ],
+          "trap": "注意 u 在 i 前面！过去式 built，名词 building。",
+          "example": "Build a solid habit one day at a time. 一天一天建立稳固的背词习惯。"
+        }
+      },
+      {
+        "word": "finish",
+        "ipa": "/ˈfɪnɪʃ/",
+        "meaning": "n./v.完成，结束",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「费尼士/飞泥沙」",
+          "story": "跑马拉松跑到终点线飞起泥沙(fi-nish)——终于「完成、结束」啦！",
+          "chunks": [
+            [
+              "fi",
+              "飞"
+            ],
+            [
+              "nish",
+              "泥沙冲线"
+            ]
+          ],
+          "trap": "高频必考：finish doing sth「完成做某事」，绝对不接 to do！",
+          "example": "Finish all five mini levels to unlock today's stars. 打通全部五小关解锁今日星级。"
+        }
+      },
+      {
+        "word": "activity",
+        "ipa": "/ækˈtɪvəti/",
+        "meaning": "n.活动，活跃",
+        "mnemonic": {
+          "tag": "词根暴走",
+          "hook": "act(行动) + 活跃度",
+          "story": "act(表演行动) + iv + ity(名词尾巴)：人一动起来就有了「活动、活跃」氛围。",
+          "chunks": [
+            [
+              "act",
+              "动起来"
+            ],
+            [
+              "ivity",
+              "活动"
+            ]
+          ],
+          "trap": "复数变 y 为 i 加 es：activities。",
+          "example": "Outdoor activities help students recharge after class. 户外活动帮同学们课后回血。"
+        }
+      },
+      {
+        "word": "happen",
+        "ipa": "/ˈhæpən/",
+        "meaning": "v.发生，碰巧",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "高兴(hap)的笔(pen)掉下来",
+          "story": "happy 砍掉 py 接上一支钢笔(pen)：开心写字时突然笔掉了——意外「发生、碰巧」了！",
+          "chunks": [
+            [
+              "hap",
+              "快乐时"
+            ],
+            [
+              "pen",
+              "钢笔碰巧掉"
+            ]
+          ],
+          "trap": "happen 没有被动语态！固定句型 sth happens to sb。",
+          "example": "Magic happens when memory clicks in three seconds. 三秒记牢的那一刻就是奇迹发生。"
+        }
+      },
+      {
+        "word": "since",
+        "ipa": "/sɪns/",
+        "meaning": "conj.自从，因为",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「新死」/ 信誓",
+          "story": "「自从」签下那份信誓(sin-ce)旦旦的军令状，他每天都早起背单词，只「因为」不想输！",
+          "chunks": [
+            [
+              "sin",
+              "信"
+            ],
+            [
+              "ce",
+              "誓自从"
+            ]
+          ],
+          "trap": "since + 过去时间点 / 一般过去时从句，主句必用现在完成时！",
+          "example": "I have kept a five-day streak since Monday. 从周一开始我已经连续打卡五天了。"
+        }
+      },
+      {
+        "word": "break",
+        "ipa": "/breɪk/",
+        "meaning": "n.休息，破裂v.打破，中断",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "b(棒)打漏(reak)杯子",
+          "story": "一棒(b)挥过去把杯子「打破、中断」，只好停下来「休息」一会！",
+          "chunks": [
+            [
+              "b",
+              "挥棒"
+            ],
+            [
+              "reak",
+              "咔嚓打破"
+            ]
+          ],
+          "trap": "take a break 休息一下；过去式 broke，过去分词 broken。",
+          "example": "Take a short break after clearing twenty words. 刷完二十个词歇一小会儿。"
+        }
+      },
+      {
+        "word": "building",
+        "ipa": "/ˈbɪldɪŋ/",
+        "meaning": "n.建筑物",
+        "mnemonic": {
+          "tag": "词根暴走",
+          "hook": "build(建造) + ing(实物)",
+          "story": "建造(build)完站在地上的大家伙，就是「建筑物、大楼」。",
+          "chunks": [
+            [
+              "build",
+              "建造"
+            ],
+            [
+              "ing",
+              "成品大楼"
+            ]
+          ],
+          "trap": "注意发音 /ˈbɪldɪŋ/，u 不发音！",
+          "example": "Our teaching building stands right next to the playground. 我们教学楼就在操场旁边。"
+        }
+      },
+      {
+        "word": "wish",
+        "ipa": "/wɪʃ/",
+        "meaning": "v.希望，想要n.愿望",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「喂许」",
+          "story": "对着流星喊「喂！许(wish)」个愿吧——表达「希望、想要、愿望」。",
+          "chunks": [
+            [
+              "wi",
+              "喂"
+            ],
+            [
+              "sh",
+              "许愿"
+            ]
+          ],
+          "trap": "wish 后接从句要用虚拟语气（例如 I wish I could fly）；wish sb to do。",
+          "example": "I wish every student could pass English with ease. 真希望每位同学都能轻松过英语。"
+        }
+      },
+      {
+        "word": "festival",
+        "ipa": "/ˈfestɪvəl/",
+        "meaning": "n.节日",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "盛宴(fest) + 狂欢",
+          "story": "fest(喜庆盛宴) + i + val(山谷)：全村人在山谷里摆盛宴放烟花过「节日」！",
+          "chunks": [
+            [
+              "fest",
+              "盛宴"
+            ],
+            [
+              "ival",
+              "狂欢节"
+            ]
+          ],
+          "trap": "传统节日名称前通常加 the，如 the Spring Festival。",
+          "example": "Lanterns lit up every street during the festival. 节日期间每条街都挂满了灯笼。"
+        }
+      },
+      {
+        "word": "language",
+        "ipa": "/ˈlæŋɡwɪʤ/",
+        "meaning": "n.语言",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "懒(lan)瓜(gua)哥(ge)",
+          "story": "「懒(lan)瓜(gua)哥(ge)」不爱写字只爱一张嘴叭叭说——说的就是「语言」！",
+          "chunks": [
+            [
+              "lan",
+              "懒"
+            ],
+            [
+              "gua",
+              "瓜"
+            ],
+            [
+              "ge",
+              "哥说话"
+            ]
+          ],
+          "trap": "结尾是 -guage，别把 u 和 a 写反！",
+          "example": "Humor is a secret bridge into any new language. 幽默是通往任何新语言的秘密桥梁。"
+        }
+      }
+    ]
+  },
+  {
+    "day": 4,
+    "words": [
+      {
+        "word": "example",
+        "ipa": "/ɪɡˈzɑːmpəl/",
+        "meaning": "n.例子，榜样",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "拿出来(ex)满满(ample)当榜样",
+          "story": "ex(出来) + ample(充足的)——老师专门拎出来当标准的「例子、榜样」！",
+          "chunks": [
+            [
+              "ex",
+              "拎出来"
+            ],
+            [
+              "ample",
+              "满满模范"
+            ]
+          ],
+          "trap": "for example 例如，后面一般有逗号。",
+          "example": "Follow this example when creating your own mnemonic. 自己编口诀时可以参考这个例子。"
+        }
+      },
+      {
+        "word": "healthy",
+        "ipa": "/ˈhelθi/",
+        "meaning": "a.健康的",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "治愈(heal) + 身体",
+          "story": "heal(治愈伤口) + th + y：伤口全治愈好了，人就变得「健康的」！",
+          "chunks": [
+            [
+              "heal",
+              "治愈"
+            ],
+            [
+              "thy",
+              "身体棒"
+            ]
+          ],
+          "trap": "名词是 health，去掉 y！",
+          "example": "Healthy sleep locks memories into your brain overnight. 健康的睡眠会在夜里把记忆锁进大脑。"
+        }
+      },
+      {
+        "word": "share",
+        "ipa": "/ʃeə/",
+        "meaning": "v.分享，分担 n.份额",
+        "mnemonic": null
+      },
+      {
+        "word": "taste",
+        "ipa": "/teɪst/",
+        "meaning": "v.品尝，体验 n.味道，爱好",
+        "mnemonic": null
+      },
+      {
+        "word": "company",
+        "ipa": "/ˈkʌmpəni/",
+        "meaning": "n.公司",
+        "mnemonic": null
+      },
+      {
+        "word": "sound",
+        "ipa": "/saʊnd/",
+        "meaning": "n.声音 v.听起来 a.合理的",
+        "mnemonic": null
+      },
+      {
+        "word": "museum",
+        "ipa": "/mjuːˈziːəm/",
+        "meaning": "n.博物馆",
+        "mnemonic": {
+          "tag": "词根暴走",
+          "hook": "缪斯(muse)女神的庙(um)",
+          "story": "muse(掌管艺术的缪斯女神) + um(场所)——女神住的神庙就是收藏珍宝的「博物馆」！",
+          "chunks": [
+            [
+              "muse",
+              "缪斯女神"
+            ],
+            [
+              "um",
+              "神庙场所"
+            ]
+          ],
+          "trap": "发音重音在第二个音节 /mjuːˈziːəm/，中间是 eu 不是 ue！",
+          "example": "The history museum holds ancient bronze bells. 历史博物馆里藏着古老的编钟。"
+        }
+      },
+      {
+        "word": "difficult",
+        "ipa": "/ˈdɪfɪkəlt/",
+        "meaning": "a.困难的",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "双斧(ff)劈开邪教(cult)",
+          "story": "dif(分开) + fi(双斧) + cult(教派)：要拿两把斧头劈开神秘组织，这任务真是太「困难的」了！",
+          "chunks": [
+            [
+              "dif",
+              "分开"
+            ],
+            [
+              "fi",
+              "双斧"
+            ],
+            [
+              "cult",
+              "难搞关卡"
+            ]
+          ],
+          "trap": "have difficulty (in) doing sth 做某事有困难，名词形式 difficulty。",
+          "example": "Difficult words crumble once you split them in half. 难词只要从中间劈开就会立刻瓦解。"
+        }
+      },
+      {
+        "word": "close",
+        "ipa": "/kləʊz/",
+        "meaning": "v.关 a.近的 ad.接近地",
+        "mnemonic": null
+      },
+      {
+        "word": "light",
+        "ipa": "/laɪt/",
+        "meaning": "n.光，灯 v.照亮，点燃 a.轻的，淡的",
+        "mnemonic": null
+      },
+      {
+        "word": "stand",
+        "ipa": "/stænd/",
+        "meaning": "v.站立，位于，忍受 n.看台",
+        "mnemonic": null
+      },
+      {
+        "word": "late",
+        "ipa": "/leɪt/",
+        "meaning": "ad.迟，晚 a.晚的",
+        "mnemonic": null
+      },
+      {
+        "word": "excite",
+        "ipa": "/ɪkˈsaɪt/",
+        "meaning": "v.使兴奋，激动，刺激",
+        "mnemonic": {
+          "tag": "词根暴走",
+          "hook": "往外(ex)疯狂召唤(cite)",
+          "story": "ex(出来) + cite(召唤)：偶像站在台上把大家的热情全召唤出来，瞬间「使兴奋、激动」！",
+          "chunks": [
+            [
+              "ex",
+              "出来"
+            ],
+            [
+              "cite",
+              "召唤尖叫"
+            ]
+          ],
+          "trap": "excited（人感到兴奋）vs exciting（事物令人兴奋）！",
+          "example": "Boss battles always excite competitive learners. Boss 挑战总能点燃爱闯关同学的斗志。"
+        }
+      },
+      {
+        "word": "tomorrow",
+        "ipa": "/təˈmɒrəʊ/",
+        "meaning": "n.明天，未来",
+        "mnemonic": {
+          "tag": "拼写防坑",
+          "hook": "一只猫(m)两只鼠(rr)",
+          "story": "拼写防坑歌：一只猫(一个 m)追着两只老鼠(两个 r)跑到「明天、未来」！千万别双写 m！",
+          "chunks": [
+            [
+              "to",
+              "到"
+            ],
+            [
+              "m",
+              "一只猫"
+            ],
+            [
+              "orrow",
+              "追两只鼠"
+            ]
+          ],
+          "trap": "永远记住：single m, double r (to-m-o-rr-ow)！",
+          "example": "Do today's cards today; don't push them to tomorrow. 今日事今日毕，别拖到明天。"
+        }
+      },
+      {
+        "word": "mind",
+        "ipa": "/maɪnd/",
+        "meaning": "n.心，头脑，意见 v.介意",
+        "mnemonic": null
+      },
+      {
+        "word": "forget",
+        "ipa": "/fəˈɡet/",
+        "meaning": "v.忘记，忽略",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "为了(for)得到(get)新欢忘了旧爱",
+          "story": "for(为了) + get(拿到)新手机，一转头就把旧密码「忘记、忽略」得一干二净！",
+          "chunks": [
+            [
+              "for",
+              "为了"
+            ],
+            [
+              "get",
+              "拿到新欢"
+            ]
+          ],
+          "trap": "forget to do 忘记要做（未做）；forget doing 忘记做过（已做）；过去式 forgot。",
+          "example": "Students rarely forget a mnemonic that made them laugh. 学生很少会忘记曾把自己逗笑的口诀。"
+        }
+      },
+      {
+        "word": "anything",
+        "ipa": "/ˈeniθɪŋ/",
+        "meaning": "pron.任何事",
+        "mnemonic": null
+      },
+      {
+        "word": "order",
+        "ipa": "/ˈɔːdə/",
+        "meaning": "v./n.命令，定购，顺序，规则",
+        "mnemonic": null
+      },
+      {
+        "word": "scientist",
+        "ipa": "/ˈsaɪəntɪst/",
+        "meaning": "n.科学家",
+        "mnemonic": null
+      },
+      {
+        "word": "heart",
+        "ipa": "/hɑːt/",
+        "meaning": "n.心，心脏，中心",
+        "mnemonic": null
+      },
+      {
+        "word": "fall",
+        "ipa": "/fɔːl/",
+        "meaning": "v.落下，倒下 n.秋天，落下",
+        "mnemonic": null
+      },
+      {
+        "word": "collect",
+        "ipa": "/kəˈlekt/",
+        "meaning": "v.收集",
+        "mnemonic": null
+      },
+      {
+        "word": "history",
+        "ipa": "/ˈhɪstəri/",
+        "meaning": "n.历史，历史学",
+        "mnemonic": null
+      },
+      {
+        "word": "weather",
+        "ipa": "/ˈweðə/",
+        "meaning": "n.天气，气象",
+        "mnemonic": null
+      },
+      {
+        "word": "afraid",
+        "ipa": "/əˈfreɪd/",
+        "meaning": "a.害怕的，担心的",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "啊(a)飞(f)来袭击(raid)",
+          "story": "a(啊！) + f(飞) + raid(突袭)：天上突然飞来导弹突袭，吓得大喊一声「害怕的」！",
+          "chunks": [
+            [
+              "a",
+              "啊！"
+            ],
+            [
+              "f",
+              "飞来"
+            ],
+            [
+              "raid",
+              "突袭好怕"
+            ]
+          ],
+          "trap": "be afraid of sth / be afraid to do sth；不能直接修饰名词（只作表语）。",
+          "example": "Don't be afraid of making mistakes during practice. 练习时别害怕犯错。"
+        }
+      },
+      {
+        "word": "protect",
+        "ipa": "/prəˈtekt/",
+        "meaning": "v.保护",
+        "mnemonic": {
+          "tag": "词根暴走",
+          "hook": "站在前面(pro)当屋顶(tect)遮盖",
+          "story": "pro(在前面) + tect(遮盖/屋顶)：站在最前面给你撑起屋顶遮风挡雨——这就是「保护」！",
+          "chunks": [
+            [
+              "pro",
+              "向前遮挡"
+            ],
+            [
+              "tect",
+              "撑起屋顶"
+            ]
+          ],
+          "trap": "protect...from... 保护……免受……伤害。",
+          "example": "Daily review protects new words from fading away. 每日复习能保护新词不被遗忘冲走。"
+        }
+      },
+      {
+        "word": "catch",
+        "ipa": "/kæʧ/",
+        "meaning": "v.捕获，抓住，赶上",
+        "mnemonic": null
+      },
+      {
+        "word": "seem",
+        "ipa": "/siːm/",
+        "meaning": "v.好像，似乎",
+        "mnemonic": null
+      },
+      {
+        "word": "chance",
+        "ipa": "/ʧɑːns/",
+        "meaning": "n.机会，可能性",
+        "mnemonic": null
+      },
+      {
+        "word": "improve",
+        "ipa": "/ɪmˈpruːv/",
+        "meaning": "v.改善，改进，提高",
+        "mnemonic": {
+          "tag": "词根暴走",
+          "hook": "往里面(im)不断证明(prove)",
+          "story": "im(向内) + prove(证明)：每天往大脑里多塞一点实力来证明自己，成绩稳步「改善、提高」！",
+          "chunks": [
+            [
+              "im",
+              "往里钻"
+            ],
+            [
+              "prove",
+              "证明实力"
+            ]
+          ],
+          "trap": "名词 improvement；improve oneself 自我提升。",
+          "example": "Your spelling speed will improve every week. 你的拼写速度每周都会肉眼可见地提高。"
+        }
+      }
+    ]
+  },
+  {
+    "day": 5,
+    "words": [
+      {
+        "word": "culture",
+        "ipa": "/ˈkʌlʧə/",
+        "meaning": "n.文化",
+        "mnemonic": null
+      },
+      {
+        "word": "wear",
+        "ipa": "/weə/",
+        "meaning": "v./n.穿戴，磨损",
+        "mnemonic": null
+      },
+      {
+        "word": "return",
+        "ipa": "/rɪˈtɜːn/",
+        "meaning": "v./n.返回，归还",
+        "mnemonic": null
+      },
+      {
+        "word": "realize",
+        "ipa": "/ˈrɪəlaɪz/",
+        "meaning": "v.认识到，了解，实现",
+        "mnemonic": null
+      },
+      {
+        "word": "science",
+        "ipa": "/ˈsaɪəns/",
+        "meaning": "n.科学",
+        "mnemonic": null
+      },
+      {
+        "word": "develop",
+        "ipa": "/dɪˈveləp/",
+        "meaning": "v.发展，开发，发育",
+        "mnemonic": null
+      },
+      {
+        "word": "village",
+        "ipa": "/ˈvɪlɪʤ/",
+        "meaning": "n.村庄",
+        "mnemonic": null
+      },
+      {
+        "word": "environment",
+        "ipa": "/ɪnˈvaɪrənmənt/",
+        "meaning": "n.环境",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "围绕(en-viron)铁(iron)家伙的圈子",
+          "story": "en(在里面) + v(围绕) + iron(钢铁) + ment：高楼钢铁围成的周围世界，就是我们的「环境」！",
+          "chunks": [
+            [
+              "en",
+              "在"
+            ],
+            [
+              "v",
+              "环绕"
+            ],
+            [
+              "iron",
+              "钢铁"
+            ],
+            [
+              "ment",
+              "环境"
+            ]
+          ],
+          "trap": "注意中间藏着 iron(铁) 和一个沉默的 n！en-vi-ron-ment。",
+          "example": "A quiet study environment helps you focus faster. 安静的学习环境能帮你更快进入状态。"
+        }
+      },
+      {
+        "word": "allow",
+        "ipa": "/əˈlaʊ/",
+        "meaning": "v.允许",
+        "mnemonic": null
+      },
+      {
+        "word": "possible",
+        "ipa": "/ˈpɒsəbəl/",
+        "meaning": "a.可能的，合理的",
+        "mnemonic": null
+      },
+      {
+        "word": "pick",
+        "ipa": "/pɪk/",
+        "meaning": "v./n.捡，挑选，采摘",
+        "mnemonic": null
+      },
+      {
+        "word": "report",
+        "ipa": "/rɪˈpɔːt/",
+        "meaning": "n.报告 v.报道",
+        "mnemonic": null
+      },
+      {
+        "word": "note",
+        "ipa": "/nəʊt/",
+        "meaning": "v.注意，记录 n.便条，笔记",
+        "mnemonic": null
+      },
+      {
+        "word": "able",
+        "ipa": "/ˈeɪbəl/",
+        "meaning": "a.能够的，能干的",
+        "mnemonic": null
+      },
+      {
+        "word": "news",
+        "ipa": "/njuːz/",
+        "meaning": "n.新闻，消息",
+        "mnemonic": null
+      },
+      {
+        "word": "angry",
+        "ipa": "/ˈæŋɡri/",
+        "meaning": "a.发怒的，生气的",
+        "mnemonic": null
+      },
+      {
+        "word": "mainly",
+        "ipa": "/ˈmeɪnli/",
+        "meaning": "ad.主要地，大体上",
+        "mnemonic": null
+      },
+      {
+        "word": "arrive",
+        "ipa": "/əˈraɪv/",
+        "meaning": "v.到达",
+        "mnemonic": null
+      },
+      {
+        "word": "strong",
+        "ipa": "/strɒŋ/",
+        "meaning": "a.强壮的，强烈的，坚强的",
+        "mnemonic": null
+      },
+      {
+        "word": "suddenly",
+        "ipa": "/ˈsʌdənli/",
+        "meaning": "ad.突然地",
+        "mnemonic": null
+      },
+      {
+        "word": "quite",
+        "ipa": "/kwaɪt/",
+        "meaning": "ad.相当，很，十分",
+        "mnemonic": null
+      },
+      {
+        "word": "hurt",
+        "ipa": "/hɜːt/",
+        "meaning": "n.疼痛 v.使疼痛，伤害",
+        "mnemonic": null
+      },
+      {
+        "word": "head",
+        "ipa": "/hed/",
+        "meaning": "n.头部，头脑 v.前进",
+        "mnemonic": null
+      },
+      {
+        "word": "business",
+        "ipa": "/ˈbɪznɪs/",
+        "meaning": "n.商业，事务，生意",
+        "mnemonic": null
+      },
+      {
+        "word": "invite",
+        "ipa": "/ɪnˈvaɪt/",
+        "meaning": "v.邀请",
+        "mnemonic": null
+      },
+      {
+        "word": "laugh",
+        "ipa": "/lɑːf/",
+        "meaning": "v./n.笑，笑声，嘲笑",
+        "mnemonic": null
+      },
+      {
+        "word": "store",
+        "ipa": "/stɔː/",
+        "meaning": "v.储存，贮藏 n.商店",
+        "mnemonic": null
+      },
+      {
+        "word": "encourage",
+        "ipa": "/ɪnˈkʌrɪʤ/",
+        "meaning": "v.鼓励，支持",
+        "mnemonic": {
+          "tag": "词根暴走",
+          "hook": "把勇气(courage)注入(en)心里",
+          "story": "en(使进入) + courage(勇气)：把满满一管勇气打进朋友心里，就是在「鼓励、支持」他！",
+          "chunks": [
+            [
+              "en",
+              "注入"
+            ],
+            [
+              "courage",
+              "满满勇气"
+            ]
+          ],
+          "trap": "encourage sb to do sth 鼓励某人做某事！",
+          "example": "Good teachers encourage students after every small step. 好老师会在学生迈出一小步时就给予鼓励。"
+        }
+      },
+      {
+        "word": "favorite",
+        "ipa": "/ˈfeɪvərɪt/",
+        "meaning": "a.喜爱的 n.最喜爱的人或物",
+        "mnemonic": null
+      },
+      {
+        "word": "plane",
+        "ipa": "/pleɪn/",
+        "meaning": "n.飞机，平面",
+        "mnemonic": null
+      }
+    ]
+  },
+  {
+    "day": 6,
+    "words": [
+      {
+        "word": "ticket",
+        "ipa": "/ˈtɪkɪt/",
+        "meaning": "n.票，入场券",
+        "mnemonic": null
+      },
+      {
+        "word": "throw",
+        "ipa": "/θrəʊ/",
+        "meaning": "v./n.扔，投掷",
+        "mnemonic": null
+      },
+      {
+        "word": "traffic",
+        "ipa": "/ˈtræfɪk/",
+        "meaning": "n.交通，交通量，运输",
+        "mnemonic": null
+      },
+      {
+        "word": "join",
+        "ipa": "/ʤɔɪn/",
+        "meaning": "v.加入，参加",
+        "mnemonic": null
+      },
+      {
+        "word": "provide",
+        "ipa": "/prəˈvaɪd/",
+        "meaning": "v.提供，供给",
+        "mnemonic": null
+      },
+      {
+        "word": "trouble",
+        "ipa": "/ˈtrʌbəl/",
+        "meaning": "n./v.麻烦，烦恼",
+        "mnemonic": null
+      },
+      {
+        "word": "meeting",
+        "ipa": "/ˈmiːtɪŋ/",
+        "meaning": "n.会议，集会",
+        "mnemonic": null
+      },
+      {
+        "word": "whole",
+        "ipa": "/həʊl/",
+        "meaning": "n.全部 a.全部的，完整的",
+        "mnemonic": null
+      },
+      {
+        "word": "paint",
+        "ipa": "/peɪnt/",
+        "meaning": "v./n.绘画，油漆",
+        "mnemonic": null
+      },
+      {
+        "word": "mobile",
+        "ipa": "/ˈməʊbaɪl/",
+        "meaning": "a.可移动的，易变的",
+        "mnemonic": null
+      },
+      {
+        "word": "newspaper",
+        "ipa": "/ˈnjuːzˌpeɪpə/",
+        "meaning": "n.报纸",
+        "mnemonic": null
+      },
+      {
+        "word": "library",
+        "ipa": "/ˈlaɪbrəri/",
+        "meaning": "n.图书馆",
+        "mnemonic": null
+      },
+      {
+        "word": "several",
+        "ipa": "/ˈsevərəl/",
+        "meaning": "a.几个，若干",
+        "mnemonic": null
+      },
+      {
+        "word": "middle",
+        "ipa": "/ˈmɪdəl/",
+        "meaning": "n./a.中部，中间",
+        "mnemonic": null
+      },
+      {
+        "word": "agree",
+        "ipa": "/əˈɡriː/",
+        "meaning": "v.同意，赞成",
+        "mnemonic": null
+      },
+      {
+        "word": "dangerous",
+        "ipa": "/ˈdeɪnʤərəs/",
+        "meaning": "a.危险的",
+        "mnemonic": {
+          "tag": "词根暴走",
+          "hook": "危险(danger) + 满街游走(ous)",
+          "story": "danger(危险) + ous(形容词后缀)：到处都是危险信号，这里极其「危险的」！",
+          "chunks": [
+            [
+              "danger",
+              "危险"
+            ],
+            [
+              "ous",
+              "充满"
+            ]
+          ],
+          "trap": "in danger 处于危险中；out of danger 脱离危险。",
+          "example": "Skipping review for ten days is dangerous for retention. 十天不复习对记忆留存很危险。"
+        }
+      },
+      {
+        "word": "mistake",
+        "ipa": "/mɪˈsteɪk/",
+        "meaning": "n.错误，误解 v.弄错",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "错过(mis)拿错(take)",
+          "story": "mis(错) + take(拿)：出门拿错别人雨伞，一眼看走眼就是「错误、误解」！",
+          "chunks": [
+            [
+              "mis",
+              "弄错"
+            ],
+            [
+              "take",
+              "拿错了"
+            ]
+          ],
+          "trap": "make a mistake 犯错；by mistake 错误地/不小心；过去式 mistook。",
+          "example": "Every mistake triggers a rescue card right away. 每次答错都会立刻弹出一张救命记忆卡。"
+        }
+      },
+      {
+        "word": "include",
+        "ipa": "/ɪnˈkluːd/",
+        "meaning": "v.包括，包含",
+        "mnemonic": null
+      },
+      {
+        "word": "create",
+        "ipa": "/kriˈeɪt/",
+        "meaning": "v.创造",
+        "mnemonic": null
+      },
+      {
+        "word": "carefully",
+        "ipa": "/ˈkeəfəli/",
+        "meaning": "ad.小心地，仔细地",
+        "mnemonic": null
+      },
+      {
+        "word": "spring",
+        "ipa": "/sprɪŋ/",
+        "meaning": "n.春天，泉水 v.弹跳，涌现",
+        "mnemonic": null
+      },
+      {
+        "word": "carry",
+        "ipa": "/ˈkæri/",
+        "meaning": "v.携带，提，运送",
+        "mnemonic": null
+      },
+      {
+        "word": "smell",
+        "ipa": "/smel/",
+        "meaning": "n.气味 v.嗅，闻",
+        "mnemonic": null
+      },
+      {
+        "word": "matter",
+        "ipa": "/ˈmætə/",
+        "meaning": "n.问题，事情 v.要紧",
+        "mnemonic": null
+      },
+      {
+        "word": "notice",
+        "ipa": "/ˈnəʊtɪs/",
+        "meaning": "v./n.注意，通知",
+        "mnemonic": null
+      },
+      {
+        "word": "practice",
+        "ipa": "/ˈpræktɪs/",
+        "meaning": "n./v.练习，实践",
+        "mnemonic": null
+      },
+      {
+        "word": "window",
+        "ipa": "/ˈwɪndəʊ/",
+        "meaning": "n.窗户",
+        "mnemonic": null
+      },
+      {
+        "word": "earth",
+        "ipa": "/ɜːθ/",
+        "meaning": "n.地球，泥土",
+        "mnemonic": null
+      },
+      {
+        "word": "control",
+        "ipa": "/kənˈtrəʊl/",
+        "meaning": "v./n.控制",
+        "mnemonic": null
+      },
+      {
+        "word": "success",
+        "ipa": "/səkˈses/",
+        "meaning": "n.成功，成就",
+        "mnemonic": null
+      }
+    ]
+  },
+  {
+    "day": 7,
+    "words": [
+      {
+        "word": "result",
+        "ipa": "/rɪˈzʌlt/",
+        "meaning": "n.结果，答案 v.致使，产生",
+        "mnemonic": null
+      },
+      {
+        "word": "waste",
+        "ipa": "/weɪst/",
+        "meaning": "v./n.浪费，废物",
+        "mnemonic": null
+      },
+      {
+        "word": "exercise",
+        "ipa": "/ˈeksəsaɪz/",
+        "meaning": "n./v.运动，锻炼，练习",
+        "mnemonic": null
+      },
+      {
+        "word": "difference",
+        "ipa": "/ˈdɪfərəns/",
+        "meaning": "n.差异，不同",
+        "mnemonic": null
+      },
+      {
+        "word": "climb",
+        "ipa": "/klaɪm/",
+        "meaning": "v./n.攀登，爬",
+        "mnemonic": null
+      },
+      {
+        "word": "wonderful",
+        "ipa": "/ˈwʌndəfəl/",
+        "meaning": "a.精彩的，极好的",
+        "mnemonic": null
+      },
+      {
+        "word": "already",
+        "ipa": "/ɔːlˈredi/",
+        "meaning": "ad.已经",
+        "mnemonic": null
+      },
+      {
+        "word": "driver",
+        "ipa": "/ˈdraɪvə/",
+        "meaning": "n.司机，驱动器",
+        "mnemonic": null
+      },
+      {
+        "word": "safe",
+        "ipa": "/seɪf/",
+        "meaning": "a.安全的 n.保险箱",
+        "mnemonic": null
+      },
+      {
+        "word": "skill",
+        "ipa": "/skɪl/",
+        "meaning": "n.技能，技巧",
+        "mnemonic": null
+      },
+      {
+        "word": "rest",
+        "ipa": "/rest/",
+        "meaning": "v.休息 n.休息，其余的部分",
+        "mnemonic": null
+      },
+      {
+        "word": "draw",
+        "ipa": "/drɔː/",
+        "meaning": "v.画，拖，移动 n.平局，抽签",
+        "mnemonic": null
+      },
+      {
+        "word": "wake",
+        "ipa": "/weɪk/",
+        "meaning": "v.醒来，唤醒",
+        "mnemonic": null
+      },
+      {
+        "word": "necessary",
+        "ipa": "/ˈnesəsəri/",
+        "meaning": "a.必需的 n.必需品",
+        "mnemonic": {
+          "tag": "拼写防坑",
+          "hook": "一件衬衫(1 c)两只袖子(2 s)",
+          "story": "全网最稳拼写口诀：出门穿一件衬衫(1个 c)配两条袖子(2个 s)，衣着整齐才「必需的」！",
+          "chunks": [
+            [
+              "ne",
+              "穿"
+            ],
+            [
+              "c",
+              "1件衬衫"
+            ],
+            [
+              "e",
+              "配"
+            ],
+            [
+              "ss",
+              "2条袖"
+            ],
+            [
+              "ary",
+              "必需"
+            ]
+          ],
+          "trap": "牢记：1 个 c，2 个 s！ne-c-e-ss-ary。",
+          "example": "Practice is necessary if you want top scores. 想拿高分，练习是必不可少的。"
+        }
+      },
+      {
+        "word": "friendly",
+        "ipa": "/ˈfrendli/",
+        "meaning": "a.友好的，友善的",
+        "mnemonic": null
+      },
+      {
+        "word": "visitor",
+        "ipa": "/ˈvɪzɪtə/",
+        "meaning": "n.访问者，参观者",
+        "mnemonic": null
+      },
+      {
+        "word": "deal",
+        "ipa": "/diːl/",
+        "meaning": "n.交易，协定 v.处理，经营",
+        "mnemonic": null
+      },
+      {
+        "word": "teenager",
+        "ipa": "/ˈtiːnˌeɪʤə/",
+        "meaning": "n.青少年",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "十几岁(-teen) + 年龄(age) + 人(r)",
+          "story": "thirteen 到 nineteen 尾巴都带 teen，加上 age(年龄) + r(人) = 十几岁的「青少年」！",
+          "chunks": [
+            [
+              "teen",
+              "十几岁"
+            ],
+            [
+              "age",
+              "年龄"
+            ],
+            [
+              "r",
+              "少年人"
+            ]
+          ],
+          "trap": "对比 adult(成年人)。",
+          "example": "Every teenager can master these 688 words in 23 days. 每个青少年都能在23天内搞定这688词。"
+        }
+      },
+      {
+        "word": "shout",
+        "ipa": "/ʃaʊt/",
+        "meaning": "v./n.呼喊，大叫",
+        "mnemonic": null
+      },
+      {
+        "word": "die",
+        "ipa": "/daɪ/",
+        "meaning": "v.死亡，消失",
+        "mnemonic": null
+      },
+      {
+        "word": "complete",
+        "ipa": "/kəmˈpliːt/",
+        "meaning": "v.完成 a.完整的，彻底的",
+        "mnemonic": null
+      },
+      {
+        "word": "rich",
+        "ipa": "/rɪʧ/",
+        "meaning": "a.富有的，丰富的",
+        "mnemonic": null
+      },
+      {
+        "word": "memory",
+        "ipa": "/ˈmeməri/",
+        "meaning": "n.记忆力，回忆，内存",
+        "mnemonic": null
+      },
+      {
+        "word": "price",
+        "ipa": "/praɪs/",
+        "meaning": "n.价格，价值",
+        "mnemonic": null
+      },
+      {
+        "word": "daughter",
+        "ipa": "/ˈdɔːtə/",
+        "meaning": "n.女儿",
+        "mnemonic": null
+      },
+      {
+        "word": "vegetable",
+        "ipa": "/ˈveʤtəbəl/",
+        "meaning": "n.蔬菜，植物",
+        "mnemonic": null
+      },
+      {
+        "word": "maybe",
+        "ipa": "/ˈmeɪbi/",
+        "meaning": "ad.或许，可能",
+        "mnemonic": null
+      },
+      {
+        "word": "classroom",
+        "ipa": "/ˈklɑːsruːm/",
+        "meaning": "n.教室",
+        "mnemonic": null
+      },
+      {
+        "word": "neighbor",
+        "ipa": "/ˈneɪbə/",
+        "meaning": "n.邻居",
+        "mnemonic": null
+      },
+      {
+        "word": "opinion",
+        "ipa": "/əˈpɪnjən/",
+        "meaning": "n.意见，看法，主张",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "欧(o)屁(pi)你(ni)按(on)",
+          "story": "开会时大家各抒己见：欧(o)弟、皮(pi)哥、你(ni)按(on)按钮投票——这就是你的「意见、看法、主张」！",
+          "chunks": [
+            [
+              "o",
+              "哦"
+            ],
+            [
+              "pi",
+              "批"
+            ],
+            [
+              "ni",
+              "你"
+            ],
+            [
+              "on",
+              "意见"
+            ]
+          ],
+          "trap": "in one's opinion「在某人看来」，介词只能用 in！",
+          "example": "In my opinion, wild mnemonics beat dull lists every time. 在我看来，邪修记忆完胜枯燥词表。"
+        }
+      }
+    ]
+  },
+  {
+    "day": 8,
+    "words": [
+      {
+        "word": "reach",
+        "ipa": "/riːʧ/",
+        "meaning": "v.到达，达成",
+        "mnemonic": null
+      },
+      {
+        "word": "international",
+        "ipa": "/ˌɪntəˈnæʃnəl/",
+        "meaning": "a.国际的，世界性的",
+        "mnemonic": null
+      },
+      {
+        "word": "reply",
+        "ipa": "/rɪˈplaɪ/",
+        "meaning": "n./v.回答，答复",
+        "mnemonic": null
+      },
+      {
+        "word": "film",
+        "ipa": "/fɪlm/",
+        "meaning": "n.电影，胶片，胶卷",
+        "mnemonic": null
+      },
+      {
+        "word": "cost",
+        "ipa": "/kɒst/",
+        "meaning": "n.价格，成本，代价 v.花费",
+        "mnemonic": null
+      },
+      {
+        "word": "human",
+        "ipa": "/ˈhjuːmən/",
+        "meaning": "n.人，人类",
+        "mnemonic": null
+      },
+      {
+        "word": "receive",
+        "ipa": "/rɪˈsiːv/",
+        "meaning": "v.收到，接到，接待",
+        "mnemonic": null
+      },
+      {
+        "word": "farmer",
+        "ipa": "/ˈfɑːmə/",
+        "meaning": "n.农夫，农民",
+        "mnemonic": null
+      },
+      {
+        "word": "either",
+        "ipa": "/ˈaɪðə/",
+        "meaning": "pron.任一 ad.也",
+        "mnemonic": null
+      },
+      {
+        "word": "member",
+        "ipa": "/ˈmembə/",
+        "meaning": "n.成员，会员",
+        "mnemonic": null
+      },
+      {
+        "word": "ground",
+        "ipa": "/ɡraʊnd/",
+        "meaning": "n.地面 v.放在地上",
+        "mnemonic": null
+      },
+      {
+        "word": "continue",
+        "ipa": "/kənˈtɪnjuː/",
+        "meaning": "v.继续，持续",
+        "mnemonic": null
+      },
+      {
+        "word": "expect",
+        "ipa": "/ɪkˈspekt/",
+        "meaning": "v.期待，预期，盼望",
+        "mnemonic": null
+      },
+      {
+        "word": "clear",
+        "ipa": "/klɪə/",
+        "meaning": "a./ad.清楚的 v.清除",
+        "mnemonic": null
+      },
+      {
+        "word": "fine",
+        "ipa": "/faɪn/",
+        "meaning": "a.好的，健康的 n.罚款",
+        "mnemonic": null
+      },
+      {
+        "word": "accident",
+        "ipa": "/ˈæksɪdənt/",
+        "meaning": "n.意外事件，事故",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "爱(ac)死(ci)等(dent)出事",
+          "story": "开车老看手机不看路，爱死(ac-ci)硬等(dent)红灯撞上去，结果真出了「意外事件、事故」！",
+          "chunks": [
+            [
+              "ac",
+              "爱"
+            ],
+            [
+              "ci",
+              "死"
+            ],
+            [
+              "dent",
+              "撞出凹坑"
+            ]
+          ],
+          "trap": "by accident「偶然地、意外地」，等价于 by chance。",
+          "example": "I clicked the hint by accident and found a funny trick. 我不小心点到提示，却发现了个爆笑秘籍。"
+        }
+      },
+      {
+        "word": "borrow",
+        "ipa": "/ˈbɒrəʊ/",
+        "meaning": "v.借，借入",
+        "mnemonic": null
+      },
+      {
+        "word": "produce",
+        "ipa": "/ˈprɒdjuːs/",
+        "meaning": "v.生产 n.产品",
+        "mnemonic": null
+      },
+      {
+        "word": "expensive",
+        "ipa": "/ɪkˈspensɪv/",
+        "meaning": "a.昂贵的，高价的",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "往外(ex)花(pen)钱(sive)",
+          "story": "ex(往外) + pen(花钱/钢笔签单) + sive：一直刷卡往外签单，东西肯定特别「昂贵的」！",
+          "chunks": [
+            [
+              "ex",
+              "往外"
+            ],
+            [
+              "pen",
+              "签单花钱"
+            ],
+            [
+              "sive",
+              "昂贵"
+            ]
+          ],
+          "trap": "形容价格用 high/low，形容物品才用 expensive/cheap！",
+          "example": "Good memory tools don't have to be expensive. 好的记忆工具并不需要很昂贵。"
+        }
+      },
+      {
+        "word": "traditional",
+        "ipa": "/trəˈdɪʃnəl/",
+        "meaning": "a.传统的",
+        "mnemonic": null
+      },
+      {
+        "word": "alone",
+        "ipa": "/əˈləʊn/",
+        "meaning": "a.单独的，孤独的 ad.仅仅",
+        "mnemonic": null
+      },
+      {
+        "word": "careful",
+        "ipa": "/ˈkeəfəl/",
+        "meaning": "a.小心的，仔细的",
+        "mnemonic": null
+      },
+      {
+        "word": "serious",
+        "ipa": "/ˈsɪəriəs/",
+        "meaning": "a.严重的，严肃的，认真的",
+        "mnemonic": null
+      },
+      {
+        "word": "heavy",
+        "ipa": "/ˈhevi/",
+        "meaning": "a.重的，沉重的",
+        "mnemonic": null
+      },
+      {
+        "word": "mountain",
+        "ipa": "/ˈmaʊntɪn/",
+        "meaning": "n.山，山脉",
+        "mnemonic": null
+      },
+      {
+        "word": "national",
+        "ipa": "/ˈnæʃnəl/",
+        "meaning": "a.国家的，民族的",
+        "mnemonic": null
+      },
+      {
+        "word": "lovely",
+        "ipa": "/ˈlʌvli/",
+        "meaning": "a.可爱的",
+        "mnemonic": null
+      },
+      {
+        "word": "common",
+        "ipa": "/ˈkɒmən/",
+        "meaning": "a.平常的，共同的，公共的",
+        "mnemonic": null
+      },
+      {
+        "word": "imagine",
+        "ipa": "/ɪˈmæʤɪn/",
+        "meaning": "v.想象，设想",
+        "mnemonic": null
+      },
+      {
+        "word": "successful",
+        "ipa": "/səkˈsesfəl/",
+        "meaning": "a.成功的",
+        "mnemonic": null
+      }
+    ]
+  },
+  {
+    "day": 9,
+    "words": [
+      {
+        "word": "moment",
+        "ipa": "/ˈməʊmənt/",
+        "meaning": "n.片刻，关键时刻",
+        "mnemonic": null
+      },
+      {
+        "word": "pleasure",
+        "ipa": "/ˈpleʒə/",
+        "meaning": "n.愉快，高兴",
+        "mnemonic": null
+      },
+      {
+        "word": "terrible",
+        "ipa": "/ˈterəbəl/",
+        "meaning": "a.可怕的，糟糕的",
+        "mnemonic": null
+      },
+      {
+        "word": "proud",
+        "ipa": "/praʊd/",
+        "meaning": "a.自豪的",
+        "mnemonic": null
+      },
+      {
+        "word": "service",
+        "ipa": "/ˈsɜːvɪs/",
+        "meaning": "n./v.服务",
+        "mnemonic": null
+      },
+      {
+        "word": "voice",
+        "ipa": "/vɔɪs/",
+        "meaning": "n.声音，嗓音，意见",
+        "mnemonic": null
+      },
+      {
+        "word": "appear",
+        "ipa": "/əˈpɪə/",
+        "meaning": "v.出现，显得",
+        "mnemonic": null
+      },
+      {
+        "word": "prefer",
+        "ipa": "/prɪˈfɜː/",
+        "meaning": "v.更喜欢，宁愿",
+        "mnemonic": null
+      },
+      {
+        "word": "celebrate",
+        "ipa": "/ˈseləbreɪt/",
+        "meaning": "v.庆祝，祝贺",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "名人(celeb)评分(rate)开派对",
+          "story": "celeb(大明星) + rate(打满分)：全班偶像考了满分，全村敲锣打鼓一起「庆祝」！",
+          "chunks": [
+            [
+              "celeb",
+              "大明星"
+            ],
+            [
+              "rate",
+              "满分欢庆"
+            ]
+          ],
+          "trap": "名词 celebration；celebrate 后直接加事件/节日（celebrate a victory）。",
+          "example": "Let's celebrate after clearing the Day 3 Boss! 通关第 3 天 Boss 后我们好好庆祝一下！"
+        }
+      },
+      {
+        "word": "excuse",
+        "ipa": "/ɪkˈskjuːz/",
+        "meaning": "v.原谅，辩解 n.理由，借口",
+        "mnemonic": null
+      },
+      {
+        "word": "product",
+        "ipa": "/ˈprɒdʌkt/",
+        "meaning": "n.产品，产物，乘积",
+        "mnemonic": null
+      },
+      {
+        "word": "market",
+        "ipa": "/ˈmɑːkɪt/",
+        "meaning": "n.市场，集市",
+        "mnemonic": null
+      },
+      {
+        "word": "cover",
+        "ipa": "/ˈkʌvə/",
+        "meaning": "v.覆盖，掩护 n.封面，盖子",
+        "mnemonic": null
+      },
+      {
+        "word": "radio",
+        "ipa": "/ˈreɪdiəʊ/",
+        "meaning": "n.收音机，无线电",
+        "mnemonic": null
+      },
+      {
+        "word": "magazine",
+        "ipa": "/ˌmæɡəˈziːn/",
+        "meaning": "n.杂志",
+        "mnemonic": null
+      },
+      {
+        "word": "act",
+        "ipa": "/ækt/",
+        "meaning": "v.行动，表演 n.行为",
+        "mnemonic": null
+      },
+      {
+        "word": "funny",
+        "ipa": "/ˈfʌni/",
+        "meaning": "a.有趣的，好笑的，滑稽的",
+        "mnemonic": null
+      },
+      {
+        "word": "winter",
+        "ipa": "/ˈwɪntə/",
+        "meaning": "n.冬季",
+        "mnemonic": null
+      },
+      {
+        "word": "piano",
+        "ipa": "/piˈænəʊ/",
+        "meaning": "n.钢琴",
+        "mnemonic": null
+      },
+      {
+        "word": "neither",
+        "ipa": "/ˈnaɪðə/",
+        "meaning": "pron./ad.也不，两者都不",
+        "mnemonic": null
+      },
+      {
+        "word": "match",
+        "ipa": "/mæʧ/",
+        "meaning": "v./n.相配，比赛，火柴",
+        "mnemonic": null
+      },
+      {
+        "word": "explain",
+        "ipa": "/ɪkˈspleɪn/",
+        "meaning": "v.解释，说明",
+        "mnemonic": null
+      },
+      {
+        "word": "cheap",
+        "ipa": "/ʧiːp/",
+        "meaning": "a.便宜的，廉价的",
+        "mnemonic": null
+      },
+      {
+        "word": "strange",
+        "ipa": "/streɪnʤ/",
+        "meaning": "a.奇怪的，陌生的",
+        "mnemonic": null
+      },
+      {
+        "word": "space",
+        "ipa": "/speɪs/",
+        "meaning": "n.空间，太空，间隔，空格",
+        "mnemonic": null
+      },
+      {
+        "word": "smoke",
+        "ipa": "/sməʊk/",
+        "meaning": "n.烟 v.抽烟",
+        "mnemonic": null
+      },
+      {
+        "word": "dress",
+        "ipa": "/dres/",
+        "meaning": "v.穿着，穿衣 n.服装，女装",
+        "mnemonic": null
+      },
+      {
+        "word": "refuse",
+        "ipa": "/rɪˈfjuːz/",
+        "meaning": "v.拒绝 n.垃圾",
+        "mnemonic": {
+          "tag": "词根暴走",
+          "hook": "往回(re)倒掉(fuse)垃圾",
+          "story": "re(往回) + fuse(倒/流)：把塞过来的推销直接倒回去——大声「拒绝」！（作名词读 /ˈrefjuːs/ 指「垃圾」）",
+          "chunks": [
+            [
+              "re",
+              "退回"
+            ],
+            [
+              "fuse",
+              "倒掉拒绝"
+            ]
+          ],
+          "trap": "refuse to do sth「拒绝做某事」，只接不定式！",
+          "example": "Refuse to give up when a spelling looks long. 看到长单词也千万别拒绝尝试。"
+        }
+      },
+      {
+        "word": "fail",
+        "ipa": "/feɪl/",
+        "meaning": "v.失败，不及格",
+        "mnemonic": null
+      },
+      {
+        "word": "prepare",
+        "ipa": "/prɪˈpeə/",
+        "meaning": "v.准备，预备",
+        "mnemonic": null
+      }
+    ]
+  },
+  {
+    "day": 10,
+    "words": [
+      {
+        "word": "nervous",
+        "ipa": "/ˈnɜːvəs/",
+        "meaning": "a.紧张的，神经的",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「哪位死」",
+          "story": "老师拿着点名册念「哪位(ner)死(vous)」上台默写，台下所有人心脏狂跳超级「紧张的」！",
+          "chunks": [
+            [
+              "ner",
+              "哪位"
+            ],
+            [
+              "vous",
+              "紧张发抖"
+            ]
+          ],
+          "trap": "be nervous about 对…感到紧张。",
+          "example": "Students feel less nervous when tests look like mini games. 测验像小游戏一样时，学生就不那么紧张了。"
+        }
+      },
+      {
+        "word": "crowd",
+        "ipa": "/kraʊd/",
+        "meaning": "n.人群 v.拥挤",
+        "mnemonic": null
+      },
+      {
+        "word": "introduce",
+        "ipa": "/ˌɪntrəˈdjuːs/",
+        "meaning": "v.介绍",
+        "mnemonic": null
+      },
+      {
+        "word": "enter",
+        "ipa": "/ˈentə/",
+        "meaning": "v.进入",
+        "mnemonic": null
+      },
+      {
+        "word": "useful",
+        "ipa": "/ˈjuːsfəl/",
+        "meaning": "a.有用的，有益的",
+        "mnemonic": null
+      },
+      {
+        "word": "quiet",
+        "ipa": "/ˈkwaɪət/",
+        "meaning": "n.安静 a.安静的，宁静的",
+        "mnemonic": null
+      },
+      {
+        "word": "cinema",
+        "ipa": "/ˈsɪnəmə/",
+        "meaning": "n.电影院",
+        "mnemonic": null
+      },
+      {
+        "word": "concert",
+        "ipa": "/ˈkɒnsət/",
+        "meaning": "n.音乐会，一致，和谐",
+        "mnemonic": null
+      },
+      {
+        "word": "check",
+        "ipa": "/ʧek/",
+        "meaning": "v.检查 n.支票，核对",
+        "mnemonic": null
+      },
+      {
+        "word": "accept",
+        "ipa": "/əkˈsept/",
+        "meaning": "v.接受，同意",
+        "mnemonic": null
+      },
+      {
+        "word": "lie",
+        "ipa": "/laɪ/",
+        "meaning": "v.说谎，躺，位于 n.谎言",
+        "mnemonic": null
+      },
+      {
+        "word": "recently",
+        "ipa": "/ˈriːsəntli/",
+        "meaning": "ad.最近",
+        "mnemonic": null
+      },
+      {
+        "word": "grade",
+        "ipa": "/ɡreɪd/",
+        "meaning": "n.等级，年级 v.评分，分等级",
+        "mnemonic": null
+      },
+      {
+        "word": "worker",
+        "ipa": "/ˈwɜːkə/",
+        "meaning": "n.工人",
+        "mnemonic": null
+      },
+      {
+        "word": "knowledge",
+        "ipa": "/ˈnɒlɪʤ/",
+        "meaning": "n.知识",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "知道(know) + 悬崖边缘(ledge)",
+          "story": "know(知道) + ledge(岩石边缘)：站在悬崖边还要把所有东西摸透，才算真正拥有「知识」！",
+          "chunks": [
+            [
+              "know",
+              "知道"
+            ],
+            [
+              "ledge",
+              "攀登积累"
+            ]
+          ],
+          "trap": "不可数名词！没有 knowledges 这种复数形式！",
+          "example": "Daily practice turns raw words into lasting knowledge. 每日练习把生词变成稳固的知识。"
+        }
+      },
+      {
+        "word": "support",
+        "ipa": "/səˈpɔːt/",
+        "meaning": "v./n.支持，支撑，供养",
+        "mnemonic": null
+      },
+      {
+        "word": "describe",
+        "ipa": "/dɪˈskraɪb/",
+        "meaning": "v.描述",
+        "mnemonic": null
+      },
+      {
+        "word": "clever",
+        "ipa": "/ˈklevə/",
+        "meaning": "a.聪明的，机灵的",
+        "mnemonic": null
+      },
+      {
+        "word": "huge",
+        "ipa": "/hjuːʤ/",
+        "meaning": "a.巨大的，庞大的",
+        "mnemonic": null
+      },
+      {
+        "word": "boring",
+        "ipa": "/ˈbɔːrɪŋ/",
+        "meaning": "a.无聊的，乏味的",
+        "mnemonic": null
+      },
+      {
+        "word": "fresh",
+        "ipa": "/freʃ/",
+        "meaning": "a.新鲜的，无经验的",
+        "mnemonic": null
+      },
+      {
+        "word": "center",
+        "ipa": "/ˈsentə/",
+        "meaning": "n.中心",
+        "mnemonic": null
+      },
+      {
+        "word": "amaze",
+        "ipa": "/əˈmeɪz/",
+        "meaning": "v.使吃惊",
+        "mnemonic": null
+      },
+      {
+        "word": "discuss",
+        "ipa": "/dɪˈskʌs/",
+        "meaning": "v.讨论",
+        "mnemonic": null
+      },
+      {
+        "word": "active",
+        "ipa": "/ˈæktɪv/",
+        "meaning": "a.活跃的，积极的",
+        "mnemonic": null
+      },
+      {
+        "word": "natural",
+        "ipa": "/ˈnæʧərəl/",
+        "meaning": "a.自然的，天然的",
+        "mnemonic": null
+      },
+      {
+        "word": "decision",
+        "ipa": "/dɪˈsɪʒn/",
+        "meaning": "n.决定，决心，决议",
+        "mnemonic": null
+      },
+      {
+        "word": "invent",
+        "ipa": "/ɪnˈvent/",
+        "meaning": "v.发明，虚构",
+        "mnemonic": null
+      },
+      {
+        "word": "solve",
+        "ipa": "/sɒlv/",
+        "meaning": "v.解决，解答",
+        "mnemonic": null
+      },
+      {
+        "word": "foreign",
+        "ipa": "/ˈfɒrən/",
+        "meaning": "a.外国的，外来的",
+        "mnemonic": null
+      }
+    ]
+  },
+  {
+    "day": 11,
+    "words": [
+      {
+        "word": "secret",
+        "ipa": "/ˈsiːkrət/",
+        "meaning": "n./a.秘密",
+        "mnemonic": null
+      },
+      {
+        "word": "communication",
+        "ipa": "/kəˌmjuːnɪˈkeɪʃn/",
+        "meaning": "n.交流，通讯，沟通",
+        "mnemonic": {
+          "tag": "词根暴走",
+          "hook": "共同(com)把信息(mun)送到你(cat-ion)",
+          "story": "com(共同) + mun(公共) + ication：大家一起在公共群里发消息猫猫表情包，就是「交流、沟通」！",
+          "chunks": [
+            [
+              "com",
+              "一起"
+            ],
+            [
+              "muni",
+              "互通"
+            ],
+            [
+              "cation",
+              "交流"
+            ]
+          ],
+          "trap": "动词是 communicate；communicate with sb 与某人交流。",
+          "example": "Clear communication makes group study twice as fun. 顺畅的交流让班级一起背词乐趣翻倍。"
+        }
+      },
+      {
+        "word": "pollution",
+        "ipa": "/pəˈluːʃn/",
+        "meaning": "n.污染，污染物",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「泼卤水(pollu-tion)」",
+          "story": "有人往清澈小河里「泼卤水(pollu)」，水全黑了——这就是环境「污染」！",
+          "chunks": [
+            [
+              "pollu",
+              "泼卤水"
+            ],
+            [
+              "tion",
+              "污染"
+            ]
+          ],
+          "trap": "不可数名词！动词是 pollute。",
+          "example": "Noise pollution makes it hard to memorize quietly. 噪音污染让人很难安静背词。"
+        }
+      },
+      {
+        "word": "situation",
+        "ipa": "/ˌsɪʧuˈeɪʃn/",
+        "meaning": "n.形式，位置，地点，情况，职务",
+        "mnemonic": null
+      },
+      {
+        "word": "knock",
+        "ipa": "/nɒk/",
+        "meaning": "v./n.敲击，敲门",
+        "mnemonic": null
+      },
+      {
+        "word": "express",
+        "ipa": "/ɪkˈspres/",
+        "meaning": "v.表达，表示 n.快车，快递",
+        "mnemonic": null
+      },
+      {
+        "word": "simple",
+        "ipa": "/ˈsɪmpəl/",
+        "meaning": "a.简单的，朴素的，单纯的",
+        "mnemonic": null
+      },
+      {
+        "word": "bored",
+        "ipa": "/bɔːd/",
+        "meaning": "a.无聊的，乏味的",
+        "mnemonic": null
+      },
+      {
+        "word": "invention",
+        "ipa": "/ɪnˈvenʃn/",
+        "meaning": "n.发明",
+        "mnemonic": null
+      },
+      {
+        "word": "factory",
+        "ipa": "/ˈfæktəri/",
+        "meaning": "n.工厂",
+        "mnemonic": null
+      },
+      {
+        "word": "certain",
+        "ipa": "/ˈsɜːtən/",
+        "meaning": "pron.某些 a.确定的，特定的",
+        "mnemonic": null
+      },
+      {
+        "word": "honest",
+        "ipa": "/ˈɒnɪst/",
+        "meaning": "a.诚实的，正直的",
+        "mnemonic": null
+      },
+      {
+        "word": "ancient",
+        "ipa": "/ˈeɪnʃənt/",
+        "meaning": "a.古老的，古代的",
+        "mnemonic": null
+      },
+      {
+        "word": "perhaps",
+        "ipa": "/pəˈhæps/",
+        "meaning": "ad.也许，可能",
+        "mnemonic": null
+      },
+      {
+        "word": "influence",
+        "ipa": "/ˈɪnfluəns/",
+        "meaning": "n./v.影响，影响力",
+        "mnemonic": null
+      },
+      {
+        "word": "ocean",
+        "ipa": "/ˈəʊʃən/",
+        "meaning": "n.海洋",
+        "mnemonic": null
+      },
+      {
+        "word": "danger",
+        "ipa": "/ˈdeɪnʤə/",
+        "meaning": "n.危险，威胁",
+        "mnemonic": null
+      },
+      {
+        "word": "comfortable",
+        "ipa": "/ˈkʌmfətəbəl/",
+        "meaning": "a.舒适的",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "共同(com)力量(fort)加能耐(able)",
+          "story": "comfort(安慰/舒服) + able(能够)：被软沙发温柔「安慰」得浑身放松，太「舒适的」了！",
+          "chunks": [
+            [
+              "com",
+              "共同"
+            ],
+            [
+              "fort",
+              "安慰堡垒"
+            ],
+            [
+              "able",
+              "舒适"
+            ]
+          ],
+          "trap": "读音注意！r 后面别多念一个音节，只有 3 个主要音节 /ˈkʌmfətəbəl/。",
+          "example": "Pick the reading theme most comfortable for your eyes. 挑一个你眼睛最舒服的界面主题。"
+        }
+      },
+      {
+        "word": "perfect",
+        "ipa": "/ˈpɜːfekt/",
+        "meaning": "a.完美的",
+        "mnemonic": null
+      },
+      {
+        "word": "sunny",
+        "ipa": "/ˈsʌni/",
+        "meaning": "a.阳光充足的，晴朗的",
+        "mnemonic": null
+      },
+      {
+        "word": "style",
+        "ipa": "/staɪl/",
+        "meaning": "n.风格，式样，时尚",
+        "mnemonic": null
+      },
+      {
+        "word": "power",
+        "ipa": "/ˈpaʊə/",
+        "meaning": "n.力，力量，权力，电力",
+        "mnemonic": null
+      },
+      {
+        "word": "ability",
+        "ipa": "/əˈbɪləti/",
+        "meaning": "n.能力，才干",
+        "mnemonic": null
+      },
+      {
+        "word": "message",
+        "ipa": "/ˈmesɪʤ/",
+        "meaning": "n.消息，信息",
+        "mnemonic": null
+      },
+      {
+        "word": "succeed",
+        "ipa": "/səkˈsiːd/",
+        "meaning": "v.成功，继承",
+        "mnemonic": null
+      },
+      {
+        "word": "bright",
+        "ipa": "/braɪt/",
+        "meaning": "a.明亮的，聪明的",
+        "mnemonic": null
+      },
+      {
+        "word": "similar",
+        "ipa": "/ˈsɪmɪlə/",
+        "meaning": "a.相似的",
+        "mnemonic": null
+      },
+      {
+        "word": "patient",
+        "ipa": "/ˈpeɪʃənt/",
+        "meaning": "n.病人 a.有耐心的",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「陪神特」",
+          "story": "在医院里「陪神特(patient)」久的大夫，看病最温柔，对待「病人」总是极其「有耐心的」！",
+          "chunks": [
+            [
+              "pa",
+              "陪"
+            ],
+            [
+              "tient",
+              "心平气和"
+            ]
+          ],
+          "trap": "be patient with sb 对某人有耐心；名词「病人」是可数名词。",
+          "example": "Be patient with tough words; they click on the third round. 对难词多点耐心，第三轮就会开窍。"
+        }
+      },
+      {
+        "word": "tool",
+        "ipa": "/tuːl/",
+        "meaning": "n.工具，手段",
+        "mnemonic": null
+      },
+      {
+        "word": "machine",
+        "ipa": "/məˈʃiːn/",
+        "meaning": "n.机器",
+        "mnemonic": null
+      }
+    ]
+  },
+  {
+    "day": 12,
+    "words": [
+      {
+        "word": "record",
+        "ipa": "/ˈrekɔːd/",
+        "meaning": "n.记录，唱片 v.记录，录下",
+        "mnemonic": null
+      },
+      {
+        "word": "suggestion",
+        "ipa": "/səˈʤesʧn/",
+        "meaning": "n.建议，意见",
+        "mnemonic": null
+      },
+      {
+        "word": "reduce",
+        "ipa": "/rɪˈdjuːs/",
+        "meaning": "v.减少，缩小",
+        "mnemonic": null
+      },
+      {
+        "word": "lazy",
+        "ipa": "/ˈleɪzi/",
+        "meaning": "a.懒惰的，懒散的",
+        "mnemonic": null
+      },
+      {
+        "word": "modern",
+        "ipa": "/ˈmɒdən/",
+        "meaning": "a.现代的，时髦的",
+        "mnemonic": null
+      },
+      {
+        "word": "increase",
+        "ipa": "/ˈɪnkriːs/",
+        "meaning": "n./v.增加，提高",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "往里(in)一直生长(crease)",
+          "story": "in(向里) + crease(生长)：往存款罐里不断长出更多金币，数值一路「增加、提高」！",
+          "chunks": [
+            [
+              "in",
+              "往里"
+            ],
+            [
+              "crease",
+              "持续生长"
+            ]
+          ],
+          "trap": "increase by 增加了(差值)；increase to 增加到(总数)。反义词 decrease。",
+          "example": "Daily streaks steadily increase your mastery score. 连续打卡会稳步拉高你的掌握度。"
+        }
+      },
+      {
+        "word": "illness",
+        "ipa": "/ˈɪlnəs/",
+        "meaning": "n.疾病",
+        "mnemonic": null
+      },
+      {
+        "word": "guess",
+        "ipa": "/ɡes/",
+        "meaning": "v./n.猜测，推测",
+        "mnemonic": null
+      },
+      {
+        "word": "connect",
+        "ipa": "/kəˈnekt/",
+        "meaning": "v.连接，联系",
+        "mnemonic": null
+      },
+      {
+        "word": "brave",
+        "ipa": "/breɪv/",
+        "meaning": "a.勇敢的",
+        "mnemonic": null
+      },
+      {
+        "word": "telephone",
+        "ipa": "/ˈtelɪfəʊn/",
+        "meaning": "n.电话 v.打电话",
+        "mnemonic": null
+      },
+      {
+        "word": "ring",
+        "ipa": "/rɪŋ/",
+        "meaning": "n.环，戒指，电话，铃声 v.打电话",
+        "mnemonic": null
+      },
+      {
+        "word": "conversation",
+        "ipa": "/ˌkɒnvəˈseɪʃn/",
+        "meaning": "n.谈话，会话",
+        "mnemonic": null
+      },
+      {
+        "word": "avoid",
+        "ipa": "/əˈvɔɪd/",
+        "meaning": "v.避免",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "朝着(a)空洞(void)躲开",
+          "story": "a(去) + void(空处)：看见前面有人泼冷水，赶紧朝旁边空地一闪，「避免」被淋湿！",
+          "chunks": [
+            [
+              "a",
+              "朝向"
+            ],
+            [
+              "void",
+              "空地闪避"
+            ]
+          ],
+          "trap": "中考铁律：avoid doing sth「避免做某事」，后接动名词！",
+          "example": "Color-coded hints help you avoid common spelling traps. 彩色提示帮你避开常见拼写陷阱。"
+        }
+      },
+      {
+        "word": "disappear",
+        "ipa": "/ˌdɪsəˈpɪə/",
+        "meaning": "v.消失",
+        "mnemonic": {
+          "tag": "词根暴走",
+          "hook": "否定(dis) + 出现(appear)",
+          "story": "appear 是「出现」，前面加个大反派 dis(不)——刚出现一秒又「消失」啦！",
+          "chunks": [
+            [
+              "dis",
+              "不"
+            ],
+            [
+              "appear",
+              "出现=消失"
+            ]
+          ],
+          "trap": "不及物动词，没有被动语态！不能说 was disappeared。",
+          "example": "Wrong words don't disappear until you beat them twice. 错词在你连对两次前不会消失。"
+        }
+      },
+      {
+        "word": "depend",
+        "ipa": "/dɪˈpend/",
+        "meaning": "v.依靠，取决于",
+        "mnemonic": null
+      },
+      {
+        "word": "hungry",
+        "ipa": "/ˈhʌŋɡri/",
+        "meaning": "a.饥饿的，渴望的",
+        "mnemonic": null
+      },
+      {
+        "word": "polite",
+        "ipa": "/pəˈlaɪt/",
+        "meaning": "a.有礼貌的，客气的，有教养的",
+        "mnemonic": null
+      },
+      {
+        "word": "date",
+        "ipa": "/deɪt/",
+        "meaning": "n.日期，时期，约会，年代",
+        "mnemonic": null
+      },
+      {
+        "word": "achieve",
+        "ipa": "/əˈʧiːv/",
+        "meaning": "v.达到，实现，完成",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「额齐步」冲向终点",
+          "story": "a + chief(首领)的变体：跟着领队齐步往前冲，最终「达到、实现、完成」目标！",
+          "chunks": [
+            [
+              "a",
+              "向"
+            ],
+            [
+              "chieve",
+              "冲刺达成"
+            ]
+          ],
+          "trap": "achieve one's dream 实现某人的梦想；名词 achievement。",
+          "example": "You can achieve your 23-day goal faster with daily sprints. 靠每日小冲刺你能更快实现 23 天目标。"
+        }
+      },
+      {
+        "word": "advise",
+        "ipa": "/ədˈvaɪz/",
+        "meaning": "v.劝告，忠告，建议",
+        "mnemonic": null
+      },
+      {
+        "word": "dead",
+        "ipa": "/ded/",
+        "meaning": "a.死的，沉闷的",
+        "mnemonic": null
+      },
+      {
+        "word": "rush",
+        "ipa": "/rʌʃ/",
+        "meaning": "n./v.冲，冲进，匆忙，突袭",
+        "mnemonic": null
+      },
+      {
+        "word": "sale",
+        "ipa": "/seɪl/",
+        "meaning": "n.出售",
+        "mnemonic": null
+      },
+      {
+        "word": "airport",
+        "ipa": "/ˈeəpɔːt/",
+        "meaning": "n.机场",
+        "mnemonic": null
+      },
+      {
+        "word": "truth",
+        "ipa": "/truːθ/",
+        "meaning": "n.事实，真理，真相",
+        "mnemonic": null
+      },
+      {
+        "word": "advantage",
+        "ipa": "/ədˈvɑːntɪʤ/",
+        "meaning": "n.优势 v.有利于",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "提前(adv)站到前排(ant-age)",
+          "story": "adv(前进) + ant(蚂蚁) + age：勤劳小蚂蚁提前跑在前面占位，抢占绝对「优势」！",
+          "chunks": [
+            [
+              "ad",
+              "向前"
+            ],
+            [
+              "vant",
+              "抢先"
+            ],
+            [
+              "age",
+              "占优势"
+            ]
+          ],
+          "trap": "take advantage of 利用；反义词 disadvantage。",
+          "example": "Visual memory gives you a huge advantage in spelling. 图像记忆法让你在拼写题里占尽优势。"
+        }
+      },
+      {
+        "word": "manage",
+        "ipa": "/ˈmænɪʤ/",
+        "meaning": "v.管理，经营",
+        "mnemonic": null
+      },
+      {
+        "word": "burn",
+        "ipa": "/bɜːn/",
+        "meaning": "v.燃烧，烧伤 n.烧伤",
+        "mnemonic": null
+      },
+      {
+        "word": "valuable",
+        "ipa": "/ˈvæljəbəl/",
+        "meaning": "a.贵重的，有价值的",
+        "mnemonic": null
+      }
+    ]
+  },
+  {
+    "day": 13,
+    "words": [
+      {
+        "word": "repair",
+        "ipa": "/rɪˈpeə/",
+        "meaning": "n./v.修理，补救",
+        "mnemonic": null
+      },
+      {
+        "word": "task",
+        "ipa": "/tɑːsk/",
+        "meaning": "n.任务，工作",
+        "mnemonic": null
+      },
+      {
+        "word": "friendship",
+        "ipa": "/ˈfrendʃɪp/",
+        "meaning": "n.友谊",
+        "mnemonic": null
+      },
+      {
+        "word": "organization",
+        "ipa": "/ˌɔːɡənaɪˈzeɪʃn/",
+        "meaning": "n.组织，机构",
+        "mnemonic": null
+      },
+      {
+        "word": "everybody",
+        "ipa": "/ˈevribɒdi/",
+        "meaning": "pron.每个人，人人",
+        "mnemonic": null
+      },
+      {
+        "word": "junior",
+        "ipa": "/ˈʤuːniə/",
+        "meaning": "a.年少的，资历浅的 n.晚辈",
+        "mnemonic": null
+      },
+      {
+        "word": "population",
+        "ipa": "/ˌpɒpjəˈleɪʃn/",
+        "meaning": "n.人口，人口数，群体",
+        "mnemonic": null
+      },
+      {
+        "word": "system",
+        "ipa": "/ˈsɪstəm/",
+        "meaning": "n.系统，制度",
+        "mnemonic": null
+      },
+      {
+        "word": "leaf",
+        "ipa": "/liːf/",
+        "meaning": "n.叶子",
+        "mnemonic": null
+      },
+      {
+        "word": "artist",
+        "ipa": "/ˈɑːtɪst/",
+        "meaning": "n.艺术家，美术家",
+        "mnemonic": null
+      },
+      {
+        "word": "satisfy",
+        "ipa": "/ˈsætɪsfaɪ/",
+        "meaning": "v.满足，使满意",
+        "mnemonic": null
+      },
+      {
+        "word": "lonely",
+        "ipa": "/ˈləʊnli/",
+        "meaning": "a.孤独的，寂寞的，荒凉的",
+        "mnemonic": null
+      },
+      {
+        "word": "wise",
+        "ipa": "/waɪz/",
+        "meaning": "a.明智的，聪明的",
+        "mnemonic": null
+      },
+      {
+        "word": "rainy",
+        "ipa": "/ˈreɪni/",
+        "meaning": "a.下雨的，多雨的",
+        "mnemonic": null
+      },
+      {
+        "word": "quietly",
+        "ipa": "/ˈkwaɪətli/",
+        "meaning": "ad.安静地，平静地",
+        "mnemonic": null
+      },
+      {
+        "word": "blood",
+        "ipa": "/blʌd/",
+        "meaning": "n.血 v.流血",
+        "mnemonic": null
+      },
+      {
+        "word": "promise",
+        "ipa": "/ˈprɒmɪs/",
+        "meaning": "v./n.发誓，诺言，答应",
+        "mnemonic": null
+      },
+      {
+        "word": "design",
+        "ipa": "/dɪˈzaɪn/",
+        "meaning": "v./n.设计，计划",
+        "mnemonic": null
+      },
+      {
+        "word": "wide",
+        "ipa": "/waɪd/",
+        "meaning": "a.宽阔的，广泛的",
+        "mnemonic": null
+      },
+      {
+        "word": "distance",
+        "ipa": "/ˈdɪstəns/",
+        "meaning": "n.距离，远方",
+        "mnemonic": null
+      },
+      {
+        "word": "basket",
+        "ipa": "/ˈbɑːskɪt/",
+        "meaning": "n.篮子",
+        "mnemonic": null
+      },
+      {
+        "word": "autumn",
+        "ipa": "/ˈɔːtəm/",
+        "meaning": "n.秋天",
+        "mnemonic": null
+      },
+      {
+        "word": "treat",
+        "ipa": "/triːt/",
+        "meaning": "v./n.对待，治疗，处理",
+        "mnemonic": null
+      },
+      {
+        "word": "review",
+        "ipa": "/rɪˈvjuː/",
+        "meaning": "v./n.回顾，复习，评论",
+        "mnemonic": null
+      },
+      {
+        "word": "breathe",
+        "ipa": "/briːð/",
+        "meaning": "v.呼吸",
+        "mnemonic": null
+      },
+      {
+        "word": "suggest",
+        "ipa": "/səˈʤest/",
+        "meaning": "v.建议，暗示",
+        "mnemonic": null
+      },
+      {
+        "word": "pleasant",
+        "ipa": "/ˈplezənt/",
+        "meaning": "a.令人愉快的，舒适的",
+        "mnemonic": null
+      },
+      {
+        "word": "excellent",
+        "ipa": "/ˈeksələnt/",
+        "meaning": "a.优秀的，杰出的",
+        "mnemonic": null
+      },
+      {
+        "word": "correct",
+        "ipa": "/kəˈrekt/",
+        "meaning": "a.正确的，恰当的 v.纠正",
+        "mnemonic": null
+      },
+      {
+        "word": "respect",
+        "ipa": "/rɪˈspekt/",
+        "meaning": "n./v.尊敬，尊重",
+        "mnemonic": null
+      }
+    ]
+  },
+  {
+    "day": 14,
+    "words": [
+      {
+        "word": "kilometer",
+        "ipa": "/kɪˈlɒmɪtə/",
+        "meaning": "n.千米，公里",
+        "mnemonic": null
+      },
+      {
+        "word": "condition",
+        "ipa": "/kənˈdɪʃn/",
+        "meaning": "n.条件，情况",
+        "mnemonic": null
+      },
+      {
+        "word": "suppose",
+        "ipa": "/səˈpəʊz/",
+        "meaning": "v.猜想，假设，认为",
+        "mnemonic": null
+      },
+      {
+        "word": "attend",
+        "ipa": "/əˈtend/",
+        "meaning": "v.出席，参加，照料",
+        "mnemonic": null
+      },
+      {
+        "word": "outdoor",
+        "ipa": "/ˈaʊtˌdɔː/",
+        "meaning": "a.户外的，野外的",
+        "mnemonic": null
+      },
+      {
+        "word": "weak",
+        "ipa": "/wiːk/",
+        "meaning": "a.虚弱的，弱的",
+        "mnemonic": null
+      },
+      {
+        "word": "loudly",
+        "ipa": "/ˈlaʊdli/",
+        "meaning": "ad.大声地，响亮地",
+        "mnemonic": null
+      },
+      {
+        "word": "simply",
+        "ipa": "/ˈsɪmpli/",
+        "meaning": "ad.简单地，仅仅",
+        "mnemonic": null
+      },
+      {
+        "word": "nowadays",
+        "ipa": "/ˈnaʊədeɪz/",
+        "meaning": "ad.现今，现在",
+        "mnemonic": null
+      },
+      {
+        "word": "earthquake",
+        "ipa": "/ˈɜːθkweɪk/",
+        "meaning": "n.地震",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "地球(earth)在晃动(quake)",
+          "story": "earth(地球/泥土) + quake(发抖震动)：地球自己吓得直发抖——这就是「地震」！",
+          "chunks": [
+            [
+              "earth",
+              "大地"
+            ],
+            [
+              "quake",
+              "疯狂摇晃"
+            ]
+          ],
+          "trap": "可数名词，注意前面一般加 an earthquake。",
+          "example": "When the earthquake starts, stay away from tall windows. 地震发生时要远离高大窗户。"
+        }
+      },
+      {
+        "word": "disease",
+        "ipa": "/dɪˈziːz/",
+        "meaning": "n.疾病",
+        "mnemonic": {
+          "tag": "词根暴走",
+          "hook": "dis(不) + ease(舒服)",
+          "story": "ease 是「舒适安逸」，加上否定前缀 dis(不)——浑身「不舒服」就是得「疾病」啦！",
+          "chunks": [
+            [
+              "dis",
+              "不"
+            ],
+            [
+              "ease",
+              "舒服=生病"
+            ]
+          ],
+          "trap": "对比 illness(偏重具体生病状态) 与 disease(较正式的医学疾病)。",
+          "example": "Washing hands regularly prevents many common diseases. 勤洗手能预防很多常见疾病。"
+        }
+      },
+      {
+        "word": "reporter",
+        "ipa": "/rɪˈpɔːtə/",
+        "meaning": "n.记者",
+        "mnemonic": null
+      },
+      {
+        "word": "death",
+        "ipa": "/deθ/",
+        "meaning": "n.死，死亡",
+        "mnemonic": null
+      },
+      {
+        "word": "talent",
+        "ipa": "/ˈtælənt/",
+        "meaning": "n.天才，天赋",
+        "mnemonic": null
+      },
+      {
+        "word": "courage",
+        "ipa": "/ˈkʌrɪʤ/",
+        "meaning": "n.勇气，胆量",
+        "mnemonic": null
+      },
+      {
+        "word": "hurry",
+        "ipa": "/ˈhʌri/",
+        "meaning": "v./n.催促，赶紧，急忙",
+        "mnemonic": null
+      },
+      {
+        "word": "wet",
+        "ipa": "/wet/",
+        "meaning": "a.湿的，多雨的 n.潮气",
+        "mnemonic": null
+      },
+      {
+        "word": "pity",
+        "ipa": "/ˈpɪti/",
+        "meaning": "n./v.怜悯，同情",
+        "mnemonic": null
+      },
+      {
+        "word": "address",
+        "ipa": "/əˈdres/",
+        "meaning": "n.地址，演说 v.写地址，演说",
+        "mnemonic": null
+      },
+      {
+        "word": "airplane",
+        "ipa": "/ˈeəpleɪn/",
+        "meaning": "n.飞机",
+        "mnemonic": null
+      },
+      {
+        "word": "peace",
+        "ipa": "/piːs/",
+        "meaning": "n.和平，安静",
+        "mnemonic": null
+      },
+      {
+        "word": "noise",
+        "ipa": "/nɔɪz/",
+        "meaning": "n.噪声，喧闹声",
+        "mnemonic": null
+      },
+      {
+        "word": "steal",
+        "ipa": "/stiːl/",
+        "meaning": "v./n.偷窃",
+        "mnemonic": null
+      },
+      {
+        "word": "prevent",
+        "ipa": "/prɪˈvent/",
+        "meaning": "v.预防，防止",
+        "mnemonic": null
+      },
+      {
+        "word": "unusual",
+        "ipa": "/ʌnˈjuːʒuəl/",
+        "meaning": "a.不寻常的，独特的",
+        "mnemonic": null
+      },
+      {
+        "word": "available",
+        "ipa": "/əˈveɪləbəl/",
+        "meaning": "a.可利用的，可得到的，有空的",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「啊，喂老伯」有空吗",
+          "story": "打电话「啊，喂老伯(a-vail-able)」，您今天下午有空吗？——意为「有空的、可利用的、可得到的」！",
+          "chunks": [
+            [
+              "a",
+              "啊"
+            ],
+            [
+              "vail",
+              "喂老伯"
+            ],
+            [
+              "able",
+              "有空的"
+            ]
+          ],
+          "trap": "高频熟词生义：既指物品「可买到的」，也指人「有空的」。",
+          "example": "Offline study cards are available anytime on your phone. 离线词卡在手机上随时可用。"
+        }
+      },
+      {
+        "word": "empty",
+        "ipa": "/ˈempti/",
+        "meaning": "a.空的，空洞的，空虚的",
+        "mnemonic": null
+      },
+      {
+        "word": "round",
+        "ipa": "/raʊnd/",
+        "meaning": "a.圆的，球形的 v.绕行，弄圆",
+        "mnemonic": null
+      },
+      {
+        "word": "achievement",
+        "ipa": "/əˈʧiːvmənt/",
+        "meaning": "n.成就，完成",
+        "mnemonic": null
+      },
+      {
+        "word": "war",
+        "ipa": "/wɔː/",
+        "meaning": "n.战争",
+        "mnemonic": null
+      }
+    ]
+  },
+  {
+    "day": 15,
+    "words": [
+      {
+        "word": "except",
+        "ipa": "/ɪkˈsept/",
+        "meaning": "prep.除...外 conj.除非",
+        "mnemonic": null
+      },
+      {
+        "word": "compare",
+        "ipa": "/kəmˈpeə/",
+        "meaning": "v./n.比较，对比",
+        "mnemonic": null
+      },
+      {
+        "word": "remain",
+        "ipa": "/rɪˈmeɪn/",
+        "meaning": "v.保持，剩余 n.剩余物",
+        "mnemonic": null
+      },
+      {
+        "word": "divide",
+        "ipa": "/dɪˈvaɪd/",
+        "meaning": "v.分，划分，分割，除",
+        "mnemonic": null
+      },
+      {
+        "word": "require",
+        "ipa": "/rɪˈkwaɪə/",
+        "meaning": "v.要求，需要，命令",
+        "mnemonic": null
+      },
+      {
+        "word": "straight",
+        "ipa": "/streɪt/",
+        "meaning": "a./ad.直的，坦率的",
+        "mnemonic": null
+      },
+      {
+        "word": "likely",
+        "ipa": "/ˈlaɪkli/",
+        "meaning": "ad.很可能 a.可能的，可信的",
+        "mnemonic": null
+      },
+      {
+        "word": "advertisement",
+        "ipa": "/ədˈvɜːtɪsmənt/",
+        "meaning": "n.广告",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "ad(广告) + vert(转眼看) + isement",
+          "story": "前缀 ad 就是生活里常说的「AD 广告」，vert 是「让你转过头看」——到处吸引眼球的「广告」！",
+          "chunks": [
+            [
+              "ad",
+              "广告"
+            ],
+            [
+              "vert",
+              "吸引转头"
+            ],
+            [
+              "isement",
+              "大牌"
+            ]
+          ],
+          "trap": "常缩写为 ad；注意重音在第二个音节或第三个音节（英/美读法略有区别）。",
+          "example": "Good design teaches clearly without noisy advertisements. 好的界面教你清晰学习，没有烦人广告。"
+        }
+      },
+      {
+        "word": "chat",
+        "ipa": "/ʧæt/",
+        "meaning": "v./n.聊天，闲谈",
+        "mnemonic": null
+      },
+      {
+        "word": "attract",
+        "ipa": "/əˈtrækt/",
+        "meaning": "v.吸引",
+        "mnemonic": null
+      },
+      {
+        "word": "cloudy",
+        "ipa": "/ˈklaʊdi/",
+        "meaning": "a.多云的，阴天的",
+        "mnemonic": null
+      },
+      {
+        "word": "slow",
+        "ipa": "/sləʊ/",
+        "meaning": "a.慢的 v.放慢，减速",
+        "mnemonic": null
+      },
+      {
+        "word": "thin",
+        "ipa": "/θɪn/",
+        "meaning": "a.瘦的，薄的，稀的",
+        "mnemonic": null
+      },
+      {
+        "word": "expression",
+        "ipa": "/ɪkˈspreʃn/",
+        "meaning": "n.表情，表达，措辞",
+        "mnemonic": null
+      },
+      {
+        "word": "award",
+        "ipa": "/əˈwɔːd/",
+        "meaning": "n.奖，奖品 v.授予",
+        "mnemonic": null
+      },
+      {
+        "word": "focus",
+        "ipa": "/ˈfəʊkəs/",
+        "meaning": "n.焦点，中心 v.集中",
+        "mnemonic": null
+      },
+      {
+        "word": "manager",
+        "ipa": "/ˈmænɪʤə/",
+        "meaning": "n.经理，管理者",
+        "mnemonic": null
+      },
+      {
+        "word": "rubbish",
+        "ipa": "/ˈrʌbɪʃ/",
+        "meaning": "n.垃圾，废物，废话",
+        "mnemonic": null
+      },
+      {
+        "word": "trade",
+        "ipa": "/treɪd/",
+        "meaning": "n.贸易，交易 v.做买卖",
+        "mnemonic": null
+      },
+      {
+        "word": "damage",
+        "ipa": "/ˈdæmɪʤ/",
+        "meaning": "v./n.损害，毁坏",
+        "mnemonic": null
+      },
+      {
+        "word": "disable",
+        "ipa": "/dɪˈseɪbəl/",
+        "meaning": "v.使失去能力，使残废",
+        "mnemonic": null
+      },
+      {
+        "word": "belong",
+        "ipa": "/bɪˈlɒŋ/",
+        "meaning": "v.属于",
+        "mnemonic": null
+      },
+      {
+        "word": "organize",
+        "ipa": "/ˈɔːɡənaɪz/",
+        "meaning": "v.组织，安排",
+        "mnemonic": null
+      },
+      {
+        "word": "single",
+        "ipa": "/ˈsɪŋɡəl/",
+        "meaning": "a.单一的，单独的",
+        "mnemonic": null
+      },
+      {
+        "word": "proper",
+        "ipa": "/ˈprɒpə/",
+        "meaning": "a.合适的，恰当的",
+        "mnemonic": null
+      },
+      {
+        "word": "normal",
+        "ipa": "/ˈnɔːməl/",
+        "meaning": "a.正常的，正规的",
+        "mnemonic": null
+      },
+      {
+        "word": "immediately",
+        "ipa": "/ɪˈmiːdiətli/",
+        "meaning": "ad.立刻，直接地",
+        "mnemonic": null
+      },
+      {
+        "word": "regret",
+        "ipa": "/rɪˈɡret/",
+        "meaning": "n./v.遗憾，后悔",
+        "mnemonic": null
+      },
+      {
+        "word": "repeat",
+        "ipa": "/rɪˈpiːt/",
+        "meaning": "n./v.重复，反复",
+        "mnemonic": null
+      },
+      {
+        "word": "method",
+        "ipa": "/ˈmeθəd/",
+        "meaning": "n.方法",
+        "mnemonic": null
+      }
+    ]
+  },
+  {
+    "day": 16,
+    "words": [
+      {
+        "word": "flight",
+        "ipa": "/flaɪt/",
+        "meaning": "n.飞行，航班",
+        "mnemonic": null
+      },
+      {
+        "word": "truck",
+        "ipa": "/trʌk/",
+        "meaning": "n.卡车，手推车",
+        "mnemonic": null
+      },
+      {
+        "word": "bell",
+        "ipa": "/bel/",
+        "meaning": "n.铃，钟",
+        "mnemonic": null
+      },
+      {
+        "word": "effort",
+        "ipa": "/ˈefət/",
+        "meaning": "n.努力",
+        "mnemonic": null
+      },
+      {
+        "word": "gas",
+        "ipa": "/ɡæs/",
+        "meaning": "n.气体，煤气，汽油",
+        "mnemonic": null
+      },
+      {
+        "word": "waiter",
+        "ipa": "/ˈweɪtə/",
+        "meaning": "n.侍者，服务员",
+        "mnemonic": null
+      },
+      {
+        "word": "plastic",
+        "ipa": "/ˈplæstɪk/",
+        "meaning": "n.塑料 a.塑料的，可塑的",
+        "mnemonic": null
+      },
+      {
+        "word": "afford",
+        "ipa": "/əˈfɔːd/",
+        "meaning": "v.提供，给予，买得起",
+        "mnemonic": null
+      },
+      {
+        "word": "upset",
+        "ipa": "/ʌpˈset/",
+        "meaning": "a.心烦的 v./n.推翻",
+        "mnemonic": null
+      },
+      {
+        "word": "final",
+        "ipa": "/ˈfaɪnəl/",
+        "meaning": "a.最后的，最终的",
+        "mnemonic": null
+      },
+      {
+        "word": "progress",
+        "ipa": "/ˈprəʊɡres/",
+        "meaning": "n./v.前进，进步，发展",
+        "mnemonic": null
+      },
+      {
+        "word": "value",
+        "ipa": "/ˈvæljuː/",
+        "meaning": "n.价值，数值 v.评估",
+        "mnemonic": null
+      },
+      {
+        "word": "force",
+        "ipa": "/fɔːs/",
+        "meaning": "n.力，力量，武力，军队 v.强迫",
+        "mnemonic": null
+      },
+      {
+        "word": "amount",
+        "ipa": "/əˈmaʊnt/",
+        "meaning": "n.数量，总额 v.总计",
+        "mnemonic": null
+      },
+      {
+        "word": "till",
+        "ipa": "/tɪl/",
+        "meaning": "prep.直到",
+        "mnemonic": null
+      },
+      {
+        "word": "blow",
+        "ipa": "/bləʊ/",
+        "meaning": "v.吹，风吹 n.打击",
+        "mnemonic": null
+      },
+      {
+        "word": "warn",
+        "ipa": "/wɔːn/",
+        "meaning": "v.警告，告诫",
+        "mnemonic": null
+      },
+      {
+        "word": "fair",
+        "ipa": "/feə/",
+        "meaning": "a.公平的 n.展览会，集市",
+        "mnemonic": null
+      },
+      {
+        "word": "basic",
+        "ipa": "/ˈbeɪsɪk/",
+        "meaning": "a.基本的，基础的 n.基础",
+        "mnemonic": null
+      },
+      {
+        "word": "awful",
+        "ipa": "/ˈɔːfəl/",
+        "meaning": "a.可怕的，极坏的",
+        "mnemonic": null
+      },
+      {
+        "word": "soft",
+        "ipa": "/sɒft/",
+        "meaning": "a.软的，柔软的，温和的",
+        "mnemonic": null
+      },
+      {
+        "word": "opposite",
+        "ipa": "/ˈɒpəzɪt/",
+        "meaning": "a.相对的，对立的 n.对立面",
+        "mnemonic": null
+      },
+      {
+        "word": "challenge",
+        "ipa": "/ˈʧælɪnʤ/",
+        "meaning": "n./v.挑战",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「拆冷棘」",
+          "story": "光手去「拆冷冰冰的荆棘(chal-lenge)」，绝对是一次硬核「挑战」！",
+          "chunks": [
+            [
+              "chal",
+              "拆"
+            ],
+            [
+              "lenge",
+              "冷棘挑战"
+            ]
+          ],
+          "trap": "accept a challenge 接受挑战；challenging 有挑战性的。",
+          "example": "Unlock the Boss challenge after practicing all ten words. 练完十个词就能解锁 Boss 挑战。"
+        }
+      },
+      {
+        "word": "coach",
+        "ipa": "/kəʊʧ/",
+        "meaning": "n.教练 v.训练，指导",
+        "mnemonic": null
+      },
+      {
+        "word": "screen",
+        "ipa": "/skriːn/",
+        "meaning": "n.屏幕",
+        "mnemonic": null
+      },
+      {
+        "word": "society",
+        "ipa": "/səˈsaɪəti/",
+        "meaning": "n.社会，社团",
+        "mnemonic": null
+      },
+      {
+        "word": "rope",
+        "ipa": "/rəʊp/",
+        "meaning": "n.绳索",
+        "mnemonic": null
+      },
+      {
+        "word": "experiment",
+        "ipa": "/ɪkˈsperɪmənt/",
+        "meaning": "n.试验 v.尝试，做实验",
+        "mnemonic": null
+      },
+      {
+        "word": "brush",
+        "ipa": "/brʌʃ/",
+        "meaning": "n.刷子，画笔 v.刷，擦",
+        "mnemonic": null
+      },
+      {
+        "word": "policy",
+        "ipa": "/ˈpɒləsi/",
+        "meaning": "n.政策，方针",
+        "mnemonic": null
+      }
+    ]
+  },
+  {
+    "day": 17,
+    "words": [
+      {
+        "word": "exchange",
+        "ipa": "/ɪksˈʧeɪnʤ/",
+        "meaning": "v./n.交换，兑换",
+        "mnemonic": null
+      },
+      {
+        "word": "complain",
+        "ipa": "/kəmˈpleɪn/",
+        "meaning": "v.抱怨，控诉",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "一起(com)喊平原(plain)太惨了",
+          "story": "com(共同) + plain(朴素/平淡)：大家聚在一起吐槽饭堂菜太素，疯狂「抱怨、控诉」！",
+          "chunks": [
+            [
+              "com",
+              "一起"
+            ],
+            [
+              "plain",
+              "吐槽太素"
+            ]
+          ],
+          "trap": "complain about sth「抱怨某事」；名词 complaint。",
+          "example": "Nobody complains about homework when it takes five minutes. 只要五分钟做完，没人会抱怨作业多。"
+        }
+      },
+      {
+        "word": "greet",
+        "ipa": "/ɡriːt/",
+        "meaning": "v.欢迎，问候，致敬",
+        "mnemonic": null
+      },
+      {
+        "word": "view",
+        "ipa": "/vjuː/",
+        "meaning": "v.看 n.视野，见解，风景",
+        "mnemonic": null
+      },
+      {
+        "word": "pop",
+        "ipa": "/pɒp/",
+        "meaning": "a.流行的",
+        "mnemonic": null
+      },
+      {
+        "word": "primary",
+        "ipa": "/ˈpraɪməri/",
+        "meaning": "a.首要的，主要的，最初的，基本的",
+        "mnemonic": null
+      },
+      {
+        "word": "supper",
+        "ipa": "/ˈsʌpə/",
+        "meaning": "n.晚餐",
+        "mnemonic": null
+      },
+      {
+        "word": "pressure",
+        "ipa": "/ˈpreʃə/",
+        "meaning": "n.压力，压迫",
+        "mnemonic": null
+      },
+      {
+        "word": "major",
+        "ipa": "/ˈmeɪʤə/",
+        "meaning": "n.主修课 v.主修 a.主要的",
+        "mnemonic": null
+      },
+      {
+        "word": "hang",
+        "ipa": "/hæŋ/",
+        "meaning": "v.悬挂，吊死 n.悬挂，绞刑",
+        "mnemonic": null
+      },
+      {
+        "word": "score",
+        "ipa": "/skɔː/",
+        "meaning": "n./v.得分，谱曲",
+        "mnemonic": null
+      },
+      {
+        "word": "direction",
+        "ipa": "/daɪˈrekʃn/",
+        "meaning": "n.方向，指导",
+        "mnemonic": null
+      },
+      {
+        "word": "metal",
+        "ipa": "/ˈmetəl/",
+        "meaning": "n.金属",
+        "mnemonic": null
+      },
+      {
+        "word": "neighbour",
+        "ipa": "/ˈneɪbə/",
+        "meaning": "n.邻居",
+        "mnemonic": null
+      },
+      {
+        "word": "scene",
+        "ipa": "/siːn/",
+        "meaning": "n.情景，场景",
+        "mnemonic": null
+      },
+      {
+        "word": "calendar",
+        "ipa": "/ˈkæləndə/",
+        "meaning": "n.日历",
+        "mnemonic": null
+      },
+      {
+        "word": "theater",
+        "ipa": "/ˈθɪətə/",
+        "meaning": "n.戏院，剧场",
+        "mnemonic": null
+      },
+      {
+        "word": "stress",
+        "ipa": "/stres/",
+        "meaning": "n.压力 v.着重，强调",
+        "mnemonic": null
+      },
+      {
+        "word": "effect",
+        "ipa": "/ɪˈfekt/",
+        "meaning": "n.影响，效果 v.引起",
+        "mnemonic": null
+      },
+      {
+        "word": "trust",
+        "ipa": "/trʌst/",
+        "meaning": "v./n.信任，相信",
+        "mnemonic": null
+      },
+      {
+        "word": "perform",
+        "ipa": "/pəˈfɔːm/",
+        "meaning": "v.执行，履行，表演",
+        "mnemonic": null
+      },
+      {
+        "word": "spare",
+        "ipa": "/speə/",
+        "meaning": "a.各用的，多余的，闲暇的",
+        "mnemonic": null
+      },
+      {
+        "word": "mad",
+        "ipa": "/mæd/",
+        "meaning": "a.疯狂的，狂热的，生气的",
+        "mnemonic": null
+      },
+      {
+        "word": "thirsty",
+        "ipa": "/ˈθɜːsti/",
+        "meaning": "a.口渴的，渴望的",
+        "mnemonic": null
+      },
+      {
+        "word": "doubt",
+        "ipa": "/daʊt/",
+        "meaning": "n./v.怀疑",
+        "mnemonic": null
+      },
+      {
+        "word": "case",
+        "ipa": "/keɪs/",
+        "meaning": "n.案例，情况，箱子",
+        "mnemonic": null
+      },
+      {
+        "word": "treasure",
+        "ipa": "/ˈtreʒə/",
+        "meaning": "n.财宝，财富 v.珍爱",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "谐音「揣着」",
+          "story": "怀里死死「揣着(trea-sure)」金条不敢撒手——揣在兜里的当然是「财宝、财富」，还要好好「珍爱」！",
+          "chunks": [
+            [
+              "trea",
+              "揣"
+            ],
+            [
+              "sure",
+              "着宝贝"
+            ]
+          ],
+          "trap": "不可数名词表「金银财宝」；作动词意为「珍视」。",
+          "example": "Your personalized wrong-word notebook is a real treasure. 你的专属错词本才是考前真正的宝贝。"
+        }
+      },
+      {
+        "word": "cooker",
+        "ipa": "/ˈkʊkə/",
+        "meaning": "n.炊具",
+        "mnemonic": null
+      },
+      {
+        "word": "bottom",
+        "ipa": "/ˈbɒtəm/",
+        "meaning": "n.底部，底端",
+        "mnemonic": null
+      },
+      {
+        "word": "height",
+        "ipa": "/haɪt/",
+        "meaning": "n.高度",
+        "mnemonic": null
+      }
+    ]
+  },
+  {
+    "day": 18,
+    "words": [
+      {
+        "word": "nation",
+        "ipa": "/ˈneɪʃn/",
+        "meaning": "n.国家，民族",
+        "mnemonic": null
+      },
+      {
+        "word": "pride",
+        "ipa": "/praɪd/",
+        "meaning": "n.骄傲，自豪",
+        "mnemonic": null
+      },
+      {
+        "word": "church",
+        "ipa": "/ʧɜːʧ/",
+        "meaning": "n.教堂",
+        "mnemonic": null
+      },
+      {
+        "word": "examination",
+        "ipa": "/ɪɡˌzæmɪˈneɪʃn/",
+        "meaning": "n.考试，检查",
+        "mnemonic": null
+      },
+      {
+        "word": "shower",
+        "ipa": "/ˈʃaʊə/",
+        "meaning": "n.淋浴，阵雨",
+        "mnemonic": null
+      },
+      {
+        "word": "attitude",
+        "ipa": "/ˈætɪtjuːd/",
+        "meaning": "n.态度，看法",
+        "mnemonic": null
+      },
+      {
+        "word": "toothache",
+        "ipa": "/ˈtuːθeɪk/",
+        "meaning": "n.牙痛",
+        "mnemonic": null
+      },
+      {
+        "word": "invitation",
+        "ipa": "/ˌɪnvɪˈteɪʃn/",
+        "meaning": "n.邀请，招待",
+        "mnemonic": null
+      },
+      {
+        "word": "regard",
+        "ipa": "/rɪˈɡɑːd/",
+        "meaning": "n.尊敬 v.把...看作，尊敬",
+        "mnemonic": null
+      },
+      {
+        "word": "pollute",
+        "ipa": "/pəˈluːt/",
+        "meaning": "v.污染",
+        "mnemonic": null
+      },
+      {
+        "word": "suffer",
+        "ipa": "/ˈsʌfə/",
+        "meaning": "v.遭受，忍受，受苦",
+        "mnemonic": null
+      },
+      {
+        "word": "electric",
+        "ipa": "/ɪˈlektrɪk/",
+        "meaning": "a.电的，电动的，带电的",
+        "mnemonic": null
+      },
+      {
+        "word": "medical",
+        "ipa": "/ˈmedɪkəl/",
+        "meaning": "a.医学的，医疗的，内科的",
+        "mnemonic": null
+      },
+      {
+        "word": "tidy",
+        "ipa": "/ˈtaɪdi/",
+        "meaning": "a.整洁的 v.整理，收拾",
+        "mnemonic": null
+      },
+      {
+        "word": "wing",
+        "ipa": "/wɪŋ/",
+        "meaning": "n.翅膀",
+        "mnemonic": null
+      },
+      {
+        "word": "enemy",
+        "ipa": "/ˈenəmi/",
+        "meaning": "n.敌人",
+        "mnemonic": null
+      },
+      {
+        "word": "opera",
+        "ipa": "/ˈɒpərə/",
+        "meaning": "n.歌剧",
+        "mnemonic": null
+      },
+      {
+        "word": "butterfly",
+        "ipa": "/ˈbʌtəflaɪ/",
+        "meaning": "n.蝴蝶",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "黄油(butter)长翅膀飞(fly)",
+          "story": "一块香香的黄油(butter)突然长出彩色翅膀飞(fly)起来——这就是「蝴蝶」！",
+          "chunks": [
+            [
+              "butter",
+              "黄油"
+            ],
+            [
+              "fly",
+              "飞成蝴蝶"
+            ]
+          ],
+          "trap": "复数变 y 为 i 加 es：butterflies。",
+          "example": "A yellow butterfly landed quietly on the windowsill. 一只黄蝴蝶安静地停在窗台上。"
+        }
+      },
+      {
+        "word": "chemistry",
+        "ipa": "/ˈkemɪstri/",
+        "meaning": "n.化学",
+        "mnemonic": null
+      },
+      {
+        "word": "fuel",
+        "ipa": "/ˈfjuːəl/",
+        "meaning": "n.燃料",
+        "mnemonic": null
+      },
+      {
+        "word": "band",
+        "ipa": "/bænd/",
+        "meaning": "n.条纹，带子，乐队 v.联合",
+        "mnemonic": null
+      },
+      {
+        "word": "stream",
+        "ipa": "/striːm/",
+        "meaning": "n.溪流，一股 v.流出",
+        "mnemonic": null
+      },
+      {
+        "word": "item",
+        "ipa": "/ˈaɪtəm/",
+        "meaning": "n.项目，条款",
+        "mnemonic": null
+      },
+      {
+        "word": "pupil",
+        "ipa": "/ˈpjuːpəl/",
+        "meaning": "n.小学生",
+        "mnemonic": null
+      },
+      {
+        "word": "period",
+        "ipa": "/ˈpɪəriəd/",
+        "meaning": "n.一段时间，时期，周期",
+        "mnemonic": null
+      },
+      {
+        "word": "circle",
+        "ipa": "/ˈsɜːkəl/",
+        "meaning": "n.圆圈，圈子 v.画圈",
+        "mnemonic": null
+      },
+      {
+        "word": "mix",
+        "ipa": "/mɪks/",
+        "meaning": "v.混合",
+        "mnemonic": null
+      },
+      {
+        "word": "destroy",
+        "ipa": "/dɪˈstrɔɪ/",
+        "meaning": "v.破坏，毁灭",
+        "mnemonic": null
+      },
+      {
+        "word": "admire",
+        "ipa": "/ədˈmaɪə/",
+        "meaning": "v.钦佩，羡慕，称赞",
+        "mnemonic": null
+      },
+      {
+        "word": "kick",
+        "ipa": "/kɪk/",
+        "meaning": "v.踢",
+        "mnemonic": null
+      }
+    ]
+  },
+  {
+    "day": 19,
+    "words": [
+      {
+        "word": "fold",
+        "ipa": "/fəʊld/",
+        "meaning": "v.折叠",
+        "mnemonic": null
+      },
+      {
+        "word": "prove",
+        "ipa": "/pruːv/",
+        "meaning": "v.证明，验证",
+        "mnemonic": null
+      },
+      {
+        "word": "rude",
+        "ipa": "/ruːd/",
+        "meaning": "a.粗鲁的，无礼的",
+        "mnemonic": null
+      },
+      {
+        "word": "smooth",
+        "ipa": "/smuːð/",
+        "meaning": "a.光滑的，平稳的 v.弄平",
+        "mnemonic": null
+      },
+      {
+        "word": "chemical",
+        "ipa": "/ˈkemɪkəl/",
+        "meaning": "a.化学的",
+        "mnemonic": null
+      },
+      {
+        "word": "flat",
+        "ipa": "/flæt/",
+        "meaning": "a.平坦的，扁平的",
+        "mnemonic": null
+      },
+      {
+        "word": "strict",
+        "ipa": "/strɪkt/",
+        "meaning": "a.严格的，精确的",
+        "mnemonic": null
+      },
+      {
+        "word": "birth",
+        "ipa": "/bɜːθ/",
+        "meaning": "n./v.出生，诞生",
+        "mnemonic": null
+      },
+      {
+        "word": "fever",
+        "ipa": "/ˈfiːvə/",
+        "meaning": "n./v.发烧，狂热",
+        "mnemonic": null
+      },
+      {
+        "word": "menu",
+        "ipa": "/ˈmenjuː/",
+        "meaning": "n.菜单",
+        "mnemonic": null
+      },
+      {
+        "word": "coast",
+        "ipa": "/kəʊst/",
+        "meaning": "n.海岸，海滨",
+        "mnemonic": null
+      },
+      {
+        "word": "army",
+        "ipa": "/ˈɑːmi/",
+        "meaning": "n.军队",
+        "mnemonic": null
+      },
+      {
+        "word": "province",
+        "ipa": "/ˈprɒvɪns/",
+        "meaning": "n.省",
+        "mnemonic": null
+      },
+      {
+        "word": "punish",
+        "ipa": "/ˈpʌnɪʃ/",
+        "meaning": "v.惩罚，处罚",
+        "mnemonic": null
+      },
+      {
+        "word": "regular",
+        "ipa": "/ˈreɡjələ/",
+        "meaning": "a.规则的，有规律的，正规的",
+        "mnemonic": null
+      },
+      {
+        "word": "grey",
+        "ipa": "/ɡreɪ/",
+        "meaning": "a.灰色的",
+        "mnemonic": null
+      },
+      {
+        "word": "anyway",
+        "ipa": "/ˈeniweɪ/",
+        "meaning": "ad.无论如何，总之",
+        "mnemonic": null
+      },
+      {
+        "word": "cough",
+        "ipa": "/kɒf/",
+        "meaning": "n./v.咳嗽",
+        "mnemonic": null
+      },
+      {
+        "word": "diet",
+        "ipa": "/ˈdaɪət/",
+        "meaning": "n.节食，日常饮食",
+        "mnemonic": null
+      },
+      {
+        "word": "theatre",
+        "ipa": "/ˈθɪətə/",
+        "meaning": "n.剧场，戏院",
+        "mnemonic": null
+      },
+      {
+        "word": "litter",
+        "ipa": "/ˈlɪtə/",
+        "meaning": "n.垃圾，一窝(幼崽)",
+        "mnemonic": null
+      },
+      {
+        "word": "bath",
+        "ipa": "/bɑːθ/",
+        "meaning": "n.沐浴，浴室，澡盆",
+        "mnemonic": null
+      },
+      {
+        "word": "balance",
+        "ipa": "/ˈbæləns/",
+        "meaning": "n.平衡 v.使平衡",
+        "mnemonic": null
+      },
+      {
+        "word": "lab",
+        "ipa": "/læb/",
+        "meaning": "n.实验室",
+        "mnemonic": null
+      },
+      {
+        "word": "capital",
+        "ipa": "/ˈkæpɪtəl/",
+        "meaning": "n.首都，资本 a.重要的，大写的",
+        "mnemonic": null
+      },
+      {
+        "word": "railway",
+        "ipa": "/ˈreɪlweɪ/",
+        "meaning": "n.铁路",
+        "mnemonic": null
+      },
+      {
+        "word": "physics",
+        "ipa": "/ˈfɪzɪks/",
+        "meaning": "n.物理学",
+        "mnemonic": null
+      },
+      {
+        "word": "degree",
+        "ipa": "/dɪˈɡriː/",
+        "meaning": "n.学位，程度，度数",
+        "mnemonic": null
+      },
+      {
+        "word": "operation",
+        "ipa": "/ˌɒpərˈeɪʃn/",
+        "meaning": "n.运转，操作，手术",
+        "mnemonic": null
+      },
+      {
+        "word": "instruction",
+        "ipa": "/ɪnˈstrʌkʃn/",
+        "meaning": "n.指令，教学，说明",
+        "mnemonic": null
+      }
+    ]
+  },
+  {
+    "day": 20,
+    "words": [
+      {
+        "word": "cheat",
+        "ipa": "/ʧiːt/",
+        "meaning": "v./n.欺骗，作弊，骗子",
+        "mnemonic": null
+      },
+      {
+        "word": "disappoint",
+        "ipa": "/ˌdɪsəˈpɔɪnt/",
+        "meaning": "v.使失望",
+        "mnemonic": {
+          "tag": "词根暴走",
+          "hook": "dis(取消) + appoint(约好)",
+          "story": "appoint 是「约定好时间」，前面加个 dis(爽约取消)——放你鸽子，超级「使失望」！",
+          "chunks": [
+            [
+              "dis",
+              "爽约"
+            ],
+            [
+              "appoint",
+              "原本约好"
+            ]
+          ],
+          "trap": "disappointed（人感到失望）vs disappointing（事令人失望）。",
+          "example": "Don't let a low score disappoint you—retry is built in! 别因低分失望，重试机制随时帮你翻盘！"
+        }
+      },
+      {
+        "word": "swing",
+        "ipa": "/swɪŋ/",
+        "meaning": "v.摇摆，摆动 n.秋千",
+        "mnemonic": null
+      },
+      {
+        "word": "deaf",
+        "ipa": "/def/",
+        "meaning": "a.聋的",
+        "mnemonic": null
+      },
+      {
+        "word": "senior",
+        "ipa": "/ˈsiːniə/",
+        "meaning": "a.年长的，资深的 n.大四学生",
+        "mnemonic": null
+      },
+      {
+        "word": "absent",
+        "ipa": "/ˈæbsənt/",
+        "meaning": "a.缺席的，缺乏的 v.缺席",
+        "mnemonic": null
+      },
+      {
+        "word": "physical",
+        "ipa": "/ˈfɪzɪkəl/",
+        "meaning": "a.物质的，身体的，物理的",
+        "mnemonic": null
+      },
+      {
+        "word": "honor",
+        "ipa": "/ˈɒnə/",
+        "meaning": "n./v.尊敬，荣幸，荣誉",
+        "mnemonic": null
+      },
+      {
+        "word": "edge",
+        "ipa": "/eʤ/",
+        "meaning": "n.边，边缘，刀刃",
+        "mnemonic": null
+      },
+      {
+        "word": "standard",
+        "ipa": "/ˈstændəd/",
+        "meaning": "n.标准，规格 a.标准的",
+        "mnemonic": null
+      },
+      {
+        "word": "director",
+        "ipa": "/daɪˈrektə/",
+        "meaning": "n.导演，经理，主管",
+        "mnemonic": null
+      },
+      {
+        "word": "base",
+        "ipa": "/beɪs/",
+        "meaning": "n.底部，基础，基地",
+        "mnemonic": null
+      },
+      {
+        "word": "geography",
+        "ipa": "/ʤiˈɒɡrəfi/",
+        "meaning": "n.地理，地理学",
+        "mnemonic": null
+      },
+      {
+        "word": "pilot",
+        "ipa": "/ˈpaɪlət/",
+        "meaning": "n.飞行员",
+        "mnemonic": null
+      },
+      {
+        "word": "apartment",
+        "ipa": "/əˈpɑːtmənt/",
+        "meaning": "n.公寓",
+        "mnemonic": null
+      },
+      {
+        "word": "passport",
+        "ipa": "/ˈpɑːspɔːt/",
+        "meaning": "n.护照",
+        "mnemonic": null
+      },
+      {
+        "word": "spirit",
+        "ipa": "/ˈspɪrɪt/",
+        "meaning": "n.精神，心灵，幽灵",
+        "mnemonic": null
+      },
+      {
+        "word": "blank",
+        "ipa": "/blæŋk/",
+        "meaning": "n.空白 a.空白的",
+        "mnemonic": null
+      },
+      {
+        "word": "coal",
+        "ipa": "/kəʊl/",
+        "meaning": "n.煤",
+        "mnemonic": null
+      },
+      {
+        "word": "suit",
+        "ipa": "/suːt/",
+        "meaning": "n.套装，诉讼 v.合适，满足",
+        "mnemonic": null
+      },
+      {
+        "word": "drug",
+        "ipa": "/drʌɡ/",
+        "meaning": "n.药，毒品",
+        "mnemonic": null
+      },
+      {
+        "word": "apologize",
+        "ipa": "/əˈpɒləʤaɪz/",
+        "meaning": "v.道歉",
+        "mnemonic": {
+          "tag": "谐音暴击",
+          "hook": "阿婆(a-po)落泪(lo)赶紧赔(gize)",
+          "story": "撞翻了「阿婆(apo)箩筐(lo)」，看阿婆快哭了赶紧弯腰「道歉」(gize)！",
+          "chunks": [
+            [
+              "apo",
+              "阿婆"
+            ],
+            [
+              "lo",
+              "箩筐翻了"
+            ],
+            [
+              "gize",
+              "赶紧道歉"
+            ]
+          ],
+          "trap": "apologize to sb for sth 因某事向某人道歉；名词 apology。",
+          "example": "He apologized right away for forgetting the class card set. 他为忘了带班级词卡立刻道了歉。"
+        }
+      },
+      {
+        "word": "separate",
+        "ipa": "/ˈsepərət/",
+        "meaning": "v.分开 a.分开的，单独的",
+        "mnemonic": null
+      },
+      {
+        "word": "monitor",
+        "ipa": "/ˈmɒnɪtə/",
+        "meaning": "v.监视 n.监听器，班长",
+        "mnemonic": null
+      },
+      {
+        "word": "educate",
+        "ipa": "/ˈeʤʊkeɪt/",
+        "meaning": "v.教育，培养",
+        "mnemonic": null
+      },
+      {
+        "word": "argue",
+        "ipa": "/ˈɑːɡjuː/",
+        "meaning": "v.争论，辩论，说服",
+        "mnemonic": null
+      },
+      {
+        "word": "pale",
+        "ipa": "/peɪl/",
+        "meaning": "a.苍白的",
+        "mnemonic": null
+      },
+      {
+        "word": "private",
+        "ipa": "/ˈpraɪvət/",
+        "meaning": "a.私人的 n.士兵",
+        "mnemonic": null
+      },
+      {
+        "word": "contest",
+        "ipa": "/ˈkɒntest/",
+        "meaning": "n./v.竞赛，竞争",
+        "mnemonic": null
+      },
+      {
+        "word": "press",
+        "ipa": "/pres/",
+        "meaning": "n./v.压，压迫 n.报刊，新闻界",
+        "mnemonic": null
+      }
+    ]
+  },
+  {
+    "day": 21,
+    "words": [
+      {
+        "word": "industry",
+        "ipa": "/ˈɪndəstri/",
+        "meaning": "n.工业，产业，勤劳",
+        "mnemonic": null
+      },
+      {
+        "word": "flood",
+        "ipa": "/flʌd/",
+        "meaning": "n.洪水 v.淹没",
+        "mnemonic": null
+      },
+      {
+        "word": "shoulder",
+        "ipa": "/ˈʃəʊldə/",
+        "meaning": "n.肩膀 v.肩负，承担",
+        "mnemonic": null
+      },
+      {
+        "word": "block",
+        "ipa": "/blɒk/",
+        "meaning": "n.街区，障碍物 v.阻塞",
+        "mnemonic": null
+      },
+      {
+        "word": "gesture",
+        "ipa": "/ˈʤesʧə/",
+        "meaning": "n.手势，姿势",
+        "mnemonic": null
+      },
+      {
+        "word": "dentist",
+        "ipa": "/ˈdentɪst/",
+        "meaning": "n.牙医",
+        "mnemonic": null
+      },
+      {
+        "word": "steam",
+        "ipa": "/stiːm/",
+        "meaning": "n.蒸汽 v.蒸气",
+        "mnemonic": null
+      },
+      {
+        "word": "cancel",
+        "ipa": "/ˈkænsəl/",
+        "meaning": "v./n.取消",
+        "mnemonic": null
+      },
+      {
+        "word": "weigh",
+        "ipa": "/weɪ/",
+        "meaning": "v.称重，衡量",
+        "mnemonic": null
+      },
+      {
+        "word": "fix",
+        "ipa": "/fɪks/",
+        "meaning": "v.固定，修理",
+        "mnemonic": null
+      },
+      {
+        "word": "guard",
+        "ipa": "/ɡɑːd/",
+        "meaning": "v.守卫，看守 n.哨兵，警戒",
+        "mnemonic": null
+      },
+      {
+        "word": "shine",
+        "ipa": "/ʃaɪn/",
+        "meaning": "v.照耀，发光 n.光泽",
+        "mnemonic": null
+      },
+      {
+        "word": "rough",
+        "ipa": "/rʌf/",
+        "meaning": "a.粗糙的，粗暴的",
+        "mnemonic": null
+      },
+      {
+        "word": "gentle",
+        "ipa": "/ˈʤentl/",
+        "meaning": "a.温和的，文雅的，有教养的",
+        "mnemonic": null
+      },
+      {
+        "word": "flash",
+        "ipa": "/flæʃ/",
+        "meaning": "n./v.闪光，闪现",
+        "mnemonic": null
+      },
+      {
+        "word": "wealth",
+        "ipa": "/welθ/",
+        "meaning": "n.财富，财产",
+        "mnemonic": null
+      },
+      {
+        "word": "mess",
+        "ipa": "/mes/",
+        "meaning": "n.混乱，脏乱 v.弄乱，弄脏",
+        "mnemonic": null
+      },
+      {
+        "word": "medal",
+        "ipa": "/ˈmedəl/",
+        "meaning": "n.奖牌，勋章",
+        "mnemonic": null
+      },
+      {
+        "word": "chain",
+        "ipa": "/ʧeɪn/",
+        "meaning": "n.链，一连串，束缚",
+        "mnemonic": null
+      },
+      {
+        "word": "aim",
+        "ipa": "/eɪm/",
+        "meaning": "n.目标 v.瞄准",
+        "mnemonic": null
+      },
+      {
+        "word": "trader",
+        "ipa": "/ˈtreɪdə/",
+        "meaning": "n.商人，商船",
+        "mnemonic": null
+      },
+      {
+        "word": "attack",
+        "ipa": "/əˈtæk/",
+        "meaning": "v./n.攻击，进攻",
+        "mnemonic": null
+      },
+      {
+        "word": "measure",
+        "ipa": "/ˈmeʒə/",
+        "meaning": "v.测量 n.措施，量度，尺寸",
+        "mnemonic": null
+      },
+      {
+        "word": "pronounce",
+        "ipa": "/prəˈnaʊns/",
+        "meaning": "v.发音，宣告，宣判",
+        "mnemonic": {
+          "tag": "词根暴走",
+          "hook": "向前(pro)大声通报(nounce)",
+          "story": "pro(向前) + nounce(通报喊话)：站在讲台前张大嘴把每个音节念出来——「发音、宣告」！",
+          "chunks": [
+            [
+              "pro",
+              "向前"
+            ],
+            [
+              "nounce",
+              "张嘴念出"
+            ]
+          ],
+          "trap": "名词拼写大坑：pronunciation 里面没有 o！不是 pronounciation！",
+          "example": "Tap the speaker button to hear how to pronounce it. 点喇叭按钮听听怎么标准发音。"
+        }
+      },
+      {
+        "word": "recognize",
+        "ipa": "/ˈrekəɡnaɪz/",
+        "meaning": "v.认出，承认，意识到",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "再(re)用认知(cogn)锁定你(ize)",
+          "story": "re(再次) + cogn(知道) + ize：在人海里多看了你一眼，大脑瞬间重启认出老熟人——「认出、承认、意识到」！",
+          "chunks": [
+            [
+              "re",
+              "再次"
+            ],
+            [
+              "cogn",
+              "脑内调档"
+            ],
+            [
+              "ize",
+              "认出来"
+            ]
+          ],
+          "trap": "英式拼写也可写作 recognise。",
+          "example": "Can you recognize this word without looking at its Chinese? 不看中文你能认出这个词吗？"
+        }
+      },
+      {
+        "word": "decorate",
+        "ipa": "/ˈdekəreɪt/",
+        "meaning": "v.装饰，布置",
+        "mnemonic": null
+      },
+      {
+        "word": "direct",
+        "ipa": "/daɪˈrekt/",
+        "meaning": "a./ad.直接的 v.指挥，命令",
+        "mnemonic": null
+      },
+      {
+        "word": "tiny",
+        "ipa": "/ˈtaɪni/",
+        "meaning": "a.极小的，微小的",
+        "mnemonic": null
+      },
+      {
+        "word": "exact",
+        "ipa": "/ɪɡˈzækt/",
+        "meaning": "a.精确的，准确的 v.强求",
+        "mnemonic": null
+      },
+      {
+        "word": "digital",
+        "ipa": "/ˈdɪʤɪtəl/",
+        "meaning": "a.数字的，数码的",
+        "mnemonic": null
+      }
+    ]
+  },
+  {
+    "day": 22,
+    "words": [
+      {
+        "word": "sudden",
+        "ipa": "/ˈsʌdən/",
+        "meaning": "a.突然的，意外的 n.突发事件",
+        "mnemonic": null
+      },
+      {
+        "word": "sour",
+        "ipa": "/saʊə/",
+        "meaning": "a.酸的",
+        "mnemonic": null
+      },
+      {
+        "word": "transport",
+        "ipa": "/ˈtrænspɔːt/",
+        "meaning": "n./v.运输",
+        "mnemonic": null
+      },
+      {
+        "word": "silence",
+        "ipa": "/ˈsaɪləns/",
+        "meaning": "n.沉默，寂静",
+        "mnemonic": null
+      },
+      {
+        "word": "battery",
+        "ipa": "/ˈbætəri/",
+        "meaning": "n.电池",
+        "mnemonic": null
+      },
+      {
+        "word": "official",
+        "ipa": "/əˈfɪʃəl/",
+        "meaning": "n.官员 a.官方的，正式的",
+        "mnemonic": null
+      },
+      {
+        "word": "partner",
+        "ipa": "/ˈpɑːtnə/",
+        "meaning": "n.合伙人，伙伴，配偶",
+        "mnemonic": null
+      },
+      {
+        "word": "solution",
+        "ipa": "/səˈluːʃn/",
+        "meaning": "n.解决办法，解答，溶液",
+        "mnemonic": null
+      },
+      {
+        "word": "pattern",
+        "ipa": "/ˈpætən/",
+        "meaning": "n.模式，图案",
+        "mnemonic": null
+      },
+      {
+        "word": "victory",
+        "ipa": "/ˈvɪktəri/",
+        "meaning": "n.胜利",
+        "mnemonic": null
+      },
+      {
+        "word": "soldier",
+        "ipa": "/ˈsəʊlʤə/",
+        "meaning": "n.士兵，军人",
+        "mnemonic": null
+      },
+      {
+        "word": "position",
+        "ipa": "/pəˈzɪʃn/",
+        "meaning": "n.位置，职务，立场",
+        "mnemonic": null
+      },
+      {
+        "word": "envelope",
+        "ipa": "/ˈenvələʊp/",
+        "meaning": "n.信封，封皮",
+        "mnemonic": null
+      },
+      {
+        "word": "athlete",
+        "ipa": "/ˈæθliːt/",
+        "meaning": "n.运动员",
+        "mnemonic": null
+      },
+      {
+        "word": "sweep",
+        "ipa": "/swiːp/",
+        "meaning": "v./n.打扫，清扫",
+        "mnemonic": null
+      },
+      {
+        "word": "operate",
+        "ipa": "/ˈɒpəreɪt/",
+        "meaning": "v.操作，运转，经营，动手术",
+        "mnemonic": null
+      },
+      {
+        "word": "dare",
+        "ipa": "/deə/",
+        "meaning": "v.敢，胆敢",
+        "mnemonic": null
+      },
+      {
+        "word": "cruel",
+        "ipa": "/ˈkruːəl/",
+        "meaning": "a.残酷的，残忍的",
+        "mnemonic": null
+      },
+      {
+        "word": "typical",
+        "ipa": "/ˈtɪpɪkəl/",
+        "meaning": "a.典型的，有代表性的",
+        "mnemonic": null
+      },
+      {
+        "word": "bitter",
+        "ipa": "/ˈbɪtə/",
+        "meaning": "a.苦的，痛苦的",
+        "mnemonic": null
+      },
+      {
+        "word": "ordinary",
+        "ipa": "/ˈɔːdənəri/",
+        "meaning": "a.普通的，平常的",
+        "mnemonic": null
+      },
+      {
+        "word": "cancer",
+        "ipa": "/ˈkænsə/",
+        "meaning": "n.癌，肿瘤",
+        "mnemonic": null
+      },
+      {
+        "word": "discovery",
+        "ipa": "/dɪˈskʌvəri/",
+        "meaning": "n.发现",
+        "mnemonic": null
+      },
+      {
+        "word": "relation",
+        "ipa": "/rɪˈleɪʃn/",
+        "meaning": "n.关系，联系，亲戚",
+        "mnemonic": null
+      },
+      {
+        "word": "female",
+        "ipa": "/ˈfiːmeɪl/",
+        "meaning": "n.女性，雌性",
+        "mnemonic": null
+      },
+      {
+        "word": "iron",
+        "ipa": "/aɪən/",
+        "meaning": "n.铁，熨斗",
+        "mnemonic": null
+      },
+      {
+        "word": "cycle",
+        "ipa": "/ˈsaɪkəl/",
+        "meaning": "n.循环，周期，自行车 v.循环",
+        "mnemonic": null
+      },
+      {
+        "word": "fence",
+        "ipa": "/fens/",
+        "meaning": "n.栅栏，击剑",
+        "mnemonic": null
+      },
+      {
+        "word": "clinic",
+        "ipa": "/ˈklɪnɪk/",
+        "meaning": "n.诊所",
+        "mnemonic": null
+      },
+      {
+        "word": "shut",
+        "ipa": "/ʃʌt/",
+        "meaning": "v./n.关闭",
+        "mnemonic": null
+      }
+    ]
+  },
+  {
+    "day": 23,
+    "words": [
+      {
+        "word": "murder",
+        "ipa": "/ˈmɜːdə/",
+        "meaning": "v./n.谋杀",
+        "mnemonic": null
+      },
+      {
+        "word": "request",
+        "ipa": "/rɪˈkwest/",
+        "meaning": "v./n.请求，要求",
+        "mnemonic": null
+      },
+      {
+        "word": "pour",
+        "ipa": "/pɔː/",
+        "meaning": "v.倾泻，涌入",
+        "mnemonic": null
+      },
+      {
+        "word": "freeze",
+        "ipa": "/friːz/",
+        "meaning": "v.使结冰，冷冻",
+        "mnemonic": null
+      },
+      {
+        "word": "lay",
+        "ipa": "/leɪ/",
+        "meaning": "v.躺下，放置，产卵",
+        "mnemonic": null
+      },
+      {
+        "word": "inform",
+        "ipa": "/ɪnˈfɔːm/",
+        "meaning": "v.通知，告诉",
+        "mnemonic": null
+      },
+      {
+        "word": "dull",
+        "ipa": "/dʌl/",
+        "meaning": "a.迟钝的，钝的，乏味的",
+        "mnemonic": null
+      },
+      {
+        "word": "steel",
+        "ipa": "/stiːl/",
+        "meaning": "n.钢，钢铁",
+        "mnemonic": null
+      },
+      {
+        "word": "sightseeing",
+        "ipa": "/ˈsaɪtˌsiːɪŋ/",
+        "meaning": "n.观光",
+        "mnemonic": null
+      },
+      {
+        "word": "behaviour",
+        "ipa": "/bɪˈheɪvjə/",
+        "meaning": "n.行为，举止",
+        "mnemonic": null
+      },
+      {
+        "word": "secretary",
+        "ipa": "/ˈsekrətəri/",
+        "meaning": "n.秘书，部长，书记",
+        "mnemonic": null
+      },
+      {
+        "word": "location",
+        "ipa": "/ləʊˈkeɪʃn/",
+        "meaning": "n.位置，地点",
+        "mnemonic": null
+      },
+      {
+        "word": "custom",
+        "ipa": "/ˈkʌstəm/",
+        "meaning": "n.习惯，风俗",
+        "mnemonic": null
+      },
+      {
+        "word": "pioneer",
+        "ipa": "/ˌpaɪəˈnɪə/",
+        "meaning": "n.先驱，先锋 v.开辟",
+        "mnemonic": null
+      },
+      {
+        "word": "shame",
+        "ipa": "/ʃeɪm/",
+        "meaning": "n.羞耻，羞愧",
+        "mnemonic": null
+      },
+      {
+        "word": "dozen",
+        "ipa": "/ˈdʌzən/",
+        "meaning": "n.一打，十二个",
+        "mnemonic": null
+      },
+      {
+        "word": "sort",
+        "ipa": "/sɔːt/",
+        "meaning": "n.种类 v.分类",
+        "mnemonic": null
+      },
+      {
+        "word": "beyond",
+        "ipa": "/bɪˈjɒnd/",
+        "meaning": "p.超出，在更远处",
+        "mnemonic": null
+      },
+      {
+        "word": "mend",
+        "ipa": "/mend/",
+        "meaning": "v./n.改进，修补",
+        "mnemonic": null
+      },
+      {
+        "word": "ache",
+        "ipa": "/eɪk/",
+        "meaning": "v./n.疼痛",
+        "mnemonic": null
+      },
+      {
+        "word": "disturb",
+        "ipa": "/dɪˈstɜːb/",
+        "meaning": "v.打扰，妨碍",
+        "mnemonic": null
+      },
+      {
+        "word": "overcome",
+        "ipa": "/ˌəʊvəˈkʌm/",
+        "meaning": "v.战胜，克服",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "翻越过去(over)走过来(come)",
+          "story": "over(翻越过去) + come(走过来)：翻过面前的大山走到对面，就是「战胜、克服」一切困难！",
+          "chunks": [
+            [
+              "over",
+              "翻越大山"
+            ],
+            [
+              "come",
+              "胜利走来"
+            ]
+          ],
+          "trap": "过去式 overcame，过去分词又变回 overcome！",
+          "example": "Humor helps shy learners overcome fear of spelling. 幽默感能帮害羞的同学克服拼写恐惧。"
+        }
+      },
+      {
+        "word": "reward",
+        "ipa": "/rɪˈwɔːd/",
+        "meaning": "n./v.报酬，奖赏",
+        "mnemonic": null
+      },
+      {
+        "word": "servant",
+        "ipa": "/ˈsɜːvənt/",
+        "meaning": "n.仆人",
+        "mnemonic": null
+      },
+      {
+        "word": "prisoner",
+        "ipa": "/ˈprɪzənə/",
+        "meaning": "n.囚犯",
+        "mnemonic": {
+          "tag": "拆字脑洞",
+          "hook": "待在监狱(prison)里的人(er)",
+          "story": "prison(监狱) + er(人)：锁在铁窗里面的那个人，当然就是「囚犯」！",
+          "chunks": [
+            [
+              "prison",
+              "铁窗监狱"
+            ],
+            [
+              "er",
+              "关里面的人"
+            ]
+          ],
+          "trap": "in prison 坐牢（不加 the）；对比 take prisoner 俘虏。",
+          "example": "Don't turn vocabulary study into a prisoner's chore. 别把背单词变成像坐牢一样的苦差事。"
+        }
+      },
+      {
+        "word": "ceiling",
+        "ipa": "/ˈsiːlɪŋ/",
+        "meaning": "n.天花板，上限",
+        "mnemonic": null
+      },
+      {
+        "word": "headline",
+        "ipa": "/ˈhedlaɪn/",
+        "meaning": "n.头条新闻，大字标题",
+        "mnemonic": null
+      },
+      {
+        "word": "boil",
+        "ipa": "/bɔɪl/",
+        "meaning": "v.煮沸，烧开",
+        "mnemonic": null
+      }
+    ]
+  }
+]

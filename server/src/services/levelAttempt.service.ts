@@ -233,6 +233,8 @@ export async function requestLevelHint(
 // ── Level completion: stars, one-shot FSRS scheduling, daily rewards ─────────
 
 import { schedule, type FSRSParams } from '@vanilla-srs/shared/fsrs'
+import { mapFsrsToEbbinghausStage } from '@vanilla-srs/shared/ebbinghaus'
+import { rarityFromStage, type GameLevelType } from '@vanilla-srs/shared/gamification'
 import {
   rateAnswerAttempt,
   rewardEventKey,
@@ -242,6 +244,13 @@ import {
 } from '@vanilla-srs/shared/word-camp'
 import { settleRewardsForUser, type RewardSettlement } from './reward.service'
 import { buildTaskSummary, type DailyTaskSummary } from './dailyTask.service'
+import { getEffectiveGameConfig } from './gameConfig.service'
+import {
+  countTomorrowDueCards,
+  isGamificationAvailable,
+  recordGameRewardEventInTx,
+  type RewardFeedback,
+} from './gamification.service'
 import {
   levelOutcome,
   shouldScheduleLevel,
@@ -268,6 +277,9 @@ export interface LevelCompletionResult {
   rewards: RewardSettlement
   task: DailyTaskSummary
   weakWords: { taskWordId: string; word: string }[]
+  gameReward?: RewardFeedback
+  tomorrowDueCount?: number
+  upgradedCards?: Array<{ word: string; fromRarity: string | null; toRarity: string }>
 }
 
 function toSharedQuestionType(type: 'L2' | 'L3' | 'L5'): SessionAnswerRecord['questionType'] {
@@ -349,8 +361,11 @@ async function scheduleClearedWords(
   session: any,
   config: DailyTaskConfig,
   now: Date,
-): Promise<number> {
-  if (!shouldScheduleLevel(session.level, config)) return 0
+): Promise<{
+  scheduled: number
+  upgradedCards: Array<{ word: string; fromRarity: string | null; toRarity: string }>
+}> {
+  if (!shouldScheduleLevel(session.level, config)) return { scheduled: 0, upgradedCards: [] }
 
   const wordsById = new Map<string, any>(session.task.words.map((word: any) => [word.id, word]))
   const questionsByWord = new Map<string, any[]>()
@@ -361,6 +376,9 @@ async function scheduleClearedWords(
   }
 
   let scheduled = 0
+  const upgradedCards: Array<{ word: string; fromRarity: string | null; toRarity: string }> = []
+  const trackStage = isGamificationAvailable(prisma)
+
   for (const [taskWordId, questions] of questionsByWord) {
     const word = wordsById.get(taskWordId)
     if (!word || word.scheduledAt) continue
@@ -392,6 +410,16 @@ async function scheduleClearedWords(
       params,
       now,
     )
+
+    const newStage = mapFsrsToEbbinghausStage(next.state, next.stability, next.reps)
+    const prevBestStage =
+      instance.bestStage !== null && instance.bestStage !== undefined
+        ? instance.bestStage
+        : instance.state === 'NEW' && instance.reps <= 0
+          ? null
+          : mapFsrsToEbbinghausStage(instance.state as any, instance.stability, instance.reps)
+    const nextBestStage = Math.max(prevBestStage ?? -1, newStage)
+
     await prisma.cardInstance.update({
       where: { id: instance.id },
       data: {
@@ -403,11 +431,23 @@ async function scheduleClearedWords(
         state: next.state,
         due: next.due,
         lastReview: next.lastReview,
+        ...(trackStage ? { bestStage: nextBestStage } : {}),
       },
     })
+
+    const prevRarity = rarityFromStage(prevBestStage)
+    const nextRarity = rarityFromStage(nextBestStage)
+    if (nextRarity && (!prevRarity || prevRarity.key !== nextRarity.key)) {
+      upgradedCards.push({
+        word: word.word,
+        fromRarity: prevRarity?.label ?? null,
+        toRarity: nextRarity.label,
+      })
+    }
+
     scheduled += 1
   }
-  return scheduled
+  return { scheduled, upgradedCards }
 }
 
 const completionTaskInclude = {
@@ -520,6 +560,11 @@ export async function completeLevel(
       ? { cleared: true, stars: 0, firstTryAccuracy: 1, finalAccuracy: 1 }
       : levelOutcome(session.level as any, stats)
 
+  const gamificationOn = isGamificationAvailable(prisma)
+  const { config: gameConfig, configVersion } = gamificationOn
+    ? await getEffectiveGameConfig(prisma, session.task.enrollment.classId)
+    : { config: undefined, configVersion: 'default' }
+
   const result = await prisma.$transaction(async (tx) => {
     await tx.levelSession.update({
       where: { id: session.id },
@@ -535,8 +580,11 @@ export async function completeLevel(
     })
 
     let scheduled = 0
+    let upgradedCards: Array<{ word: string; fromRarity: string | null; toRarity: string }> = []
     if (outcome.cleared) {
-      scheduled = await scheduleClearedWords(tx as unknown as PrismaClient, session, config, now)
+      const sched = await scheduleClearedWords(tx as unknown as PrismaClient, session, config, now)
+      scheduled = sched.scheduled
+      upgradedCards = sched.upgradedCards
     }
 
     const refreshed = await tx.dailyStudyTask.findUnique({
@@ -550,7 +598,42 @@ export async function completeLevel(
         data: { status: 'COMPLETED', completedAt: now },
       })
     }
-    return { scheduled }
+
+    let gameReward: RewardFeedback | undefined
+    const deckId = session.task.enrollment.deck?.id
+    if (outcome.cleared && gamificationOn && gameConfig && deckId) {
+      const levelType = session.level as GameLevelType
+      const reviewCardIds =
+        session.level === 'REVIEW'
+          ? session.task.words
+              .filter((w: any) => w.kind === 'REVIEW')
+              .map((w: any) => w.cardInstanceId as string)
+          : []
+      gameReward = await recordGameRewardEventInTx({
+        tx: tx as unknown as PrismaClient,
+        studentId,
+        enrollmentId: session.task.enrollmentId,
+        deckId,
+        classId: session.task.enrollment.classId,
+        type: 'LEVEL_CLEAR',
+        sourceId: `${session.task.studyDate}:${session.level}`,
+        baseXp: gameConfig.levelXp[levelType] ?? 0,
+        localDate: session.task.studyDate,
+        now,
+        config: gameConfig,
+        configVersion,
+        levelCleared: session.level === 'REVIEW' ? undefined : session.level,
+        countAsReviewCardIds: reviewCardIds,
+        meta: {
+          level: session.level,
+          campDay: session.task.campDay ?? null,
+          stars: outcome.stars,
+          sessionId: session.id,
+        },
+      })
+    }
+
+    return { scheduled, upgradedCards, gameReward }
   })
 
   const finalTask = await prisma.dailyStudyTask.findUnique({
@@ -559,5 +642,15 @@ export async function completeLevel(
   })
   const taskSummary = buildTaskSummary(finalTask)
   const rewards = await settleLevelRewards(prisma, session, taskSummary, wordsById)
-  return completionResultOf(session, outcome.cleared, outcome.stars, result.scheduled, rewards, taskSummary, wordsById)
+  const tomorrowDueCount =
+    gamificationOn && session.task.enrollment.deck?.id
+      ? await countTomorrowDueCards(prisma, session.task.enrollment.deck.id, now)
+      : undefined
+
+  return {
+    ...completionResultOf(session, outcome.cleared, outcome.stars, result.scheduled, rewards, taskSummary, wordsById),
+    ...(result.gameReward ? { gameReward: result.gameReward } : {}),
+    ...(tomorrowDueCount !== undefined ? { tomorrowDueCount } : {}),
+    ...(result.upgradedCards.length > 0 ? { upgradedCards: result.upgradedCards } : {}),
+  }
 }
